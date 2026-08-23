@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retrait - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">💸 Retrait d'Argent</div>
+            
+            <!-- Solde -->
+            <div class="verification-status">
+                <h3>💎 Mon Solde</h3>
+                <p id="diamondBalance" style="font-size:2rem; color:#FFD700;">0 💎</p>
+                <p style="color:#a8a8a8;" id="euroBalance">≈ 0€</p>
+            </div>
+            
+            <!-- Statistiques -->
+            <div class="founder-stats">
+                <div class="stat-card gold">
+                    <span class="stat-icon">💸</span>
+                    <span class="stat-value" id="totalWithdrawn">0€</span>
+                    <span class="stat-label">Total retiré</span>
+                </div>
+                <div class="stat-card gold">
+                    <span class="stat-icon">⏳</span>
+                    <span class="stat-value" id="pendingCount">0</span>
+                    <span class="stat-label">En attente</span>
+                </div>
+            </div>
+            
+            <!-- Formulaire de retrait -->
+            <div class="founder-section">
+                <h3>📝 Demander un Retrait</h3>
+                
+                <label style="display:block; margin-bottom:5px;">💎 Montant en diamants :</label>
+                <input type="number" id="withdrawAmount" placeholder="Ex : 1000" style="width:100%; padding:15px; border-radius:10px; border:1px solid #333; background:#1a1a1a; color:#fff; margin-bottom:15px;">
+                
+                <label style="display:block; margin-bottom:5px;">🌍 Pays :</label>
+                <select id="withdrawCountry" style="width:100%; padding:15px; border-radius:10px; border:1px solid #333; background:#1a1a1a; color:#fff; margin-bottom:15px;">
+                    <option value="France">🇫🇷 France (€)</option>
+                    <option value="Sénégal">🇸🇳 Sénégal (CFA)</option>
+                    <option value="Côte d'Ivoire">🇨🇮 Côte d'Ivoire (CFA)</option>
+                    <option value="Maroc">🇲🇦 Maroc (DH)</option>
+                    <option value="Algérie">🇩🇿 Algérie (DA)</option>
+                    <option value="Tunisie">🇹🇳 Tunisie (DT)</option>
+                    <option value="USA">🇺🇸 USA ($)</option>
+                    <option value="Cameroun">🇨🇲 Cameroun (CFA)</option>
+                    <option value="RDC">🇨🇩 RD Congo (CFA)</option>
+                    <option value="Suisse">🇨🇭 Suisse (CHF)</option>
+                    <option value="Canada">🇨🇦 Canada ($)</option>
+                    <option value="Belgique">🇧🇪 Belgique (€)</option>
+                </select>
+                
+                <label style="display:block; margin-bottom:5px;">💰 Méthode de retrait :</label>
+                <select id="withdrawMethod" style="width:100%; padding:15px; border-radius:10px; border:1px solid #333; background:#1a1a1a; color:#fff; margin-bottom:15px;">
+                    <option value="mobile_money">📱 Mobile Money (min 5€)</option>
+                    <option value="bank">🏦 Virement bancaire (min 10€)</option>
+                    <option value="paypal">💳 PayPal (min 10€)</option>
+                    <option value="western_union">🏧 Western Union (min 20€)</option>
+                    <option value="crypto">🪙 Crypto-monnaie (min 5€)</option>
+                </select>
+                
+                <button class="btn-primary" style="width:100%;" onclick="submitWithdrawal()">
+                    💸 Demander le retrait
+                </button>
+            </div>
+            
+            <!-- Historique -->
+            <div class="founder-section">
+                <h3>📋 Historique des Retraits</h3>
+                <div id="withdrawalHistory">
+                    <p style="color:#a8a8a8;">Aucun retrait</p>
+                </div>
+            </div>
+            
+            <!-- Bouton retour -->
+            <button class="btn-primary" style="margin-top:20px; width:100%; background:#333;" onclick="window.location.href='profil.html'">
+                ← Retour
+            </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Accueil</span>
+            </a>
+            <a href="decouverte.html" class="nav-item">
+                <span class="nav-icon">🔍</span>
+                <span>Découvrir</span>
+            </a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'">
+                <span class="nav-icon">➕</span>
+            </button>
+            <a href="notifications.html" class="nav-item">
+                <span class="nav-icon">🔔</span>
+                <span>Messages</span>
+            </a>
+            <a href="profil.html" class="nav-item active">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="retrait.js"></script>
+    <script>
+        let currentUserId = null;
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (savedUser) {
+                currentUserId = JSON.parse(savedUser).id;
+                loadWithdrawalPage();
+            }
+        });
+        
+        function loadWithdrawalPage() {
+            const user = registeredUsers.find(u => u.id === currentUserId);
+            if (!user) return;
+            
+            const diamonds = user.diamonds || 0;
+            document.getElementById('diamondBalance').textContent = diamonds + ' 💎';
+            document.getElementById('euroBalance').textContent = '≈ ' + (diamonds * 0.01).toFixed(2) + '€';
+            
+            const stats = getWithdrawalStats(currentUserId);
+            document.getElementById('totalWithdrawn').textContent = stats.totalWithdrawn.toFixed(2) + '€';
+            document.getElementById('pendingCount').textContent = stats.pendingCount;
+            
+            loadWithdrawalHistory();
+        }
+        
+        function loadWithdrawalHistory() {
+            const history = withdrawalData.withdrawals.filter(w => w.userId === currentUserId);
+            const container = document.getElementById('withdrawalHistory');
+            
+            if (history.length === 0) {
+                container.innerHTML = '<p style="color:#a8a8a8;">Aucun retrait</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            history.forEach(w => {
+                const div = document.createElement('div');
+                div.className = 'notification-item';
+                div.innerHTML = `
+                    <div style="flex:1;">
+                        <strong>${w.methodName}</strong>
+                        <p style="color:#a8a8a8; font-size:0.8rem;">
+                            ${w.amount} ${w.currency} | Frais : ${w.fee.toFixed(2)}€
+                        </p>
+                        <p style="color:#FFD700; font-size:0.7rem;">${w.status}</p>
+                    </div>
+                    <span style="color:#FFD700; font-weight:bold;">${w.netAmount.toFixed(2)} ${w.currency}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        function submitWithdrawal() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const country = document.getElementById('withdrawCountry').value;
+            const method = document.getElementById('withdrawMethod').value;
+            
+            if (!amount || amount <= 0) {
+                showToast('❌ Montant invalide');
+                return;
+            }
+            
+            const currency = getCurrencyForCountry(country);
+            const result = requestWithdrawal(currentUserId, amount, currency, method);
+            
+            if (result.success) {
+                showToast('✅ Retrait demandé ! ' + result.diamondsSpent + ' 💎 déduits');
+                loadWithdrawalPage();
+            } else {
+                showToast('❌ ' + result.message);
+            }
+        }
+    </script>
+</body>
+</html>

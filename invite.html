@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inviter - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">🎁 Inviter des Amis</div>
+            
+            <!-- Code d'invitation -->
+            <div class="invite-code-section">
+                <h3>Ton code d'invitation</h3>
+                <div class="invite-code-display" id="inviteCodeDisplay">
+                    CHARGEMENT...
+                </div>
+                <button class="btn-primary" onclick="copyInviteCode()">
+                    📋 Copier le code
+                </button>
+            </div>
+            
+            <!-- Lien d'invitation -->
+            <div class="invite-link-section">
+                <h3>Ton lien personnel</h3>
+                <div class="invite-link-display" id="inviteLinkDisplay">
+                    CHARGEMENT...
+                </div>
+                <button class="btn-primary" onclick="copyInviteLink()">
+                    🔗 Copier le lien
+                </button>
+            </div>
+            
+            <!-- Partage rapide -->
+            <div class="share-buttons">
+                <h3>Partager sur :</h3>
+                <div class="share-grid">
+                    <button onclick="shareInvite('whatsapp')">
+                        📱 WhatsApp
+                    </button>
+                    <button onclick="shareInvite('facebook')">
+                        📘 Facebook
+                    </button>
+                    <button onclick="shareInvite('instagram')">
+                        📸 Instagram
+                    </button>
+                    <button onclick="shareInvite('twitter')">
+                        🐦 Twitter
+                    </button>
+                    <button onclick="shareInvite('sms')">
+                        💬 SMS
+                    </button>
+                    <button onclick="shareInvite('email')">
+                        📧 Email
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Récompenses -->
+            <div class="rewards-section">
+                <h3>🎁 Récompenses</h3>
+                <div class="reward-item">
+                    <span>👥 1 ami invité</span>
+                    <span style="color:#FFD700;">+50 💎</span>
+                </div>
+                <div class="reward-item">
+                    <span>👥 5 amis invités</span>
+                    <span style="color:#FFD700;">Badge 🏆</span>
+                </div>
+                <div class="reward-item">
+                    <span>👥 10 amis invités</span>
+                    <span style="color:#FFD700;">Badge 👑</span>
+                </div>
+                <div class="reward-item">
+                    <span>👥 50 amis invités</span>
+                    <span style="color:#FFD700;">Vérification 💙</span>
+                </div>
+            </div>
+            
+            <!-- Statistiques -->
+            <div class="stats-section">
+                <h3>📊 Tes statistiques</h3>
+                <div id="propagationStats">
+                    <p>Amis invités : <span id="directInvites">0</span></p>
+                    <p>Invitations en cascade : <span id="cascadeInvites">0</span></p>
+                    <p>Diamants gagnés : <span id="totalRewards">0</span> 💎</p>
+                </div>
+            </div>
+            
+            <!-- Bouton retour -->
+            <button class="btn-primary" style="margin-top: 20px; width: 100%; background: #333;" onclick="window.location.href='index.html'">
+                ← Retour
+            </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Accueil</span>
+            </a>
+            <a href="decouverte.html" class="nav-item">
+                <span class="nav-icon">🔍</span>
+                <span>Découvrir</span>
+            </a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'">
+                <span class="nav-icon">➕</span>
+            </button>
+            <a href="recherche.html" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span>Recherche</span>
+            </a>
+            <a href="profil.html" class="nav-item active">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="propagation.js"></script>
+    <script>
+        let currentUserId = null;
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (savedUser) {
+                const user = JSON.parse(savedUser);
+                currentUserId = user.id;
+                
+                // Afficher le code et le lien
+                const code = getInviteCode(user.id);
+                const link = getInviteLink(user.id);
+                
+                document.getElementById('inviteCodeDisplay').textContent = code;
+                document.getElementById('inviteLinkDisplay').textContent = link;
+                
+                // Afficher les statistiques
+                const stats = getPropagationStats(user.id);
+                if (stats) {
+                    document.getElementById('directInvites').textContent = stats.directInvites;
+                    document.getElementById('cascadeInvites').textContent = stats.cascadeInvites;
+                    document.getElementById('totalRewards').textContent = stats.totalRewards;
+                }
+            }
+        });
+        
+        function copyInviteCode() {
+            const code = getInviteCode(currentUserId);
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(code).then(() => {
+                    showToast('📋 Code copié !');
+                });
+            } else {
+                showToast('📋 Code : ' + code);
+            }
+        }
+        
+        function copyInviteLink() {
+            const link = getInviteLink(currentUserId);
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(link).then(() => {
+                    showToast('🔗 Lien copié !');
+                });
+            } else {
+                showToast('🔗 Lien : ' + link);
+            }
+        }
+        
+        function shareInvite(platform) {
+            const message = getInviteMessage(currentUserId, platform);
+            showToast('📤 Partagé sur ' + platform + ' !');
+            rewardUser(currentUserId, 5, 'invite_share');
+        }
+    </script>
+</body>
+</html>

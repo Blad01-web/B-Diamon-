@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramètres - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">⚙️ Paramètres</div>
+            
+            <ul class="settings-list">
+                <li onclick="alert('🔔 Gestion des notifications')">
+                    <span>🔔 Notifications</span>
+                    <span style="color:#a8a8a8;">></span>
+                </li>
+                <li>
+                    <span>🌙 Mode sombre</span>
+                    <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+                </li>
+                <li onclick="alert('🔒 Confidentialité et sécurité')">
+                    <span>🔒 Confidentialité</span>
+                    <span style="color:#a8a8a8;">></span>
+                </li>
+                <li onclick="alert('🌍 Langue : Français')">
+                    <span>🌍 Langue</span>
+                    <span style="color:#a8a8a8;">Français ></span>
+                </li>
+                <li onclick="alert('💾 Données et stockage')">
+                    <span>💾 Données et stockage</span>
+                    <span style="color:#a8a8a8;">></span>
+                </li>
+                <li onclick="alert('❓ Aide et support')">
+                    <span>❓ Aide</span>
+                    <span style="color:#a8a8a8;">></span>
+                </li>
+                <li onclick="alert('📄 Conditions d\'utilisation')">
+                    <span>📄 Conditions d'utilisation</span>
+                    <span style="color:#a8a8a8;">></span>
+                </li>
+                <li onclick="alert('ℹ️ Version 1.0.0 - B Diamond')">
+                    <span>ℹ️ À propos</span>
+                    <span style="color:#a8a8a8;">v1.0.0 ></span>
+                </li>
+            </ul>
+            
+            <button class="btn-primary" style="margin-top: 30px; width: 100%; background: #ff0050;" onclick="logout()">
+                🚪 Déconnexion
+            </button>
+        </div>
+        
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">🏠 Accueil</a>
+            <a href="decouverte.html" class="nav-item">🔍 Découvrir</a>
+            <button class="nav-item create-btn" onclick="createVideo()">➕</button>
+            <a href="recherche.html" class="nav-item">💬 Recherche</a>
+            <a href="profil.html" class="nav-item">👤 Profil</a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

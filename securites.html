@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sécurité - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">🛡️ Centre de Sécurité</div>
+            
+            <!-- Statistiques de sécurité -->
+            <div class="founder-stats">
+                <div class="stat-card gold">
+                    <span class="stat-icon">🚫</span>
+                    <span class="stat-value" id="vpnCount">0</span>
+                    <span class="stat-label">VPN détectés</span>
+                </div>
+                <div class="stat-card gold">
+                    <span class="stat-icon">⚠️</span>
+                    <span class="stat-value" id="nudityCount">0</span>
+                    <span class="stat-label">Contenus signalés</span>
+                </div>
+                <div class="stat-card gold">
+                    <span class="stat-icon">👤</span>
+                    <span class="stat-value" id="fakeCount">0</span>
+                    <span class="stat-label">Faux comptes</span>
+                </div>
+                <div class="stat-card gold">
+                    <span class="stat-icon">🔒</span>
+                    <span class="stat-value" id="suspendedCount">0</span>
+                    <span class="stat-label">Suspendus</span>
+                </div>
+            </div>
+            
+            <!-- Anti-VPN -->
+            <div class="founder-section">
+                <h3>🚫 Anti-VPN</h3>
+                <ul class="settings-list">
+                    <li>
+                        <span>🛡️ Détection VPN</span>
+                        <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+                    </li>
+                    <li>
+                        <span>📊 Sensibilité</span>
+                        <span style="color:#FFD700;">Haute ></span>
+                    </li>
+                    <li onclick="showVPNList()">
+                        <span>📋 VPN détectés</span>
+                        <span style="color:#FFD700;" id="vpnDetectedCount">0 ></span>
+                    </li>
+                    <li onclick="showSuspendedUsers()">
+                        <span>🚫 Utilisateurs suspendus</span>
+                        <span style="color:#ff0000;" id="vpnSuspendedCount">0 ></span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Anti-Nudité -->
+            <div class="founder-section">
+                <h3>🚫 Anti-Nudité</h3>
+                <ul class="settings-list">
+                    <li>
+                        <span>🤖 IA de détection</span>
+                        <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+                    </li>
+                    <li>
+                        <span>📊 Seuil de détection</span>
+                        <span style="color:#FFD700;">80% ></span>
+                    </li>
+                    <li onclick="showFlaggedContent()">
+                        <span>⚠️ Contenus signalés</span>
+                        <span style="color:#FFD700;" id="flaggedCount">0 ></span>
+                    </li>
+                    <li onclick="showRemovedContent()">
+                        <span>🗑️ Contenus supprimés</span>
+                        <span style="color:#ff0000;" id="removedCount">0 ></span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Anti-Faux Comptes -->
+            <div class="founder-section">
+                <h3>👤 Anti-Faux Comptes</h3>
+                <ul class="settings-list">
+                    <li>
+                        <span>🛡️ Détection automatique</span>
+                        <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+                    </li>
+                    <li>
+                        <span>📧 Vérification email obligatoire</span>
+                        <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+                    </li>
+                    <li>
+                        <span>📱 Vérification téléphone</span>
+                        <div class="toggle" onclick="this.classList.toggle('active')"></div>
+                    </li>
+                    <li onclick="showSuspiciousAccounts()">
+                        <span>⚠️ Comptes suspects</span>
+                        <span style="color:#FFD700;" id="suspiciousCount">0 ></span>
+                    </li>
+                    <li onclick="showBannedAccounts()">
+                        <span>⛔ Comptes bannis</span>
+                        <span style="color:#ff0000;" id="bannedCount">0 ></span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Journal de sécurité -->
+            <div class="founder-section">
+                <h3>📋 Journal de Sécurité</h3>
+                <div id="securityLog">
+                    <p style="color:#a8a8a8;">Aucun événement</p>
+                </div>
+            </div>
+            
+            <!-- Actions rapides -->
+            <div class="founder-section">
+                <h3>⚡ Actions Rapides</h3>
+                <button class="btn-primary" style="width:100%; margin-bottom:10px;" onclick="simulateVPNDetection()">
+                    🚫 Simuler détection VPN
+                </button>
+                <button class="btn-primary" style="width:100%; margin-bottom:10px; background:#ff9900;" onclick="simulateNudityDetection()">
+                    ⚠️ Simuler détection nudité
+                </button>
+                <button class="btn-primary" style="width:100%; background:#ff0050;" onclick="simulateFakeAccountDetection()">
+                    👤 Simuler détection faux compte
+                </button>
+            </div>
+            
+            <!-- Bouton retour -->
+            <button class="btn-primary" style="margin-top: 20px; width: 100%; background: #333;" onclick="window.location.href='founder.html'">
+                ← Retour au tableau de bord
+            </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Accueil</span>
+            </a>
+            <a href="decouverte.html" class="nav-item">
+                <span class="nav-icon">🔍</span>
+                <span>Découvrir</span>
+            </a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'">
+                <span class="nav-icon">➕</span>
+            </button>
+            <a href="notifications.html" class="nav-item">
+                <span class="nav-icon">🔔</span>
+                <span>Messages</span>
+            </a>
+            <a href="profil.html" class="nav-item active">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="securite.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!checkFounderSession()) {
+                showToast('❌ Accès non autorisé');
+                setTimeout(() => {
+                    window.location.href = 'profil.html';
+                }, 2000);
+                return;
+            }
+            
+            loadSecurityStats();
+            loadSecurityLog();
+        });
+        
+        function loadSecurityStats() {
+            const stats = getSecurityStats();
+            
+            document.getElementById('vpnCount').textContent = stats.vpnDetected;
+            document.getElementById('nudityCount').textContent = stats.nudityFlagged;
+            document.getElementById('fakeCount').textContent = stats.fakeAccounts;
+            document.getElementById('suspendedCount').textContent = stats.totalSuspended;
+            
+            document.getElementById('vpnDetectedCount').textContent = stats.vpnDetected;
+            document.getElementById('vpnSuspendedCount').textContent = stats.vpnSuspended;
+            document.getElementById('flaggedCount').textContent = stats.nudityFlagged;
+            document.getElementById('removedCount').textContent = stats.nudityRemoved;
+            document.getElementById('suspiciousCount').textContent = stats.fakeAccounts;
+            document.getElementById('bannedCount').textContent = stats.bannedAccounts;
+        }
+        
+        function loadSecurityLog() {
+            const logContainer = document.getElementById('securityLog');
+            const log = getSecurityLog();
+            
+            if (log.length === 0) return;
+            
+            logContainer.innerHTML = '';
+            log.slice(0, 10).forEach(entry => {
+                const div = document.createElement('div');
+                div.className = 'notification-item';
+                div.innerHTML = `
+                    <div style="flex:1;">
+                        <strong>${getEventIcon(entry.type)} ${getEventLabel(entry.type)}</strong>
+                        <p style="color:#a8a8a8; font-size:0.8rem;">${entry.details}</p>
+                        <p style="color:#a8a8a8; font-size:0.7rem;">${new Date(entry.timestamp).toLocaleString('fr-FR')}</p>
+                    </div>
+                `;
+                logContainer.appendChild(div);
+            });
+        }
+        
+        function getEventIcon(type) {
+            const icons = {
+                'vpn_detected': '🚫',
+                'nudity_detected': '⚠️',
+                'fake_account_detected': '👤',
+                'user_suspended': '🔒',
+                'user_banned': '⛔'
+            };
+            return icons[type] || '📋';
+        }
+        
+        function getEventLabel(type) {
+            const labels = {
+                'vpn_detected': 'VPN détecté',
+                'nudity_detected': 'Contenu inapproprié',
+                'fake_account_detected': 'Faux compte',
+                'user_suspended': 'Utilisateur suspendu',
+                'user_banned': 'Utilisateur banni'
+            };
+            return labels[type] || 'Événement';
+        }
+        
+        function simulateVPNDetection() {
+            const userId = parseInt(prompt('ID de l\'utilisateur à tester :'));
+            if (userId) {
+                const detected = detectVPN(userId, '185.220.101.5');
+                showToast(detected ? '🚫 VPN détecté !' : '✅ Aucun VPN détecté');
+                loadSecurityStats();
+                loadSecurityLog();
+            }
+        }
+        
+        function simulateNudityDetection() {
+            const videoId = parseInt(prompt('ID de la vidéo à tester :'));
+            if (videoId) {
+                const detected = detectNudity(videoId);
+                showToast(detected ? '⚠️ Contenu inapproprié détecté !' : '✅ Contenu OK');
+                loadSecurityStats();
+                loadSecurityLog();
+            }
+        }
+        
+        function simulateFakeAccountDetection() {
+            const userId = parseInt(prompt('ID de l\'utilisateur à tester :'));
+            if (userId) {
+                const detected = detectFakeAccount(userId);
+                showToast(detected ? '👤 Faux compte détecté !' : '✅ Compte légitime');
+                loadSecurityStats();
+                loadSecurityLog();
+            }
+        }
+        
+        function showVPNList() {
+            const vpnList = securityData.vpnDetection.detectedVPNs;
+            if (vpnList.length === 0) {
+                showToast('Aucun VPN détecté');
+                return;
+            }
+            const message = vpnList.map(v => `@${v.username} - ${v.ip}`).join('\n');
+            alert('🚫 VPN détectés :\n\n' + message);
+        }
+        
+        function showSuspendedUsers() {
+            const suspended = securityData.suspendedUsers;
+            if (suspended.length === 0) {
+                showToast('Aucun utilisateur suspendu');
+                return;
+            }
+            const message = suspended.map(s => `@${s.username} - ${s.reason}`).join('\n');
+            alert('🔒 Utilisateurs suspendus :\n\n' + message);
+        }
+        
+        function showFlaggedContent() {
+            const flagged = securityData.nudityDetection.flaggedContent;
+            if (flagged.length === 0) {
+                showToast('Aucun contenu signalé');
+                return;
+            }
+            const message = flagged.map(f => `Vidéo #${f.videoId} - Score: ${f.score}%`).join('\n');
+            alert('⚠️ Contenus signalés :\n\n' + message);
+        }
+        
+        function showRemovedContent() {
+            const removed = securityData.nudityDetection.removedContent;
+            if (removed.length === 0) {
+                showToast('Aucun contenu supprimé');
+                return;
+            }
+            const message = removed.map(f => `Vidéo #${f.videoId}`).join('\n');
+            alert('🗑️ Contenus supprimés :\n\n' + message);
+        }
+        
+        function showSuspiciousAccounts() {
+            const suspicious = securityData.fakeAccountDetection.suspiciousAccounts;
+            if (suspicious.length === 0) {
+                showToast('Aucun compte suspect');
+                return;
+            }
+            const message = suspicious.map(s => `@${s.username} - Score: ${s.score}`).join('\n');
+            alert('⚠️ Comptes suspects :\n\n' + message);
+        }
+        
+        function showBannedAccounts() {
+            const banned = securityData.fakeAccountDetection.bannedAccounts;
+            if (banned.length === 0) {
+                showToast('Aucun compte banni');
+                return;
+            }
+            const message = banned.map(b => `@${b.username} - ${b.reason}`).join('\n');
+            alert('⛔ Comptes bannis :\n\n' + message);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Utilisateur - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <!-- En-tête -->
+            <div class="profile-header-top">
+                <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+                <div class="page-header" style="margin-bottom:0; flex:1;">👤 Profil</div>
+                <button class="settings-icon-btn" onclick="showToast('🚫 Bloquer')">🚫</button>
+            </div>
+            
+            <!-- Profil utilisateur -->
+            <div id="userProfile" style="text-align:center; margin-bottom:20px;">
+                <img src="" alt="" id="userAvatar" style="width:100px;height:100px;border-radius:50%;border:3px solid #FFD700;object-fit:cover;">
+                <h2 style="margin-top:10px;" id="userUsername"></h2>
+                <p style="color:#a8a8a8;" id="userBio"></p>
+                
+                <!-- Boutons d'action -->
+                <div style="display:flex; gap:10px; margin-top:15px; justify-content:center;">
+                    <button class="btn-primary" id="followBtn" onclick="toggleFollowUser()" style="flex:1; max-width:150px;">
+                        Suivre
+                    </button>
+                    <button class="btn-primary" onclick="sendMessageToUser()" style="flex:1; max-width:150px; background:#333;">
+                        💬 Message
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Statistiques -->
+            <div style="display:flex; justify-content:space-around; text-align:center; margin-bottom:20px;">
+                <div>
+                    <strong style="font-size:1.2rem;" id="userFollowers">0</strong><br>
+                    <span style="color:#a8a8a8;">Abonnés</span>
+                </div>
+                <div>
+                    <strong style="font-size:1.2rem;" id="userFollowing">0</strong><br>
+                    <span style="color:#a8a8a8;">Abonnements</span>
+                </div>
+                <div>
+                    <strong style="font-size:1.2rem;" id="userLikes">0</strong><br>
+                    <span style="color:#a8a8a8;">Likes</span>
+                </div>
+            </div>
+            
+            <!-- Onglets -->
+            <div class="auth-tabs" style="margin-bottom:15px;">
+                <button class="tab-btn active" onclick="showUserVideos(this)">📹 Vidéos</button>
+                <button class="tab-btn" onclick="showUserLikes(this)">❤️ Aimées</button>
+            </div>
+            
+            <!-- Grille vidéos -->
+            <div class="profile-grid" id="userVideosGrid"></div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Accueil</span>
+            </a>
+            <a href="decouverte.html" class="nav-item">
+                <span class="nav-icon">🔍</span>
+                <span>Découvrir</span>
+            </a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'">
+                <span class="nav-icon">➕</span>
+            </button>
+            <a href="messages.html" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span>Messages</span>
+            </a>
+            <a href="profil.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        let viewedUserId = null;
+        let isFollowing = false;
+        let currentUserId = null;
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (savedUser) {
+                currentUserId = JSON.parse(savedUser).id;
+            }
+            
+            // Récupérer l'ID de l'utilisateur à afficher
+            const urlParams = new URLSearchParams(window.location.search);
+            viewedUserId = parseInt(urlParams.get('id')) || 2;
+            
+            loadUserProfile();
+        });
+        
+        function loadUserProfile() {
+            const user = registeredUsers.find(u => u.id === viewedUserId);
+            if (!user) return;
+            
+            const verifiedBadge = getVerificationBadge(user);
+            
+            document.getElementById('userAvatar').src = user.avatar;
+            document.getElementById('userUsername').innerHTML = '@' + user.username + verifiedBadge;
+            document.getElementById('userBio').textContent = user.bio;
+            document.getElementById('userFollowers').textContent = formatNumber(user.followers);
+            document.getElementById('userFollowing').textContent = formatNumber(user.following);
+            document.getElementById('userLikes').textContent = formatNumber(user.likes);
+            
+            // Vérifier si on suit cet utilisateur
+            isFollowing = follows.some(f => f.followerId === currentUserId && f.followingId === viewedUserId);
+            updateFollowButton();
+            
+            loadUserVideos();
+        }
+        
+        function updateFollowButton() {
+            const btn = document.getElementById('followBtn');
+            if (isFollowing) {
+                btn.textContent = 'Suivi ✓';
+                btn.style.background = '#333';
+            } else {
+                btn.textContent = 'Suivre';
+                btn.style.background = '';
+            }
+        }
+        
+        function toggleFollowUser() {
+            if (isFollowing) {
+                const index = follows.findIndex(f => f.followerId === currentUserId && f.followingId === viewedUserId);
+                if (index !== -1) {
+                    follows.splice(index, 1);
+                }
+                showToast('❌ Vous ne suivez plus cet utilisateur');
+            } else {
+                follows.push({ followerId: currentUserId, followingId: viewedUserId });
+                showToast('✅ Vous suivez maintenant cet utilisateur');
+            }
+            isFollowing = !isFollowing;
+            updateFollowButton();
+        }
+        
+        function sendMessageToUser() {
+            window.location.href = 'messages.html?user=' + viewedUserId;
+        }
+        
+        function showUserVideos(button) {
+            document.querySelectorAll('.auth-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            loadUserVideos();
+        }
+        
+        function showUserLikes(button) {
+            document.querySelectorAll('.auth-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            showToast('❤️ Vidéos aimées');
+        }
+        
+        function loadUserVideos() {
+            const grid = document.getElementById('userVideosGrid');
+            if (!grid) return;
+            
+            const userVideos = videos.filter(v => v.userId === viewedUserId);
+            
+            grid.innerHTML = '';
+            
+            if (userVideos.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; color:#a8a8a8; grid-column:1/-1; padding:40px;">Aucune vidéo</p>';
+                return;
+            }
+            
+            userVideos.forEach(video => {
+                const div = document.createElement('div');
+                div.className = 'profile-video-item';
+                div.innerHTML = `
+                    <video src="${video.videoUrl}" onclick="this.play()"></video>
+                    <div class="video-views-overlay">
+                        <span>👁️ ${formatNumber(video.views)}</span>
+                    </div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>

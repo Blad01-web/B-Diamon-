@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérification - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">💙 Vérification du Compte</div>
+            
+            <!-- Statut actuel -->
+            <div class="verification-status">
+                <h3>Statut actuel</h3>
+                <p id="statusText">Non vérifié</p>
+            </div>
+            
+            <!-- Badge Bleu -->
+            <div class="verification-card" style="background:var(--bg-card); border:1px solid var(--border); border-radius:15px; padding:20px; margin-bottom:20px;">
+                <div class="verification-header" style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                    <h3>💙 Badge Bleu</h3>
+                    <span style="color:#FFD700; font-weight:bold;">4,99€</span>
+                </div>
+                <ul style="list-style:none; margin-bottom:15px;">
+                    <li style="padding:5px 0; color:#a8a8a8;">✓ Badge bleu sur le profil</li>
+                    <li style="padding:5px 0; color:#a8a8a8;">✓ Priorité dans les commentaires</li>
+                    <li style="padding:5px 0; color:#a8a8a8;">✓ Protection contre l'usurpation</li>
+                </ul>
+                <button class="btn-primary" style="width:100%;" onclick="showPaymentModal('💙 Badge Bleu', 4.99, currentUser ? currentUser.id : 1, 'activateBlueBadge')">
+                    💙 Acheter
+                </button>
+            </div>
+            
+            <!-- Badge Diamant -->
+            <div class="verification-card" style="background:var(--bg-card); border:2px solid #FFD700; border-radius:15px; padding:20px; margin-bottom:20px; box-shadow:0 0 20px rgba(255,215,0,0.3);">
+                <div class="verification-header" style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                    <h3>💎 Badge Diamant</h3>
+                    <span style="color:#FFD700; font-weight:bold;">9,99€</span>
+                </div>
+                <ul style="list-style:none; margin-bottom:15px;">
+                    <li style="padding:5px 0; color:#a8a8a8;">✓ Tout du badge bleu</li>
+                    <li style="padding:5px 0; color:#a8a8a8;">✓ Badge diamant animé</li>
+                    <li style="padding:5px 0; color:#a8a8a8;">✓ Support prioritaire 24/7</li>
+                    <li style="padding:5px 0; color:#a8a8a8;">✓ Apparaît en premier</li>
+                </ul>
+                <button class="btn-primary" style="width:100%; background:linear-gradient(45deg, #FFD700, #FFA500);" onclick="showPaymentModal('💎 Badge Diamant', 9.99, currentUser ? currentUser.id : 1, 'activateDiamondBadge')">
+                    💎 Acheter
+                </button>
+            </div>
+            
+            <!-- Bouton retour -->
+            <button class="btn-primary" style="margin-top:20px; width:100%; background:#333;" onclick="window.location.href='profil.html'">
+                ← Retour
+            </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Accueil</span></a>
+            <a href="decouverte.html" class="nav-item"><span class="nav-icon">🔍</span><span>Découvrir</span></a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'"><span class="nav-icon">➕</span></button>
+            <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span><span>Messages</span></a>
+            <a href="profil.html" class="nav-item active"><span class="nav-icon">👤</span><span>Profil</span></a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="paiement.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                if (currentUser.verification) {
+                    document.getElementById('statusText').textContent = currentUser.verification.badge + ' Vérifié';
+                    document.getElementById('statusText').style.color = '#FFD700';
+                }
+            }
+        });
+        
+        function activateBlueBadge() {
+            if (currentUser) {
+                currentUser.verification = { type: 'blue', badge: '💙' };
+                localStorage.setItem('bdiamond_current_user', JSON.stringify(currentUser));
+                document.getElementById('statusText').textContent = '💙 Vérifié';
+                document.getElementById('statusText').style.color = '#FFD700';
+                showToast('💙 Badge Bleu activé !');
+            }
+        }
+        
+        function activateDiamondBadge() {
+            if (currentUser) {
+                currentUser.verification = { type: 'diamond', badge: '💎' };
+                localStorage.setItem('bdiamond_current_user', JSON.stringify(currentUser));
+                document.getElementById('statusText').textContent = '💎 Vérifié Premium';
+                document.getElementById('statusText').style.color = '#FFD700';
+                showToast('💎 Badge Diamant activé !');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashtag - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <!-- En-tête -->
+            <div class="profile-header-top">
+                <button class="back-btn" onclick="window.history.back()">←</button>
+                <div class="page-header" id="hashtagTitle" style="margin-bottom:0; flex:1;">#hashtag</div>
+                <button class="settings-icon-btn" id="followBtn" onclick="toggleFollowHashtag()">➕</button>
+            </div>
+            
+            <!-- Statistiques -->
+            <div class="founder-stats" id="hashtagStats">
+                <!-- Rempli dynamiquement -->
+            </div>
+            
+            <!-- Tendance -->
+            <div class="verification-status" id="trendStatus">
+                <h3>📈 Tendance</h3>
+                <p id="trendText">En croissance 🔥</p>
+            </div>
+            
+            <!-- Top vidéos -->
+            <div class="founder-section">
+                <h3>📹 Top vidéos</h3>
+                <div id="hashtagVideos"></div>
+            </div>
+            
+            <!-- Top créateurs -->
+            <div class="founder-section">
+                <h3>👥 Top créateurs</h3>
+                <div id="hashtagCreators"></div>
+            </div>
+            
+            <!-- Hashtags similaires -->
+            <div class="founder-section">
+                <h3>🔗 Hashtags similaires</h3>
+                <div class="hashtag-list" id="similarHashtags"></div>
+            </div>
+            
+            <!-- Hashtags suivis -->
+            <div class="founder-section">
+                <h3>📋 Mes hashtags suivis</h3>
+                <div class="hashtag-list" id="followedHashtags"></div>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Accueil</span>
+            </a>
+            <a href="decouverte.html" class="nav-item">
+                <span class="nav-icon">🔍</span>
+                <span>Découvrir</span>
+            </a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'">
+                <span class="nav-icon">➕</span>
+            </button>
+            <a href="notifications.html" class="nav-item">
+                <span class="nav-icon">🔔</span>
+                <span>Messages</span>
+            </a>
+            <a href="profil.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="hashtags.js"></script>
+    <script>
+        let currentHashtag = '';
+        let currentUserId = null;
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (savedUser) {
+                currentUserId = JSON.parse(savedUser).id;
+            }
+            
+            // Récupérer le hashtag depuis l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            currentHashtag = urlParams.get('tag') || 'diamond';
+            
+            loadHashtagPage();
+        });
+        
+        function loadHashtagPage() {
+            // Titre
+            document.getElementById('hashtagTitle').textContent = '#' + currentHashtag;
+            
+            // Statistiques
+            loadHashtagStats();
+            
+            // Vidéos
+            loadHashtagVideos();
+            
+            // Créateurs
+            loadHashtagCreators();
+            
+            // Hashtags similaires
+            loadSimilarHashtags();
+            
+            // Hashtags suivis
+            loadFollowedHashtags();
+            
+            // Bouton suivre
+            updateFollowButton();
+            
+            // Suivre l'historique
+            if (currentUserId) {
+                trackHashtagView(currentUserId, currentHashtag);
+            }
+        }
+        
+        function loadHashtagStats() {
+            const stats = getHashtagStats(currentHashtag);
+            const container = document.getElementById('hashtagStats');
+            
+            container.innerHTML = `
+                <div class="stat-card gold">
+                    <span class="stat-icon">📹</span>
+                    <span class="stat-value">${stats.videoCount}</span>
+                    <span class="stat-label">Vidéos</span>
+                </div>
+                <div class="stat-card gold">
+                    <span class="stat-icon">👁️</span>
+                    <span class="stat-value">${formatNumber(stats.totalViews)}</span>
+                    <span class="stat-label">Vues</span>
+                </div>
+                <div class="stat-card gold">
+                    <span class="stat-icon">❤️</span>
+                    <span class="stat-value">${formatNumber(stats.totalLikes)}</span>
+                    <span class="stat-label">Likes</span>
+                </div>
+                <div class="stat-card gold">
+                    <span class="stat-icon">👥</span>
+                    <span class="stat-value">${stats.creatorCount}</span>
+                    <span class="stat-label">Créateurs</span>
+                </div>
+            `;
+        }
+        
+        function loadHashtagVideos() {
+            const videosList = getHashtagVideos(currentHashtag, 6);
+            const container = document.getElementById('hashtagVideos');
+            
+            container.innerHTML = '';
+            
+            if (videosList.length === 0) {
+                container.innerHTML = '<p style="color:#a8a8a8; text-align:center; padding:20px;">Aucune vidéo</p>';
+                return;
+            }
+            
+            const grid = document.createElement('div');
+            grid.className = 'profile-grid';
+            
+            videosList.forEach(video => {
+                const div = document.createElement('div');
+                div.className = 'profile-video-item';
+                div.innerHTML = `
+                    <video src="${video.videoUrl}" onclick="this.play()"></video>
+                    <div class="video-views-overlay">
+                        <span>👁️ ${formatNumber(video.views)}</span>
+                    </div>
+                `;
+                grid.appendChild(div);
+            });
+            
+            container.appendChild(grid);
+        }
+        
+        function loadHashtagCreators() {
+            const creators = getHashtagCreators(currentHashtag, 5);
+            const container = document.getElementById('hashtagCreators');
+            
+            container.innerHTML = '';
+            
+            if (creators.length === 0) {
+                container.innerHTML = '<p style="color:#a8a8a8;">Aucun créateur</p>';
+                return;
+            }
+            
+            creators.forEach((creator, index) => {
+                const div = document.createElement('div');
+                div.className = 'notification-item';
+                const badge = getHashtagBadge(creator.userId, currentHashtag);
+                div.innerHTML = `
+                    <span style="font-weight:bold; color:#FFD700;">#${index + 1}</span>
+                    <img src="${creator.avatar}" alt="${creator.username}">
+                    <div style="flex:1;">
+                        <strong>@${creator.username}</strong>
+                        <p style="color:#a8a8a8; font-size:0.8rem;">${creator.videoCount} vidéos | ${formatNumber(creator.totalViews)} vues</p>
+                        ${badge ? `<p style="color:#FFD700; font-size:0.7rem;">${badge}</p>` : ''}
+                    </div>
+                    <button class="btn-primary" style="padding:8px 15px; font-size:0.8rem;" onclick="window.location.href='user.html?id=${creator.userId}'">
+                        Voir
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        function loadSimilarHashtags() {
+            const similar = getSimilarHashtags(currentHashtag);
+            const container = document.getElementById('similarHashtags');
+            
+            container.innerHTML = '';
+            
+            if (similar.length === 0) {
+                container.innerHTML = '<p style="color:#a8a8a8;">Aucun hashtag similaire</p>';
+                return;
+            }
+            
+            similar.forEach(tag => {
+                const div = document.createElement('div');
+                div.className = 'hashtag';
+                div.textContent = tag.name;
+                div.onclick = () => {
+                    window.location.href = 'hashtag.html?tag=' + tag.name.replace(/[^a-zA-Z]/g, '').toLowerCase();
+                };
+                container.appendChild(div);
+            });
+        }
+        
+        function loadFollowedHashtags() {
+            if (!currentUserId) return;
+            
+            const followed = getFollowedHashtags(currentUserId);
+            const container = document.getElementById('followedHashtags');
+            
+            container.innerHTML = '';
+            
+            if (followed.length === 0) {
+                container.innerHTML = '<p style="color:#a8a8a8;">Aucun hashtag suivi</p>';
+                return;
+            }
+            
+            followed.forEach(tag => {
+                const div = document.createElement('div');
+                div.className = 'hashtag';
+                div.textContent = '#' + tag;
+                div.onclick = () => {
+                    window.location.href = 'hashtag.html?tag=' + tag;
+                };
+                container.appendChild(div);
+            });
+        }
+        
+        function updateFollowButton() {
+            const btn = document.getElementById('followBtn');
+            if (isFollowingHashtag(currentUserId, currentHashtag)) {
+                btn.textContent = '✅';
+            } else {
+                btn.textContent = '➕';
+            }
+        }
+        
+        function toggleFollowHashtag() {
+            if (isFollowingHashtag(currentUserId, currentHashtag)) {
+                unfollowHashtag(currentUserId, currentHashtag);
+                showToast('❌ Vous ne suivez plus #' + currentHashtag);
+            } else {
+                followHashtag(currentUserId, currentHashtag);
+                showToast('✅ Vous suivez #' + currentHashtag);
+            }
+            updateFollowButton();
+            loadFollowedHashtags();
+        }
+    </script>
+</body>
+</html>

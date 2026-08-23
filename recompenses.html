@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Récompenses - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">🎁 Catalogue des Récompenses</div>
+            
+            <!-- Solde -->
+            <div class="verification-status">
+                <h3>Ton solde</h3>
+                <p id="diamondBalance" style="font-size:2rem; color:#FFD700;">0 💎</p>
+            </div>
+            
+            <!-- Récompenses disponibles -->
+            <div class="rewards-catalog">
+                <div class="verification-card">
+                    <h3>💙 Badge Bleu</h3>
+                    <p style="color:#a8a8a8;">Vérification du compte</p>
+                    <p class="price">500 💎</p>
+                    <button class="btn-primary" onclick="redeemReward('badge_blue', 500)">Échanger</button>
+                </div>
+                
+                <div class="verification-card premium">
+                    <h3>💎 Badge Diamant</h3>
+                    <p style="color:#a8a8a8;">Vérification premium</p>
+                    <p class="price">1000 💎</p>
+                    <button class="btn-primary" onclick="redeemReward('badge_diamond', 1000)">Échanger</button>
+                </div>
+                
+                <div class="verification-card">
+                    <h3>🎵 Musique exclusive</h3>
+                    <p style="color:#a8a8a8;">Son premium pour tes vidéos</p>
+                    <p class="price">200 💎</p>
+                    <button class="btn-primary" onclick="redeemReward('music', 200)">Échanger</button>
+                </div>
+                
+                <div class="verification-card">
+                    <h3>🎨 Filtres spéciaux</h3>
+                    <p style="color:#a8a8a8;">Effets vidéo exclusifs</p>
+                    <p class="price">300 💎</p>
+                    <button class="btn-primary" onclick="redeemReward('filters', 300)">Échanger</button>
+                </div>
+            </div>
+            
+            <!-- Bouton retour -->
+            <button class="btn-primary" style="margin-top: 20px; width: 100%; background: #333;" onclick="window.location.href='index.html'">
+                ← Retour
+            </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Accueil</span>
+            </a>
+            <a href="decouverte.html" class="nav-item">
+                <span class="nav-icon">🔍</span>
+                <span>Découvrir</span>
+            </a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'">
+                <span class="nav-icon">➕</span>
+            </button>
+            <a href="recherche.html" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span>Recherche</span>
+            </a>
+            <a href="profil.html" class="nav-item active">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="propagation.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (savedUser) {
+                const user = JSON.parse(savedUser);
+                document.getElementById('diamondBalance').textContent = (user.diamonds || 0) + ' 💎';
+            }
+        });
+        
+        function redeemReward(rewardType, cost) {
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (!savedUser) return;
+            
+            const user = JSON.parse(savedUser);
+            
+            if ((user.diamonds || 0) < cost) {
+                showToast('❌ Pas assez de diamants !');
+                return;
+            }
+            
+            user.diamonds -= cost;
+            localStorage.setItem('bdiamond_current_user', JSON.stringify(user));
+            
+            // Mettre à jour dans registeredUsers
+            const allUsers = JSON.parse(localStorage.getItem('bdiamond_users')) || [];
+            const index = allUsers.findIndex(u => u.id === user.id);
+            if (index !== -1) {
+                allUsers[index].diamonds = user.diamonds;
+                localStorage.setItem('bdiamond_users', JSON.stringify(allUsers));
+            }
+            
+            document.getElementById('diamondBalance').textContent = user.diamonds + ' 💎';
+            
+            switch(rewardType) {
+                case 'badge_blue':
+                    activateVerification(user.id, 'blue');
+                    showToast('💙 Badge Bleu activé !');
+                    break;
+                case 'badge_diamond':
+                    activateVerification(user.id, 'diamond');
+                    showToast('💎 Badge Diamant activé !');
+                    break;
+                case 'music':
+                    showToast('🎵 Musique débloquée !');
+                    break;
+                case 'filters':
+                    showToast('🎨 Filtres débloqués !');
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>

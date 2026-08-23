@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">💬 Recherche</div>
+            
+            <!-- Barre de recherche -->
+            <div class="search-bar">
+                <input type="text" placeholder="Utilisateurs, vidéos, sons..." id="searchInput" onkeyup="searchUsers(this.value)">
+                <button onclick="searchUsers(document.getElementById('searchInput').value)">🔍</button>
+            </div>
+            
+            <!-- Filtres -->
+            <div class="hashtag-list" style="margin-bottom: 20px;">
+                <div class="hashtag" onclick="filterSearch('all', this)">Tous</div>
+                <div class="hashtag" onclick="filterSearch('users', this)">👥 Utilisateurs</div>
+                <div class="hashtag" onclick="filterSearch('videos', this)">📹 Vidéos</div>
+                <div class="hashtag" onclick="filterSearch('hashtags', this)">#️⃣ Hashtags</div>
+            </div>
+            
+            <!-- Résultats utilisateurs -->
+            <h3 style="margin-bottom: 15px;" id="usersTitle">👥 Utilisateurs</h3>
+            <div id="userResults"></div>
+            
+            <!-- Résultats vidéos -->
+            <h3 style="margin: 25px 0 15px;" id="videosTitle">📹 Vidéos</h3>
+            <div id="videoResults"></div>
+            
+            <!-- Résultats hashtags -->
+            <h3 style="margin: 25px 0 15px;" id="hashtagsTitle">#️⃣ Hashtags</h3>
+            <div id="hashtagResults"></div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Accueil</span>
+            </a>
+            <a href="decouverte.html" class="nav-item">
+                <span class="nav-icon">🔍</span>
+                <span>Découvrir</span>
+            </a>
+            <button class="nav-item create-btn" onclick="createVideo()">
+                <span class="nav-icon">➕</span>
+            </button>
+            <a href="recherche.html" class="nav-item active">
+                <span class="nav-icon">💬</span>
+                <span>Recherche</span>
+            </a>
+            <a href="profil.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        let currentFilter = 'all';
+        
+        // Charger tous les résultats au démarrage
+        window.addEventListener('DOMContentLoaded', () => {
+            searchUsers('');
+        });
+        
+        function filterSearch(filter, button) {
+            currentFilter = filter;
+            
+            // Mettre à jour les styles des filtres
+            document.querySelectorAll('.hashtag').forEach(el => {
+                el.style.background = '';
+                el.style.color = '';
+            });
+            button.style.background = '#00f2ea';
+            button.style.color = '#000';
+            
+            searchUsers(document.getElementById('searchInput').value);
+        }
+        
+        function searchUsers(query) {
+            query = query.toLowerCase().trim();
+            
+            const userResults = document.getElementById('userResults');
+            const videoResults = document.getElementById('videoResults');
+            const hashtagResults = document.getElementById('hashtagResults');
+            
+            // Masquer/afficher selon le filtre
+            document.getElementById('usersTitle').style.display = (currentFilter === 'all' || currentFilter === 'users') ? 'block' : 'none';
+            document.getElementById('videosTitle').style.display = (currentFilter === 'all' || currentFilter === 'videos') ? 'block' : 'none';
+            document.getElementById('hashtagsTitle').style.display = (currentFilter === 'all' || currentFilter === 'hashtags') ? 'block' : 'none';
+            
+            userResults.style.display = (currentFilter === 'all' || currentFilter === 'users') ? 'block' : 'none';
+            videoResults.style.display = (currentFilter === 'all' || currentFilter === 'videos') ? 'block' : 'none';
+            hashtagResults.style.display = (currentFilter === 'all' || currentFilter === 'hashtags') ? 'block' : 'none';
+            
+            // Recherche utilisateurs
+            if (currentFilter === 'all' || currentFilter === 'users') {
+                userResults.innerHTML = '';
+                const filteredUsers = users.filter(u => 
+                    u.username.toLowerCase().includes(query) || 
+                    u.bio.toLowerCase().includes(query)
+                );
+                
+                if (filteredUsers.length === 0) {
+                    userResults.innerHTML = '<p style="text-align:center; color:#a8a8a8; padding:20px;">Aucun utilisateur trouvé</p>';
+                } else {
+                    filteredUsers.forEach(user => {
+                        const div = document.createElement('div');
+                        div.className = 'notification-item';
+                        const verifiedBadge = user.verified ? ' ✓' : '';
+                        div.innerHTML = `
+                            <img src="${user.avatar}" alt="${user.username}" onerror="this.src='https://i.pravatar.cc/150?img=1'">
+                            <div style="flex:1;">
+                                <strong>@${user.username}${verifiedBadge}</strong>
+                                <p style="color:#a8a8a8; font-size: 0.9rem;">${user.bio}</p>
+                                <p style="color:#00f2ea; font-size: 0.8rem;">${formatNumber(user.followers)} abonnés</p>
+                            </div>
+                            <button class="btn-primary" style="padding: 8px 15px; font-size: 0.8rem;" onclick="viewProfile('${user.username}')">
+                                Voir
+                            </button>
+                        `;
+                        userResults.appendChild(div);
+                    });
+                }
+            }
+            
+            // Recherche vidéos
+            if (currentFilter === 'all' || currentFilter === 'videos') {
+                videoResults.innerHTML = '';
+                const filteredVideos = videos.filter(v => 
+                    v.caption.toLowerCase().includes(query)
+                );
+                
+                if (filteredVideos.length === 0) {
+                    videoResults.innerHTML = '<p style="text-align:center; color:#a8a8a8; padding:20px;">Aucune vidéo trouvée</p>';
+                } else {
+                    filteredVideos.forEach(video => {
+                        const user = users.find(u => u.id === video.userId);
+                        if (user) {
+                            const div = document.createElement('div');
+                            div.className = 'notification-item';
+                            div.innerHTML = `
+                                <div style="width: 50px; height: 70px; background: #000; border-radius: 5px; overflow: hidden; flex-shrink: 0;">
+                                    <video src="${video.videoUrl}" style="width: 100%; height: 100%; object-fit: cover;"></video>
+                                </div>
+                                <div style="flex:1;">
+                                    <p style="font-size: 0.9rem; margin-bottom: 5px;">${video.caption}</p>
+                                    <p style="color:#a8a8a8; font-size: 0.8rem;">@${user.username}</p>
+                                    <p style="color:#a8a8a8; font-size: 0.8rem;">❤️ ${formatNumber(video.likes)}</p>
+                                </div>
+                                <button class="btn-primary" style="padding: 8px 15px; font-size: 0.8rem;" onclick="watchVideo(${video.id})">
+                                    ▶️
+                                </button>
+                            `;
+                            videoResults.appendChild(div);
+                        }
+                    });
+                }
+            }
+            
+            // Recherche hashtags
+            if (currentFilter === 'all' || currentFilter === 'hashtags') {
+                hashtagResults.innerHTML = '';
+                const filteredHashtags = hashtags.filter(h => 
+                    h.name.toLowerCase().includes(query)
+                );
+                
+                if (filteredHashtags.length === 0) {
+                    hashtagResults.innerHTML = '<p style="text-align:center; color:#a8a8a8; padding:20px;">Aucun hashtag trouvé</p>';
+                } else {
+                    filteredHashtags.forEach(tag => {
+                        const div = document.createElement('div');
+                        div.className = 'hashtag';
+                        div.style.width = '100%';
+                        div.style.marginBottom = '10px';
+                        div.innerHTML = `${tag.name} <span style="color:#a8a8a8;">(${tag.count} vidéos)</span>`;
+                        div.onclick = () => searchHashtag(tag.name);
+                        hashtagResults.appendChild(div);
+                    });
+                }
+            }
+        }
+        
+        function viewProfile(username) {
+            showToast('👤 Profil de @' + username);
+            window.location.href = 'profil.html';
+        }
+        
+        function watchVideo(videoId) {
+            showToast('▶️ Lecture de la vidéo...');
+            window.location.href = 'index.html';
+        }
+        
+        function searchHashtag(tagName) {
+            showToast('🔍 Recherche du hashtag ' + tagName);
+        }
+    </script>
+</body>
+</html>

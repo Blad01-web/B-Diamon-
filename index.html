@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FFD700">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="B Diamond">
+    
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- Écran de connexion -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-container">
+            <h1 class="logo">💎 B Diamond</h1>
+            <p class="slogan">Brille comme un diamant</p>
+            
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="showLogin()">Connexion</button>
+                <button class="tab-btn" onclick="showRegister()">Inscription</button>
+            </div>
+
+            <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Mot de passe" required>
+                <button type="submit" class="btn-primary">Se connecter</button>
+            </form>
+
+            <form id="registerForm" class="auth-form hidden" onsubmit="registerWithSupabase(event)">
+                <input type="text" id="regUsername" placeholder="Nom d'utilisateur" required>
+                <input type="email" id="regEmail" placeholder="Email" required>
+                <input type="password" id="regPassword" placeholder="Mot de passe" required>
+                <input type="password" id="regConfirm" placeholder="Confirmer le mot de passe" required>
+                <button type="submit" class="btn-primary">Créer mon compte</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Application principale -->
+    <div id="app" class="app hidden">
+        
+        <!-- Flux vidéo PLEIN ÉCRAN -->
+        <div id="videoFeed" class="video-feed"></div>
+
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item active"><span class="nav-icon">🏠</span><span>Accueil</span></a>
+            <a href="decouverte.html" class="nav-item"><span class="nav-icon">🔍</span><span>Découvrir</span></a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'"><span class="nav-icon">➕</span></button>
+            <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span><span>Messages</span></a>
+            <a href="profil.html" class="nav-item"><span class="nav-icon">👤</span><span>Profil</span></a>
+        </nav>
+    </div>
+
+    <script src="supabase-config.js"></script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="propagation.js"></script>
+    <script src="securite.js"></script>
+    <script src="animations.js"></script>
+    <script src="hashtags.js"></script>
+    <script src="boost.js"></script>
+    <script src="features.js"></script>
+    <script src="retrait.js"></script>
+    <script src="paiement.js"></script>
+    <script src="partage.js"></script>
+    <script src="install.js"></script>
+    
+    <script>
+        // ============ SERVICE WORKER ============
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(() => console.log('✅ Service Worker enregistré !'))
+                    .catch((error) => console.log('⚠️ SW :', error.message));
+            });
+        }
+        
+        // ============ AFFICHAGE ============
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            document.querySelectorAll('.tab-btn')[1].classList.remove('active');
+        }
+        
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+            document.querySelectorAll('.tab-btn')[0].classList.remove('active');
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        }
+        
+        // ============ CONNEXION ============
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            showToast('⏳ Connexion...');
+            
+            const localUser = registeredUsers.find(u => 
+                (u.email === email || u.username === email) && u.password === password
+            );
+            
+            if (localUser) {
+                currentUser = localUser;
+                localStorage.setItem('bdiamond_current_user', JSON.stringify(localUser));
+                showToast('✅ Bienvenue ' + localUser.username + ' !');
+                document.getElementById('authScreen').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
+                loadAllContent();
+                return;
+            }
+            
+            const result = await supabaseSignIn(email, password);
+            
+            if (result.success) {
+                if (result.profile) {
+                    currentUser = result.profile;
+                    localStorage.setItem('bdiamond_current_user', JSON.stringify(result.profile));
+                }
+                showToast('✅ Bienvenue !');
+                document.getElementById('authScreen').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
+                loadAllContent();
+            } else {
+                alert('❌ Identifiants incorrects !');
+            }
+        }
+        
+        // ============ INSCRIPTION ============
+        async function registerWithSupabase(event) {
+            event.preventDefault();
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirm').value;
+            
+            if (password !== confirm) { alert('❌ Mots de passe différents !'); return; }
+            if (password.length < 6) { alert('❌ Mot de passe trop court'); return; }
+            
+            showToast('⏳ Création...');
+            
+            const newUser = {
+                id: registeredUsers.length + 1,
+                username: username,
+                email: email,
+                password: password,
+                avatar: 'https://i.pravatar.cc/150?img=' + (registeredUsers.length + 20),
+                bio: 'Nouveau sur B Diamond 💎',
+                followers: 0,
+                following: 0,
+                likes: 0,
+                verified: false,
+                verification: null,
+                diamonds: 0,
+                isFounder: false
+            };
+            
+            registeredUsers.push(newUser);
+            localStorage.setItem('bdiamond_users', JSON.stringify(registeredUsers));
+            currentUser = newUser;
+            localStorage.setItem('bdiamond_current_user', JSON.stringify(newUser));
+            
+            const result = await supabaseSignUp(email, password, username);
+            if (result.success && result.user) {
+                registerNewUser(newUser.id, username);
+            }
+            
+            showToast('✅ Compte créé !');
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            loadAllContent();
+            
+            setTimeout(() => {
+                showMandatorySharingModal(newUser.id, username);
+            }, 1500);
+        }
+        
+        // ============ DÉCONNEXION ============
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('bdiamond_current_user');
+            document.getElementById('app').classList.add('hidden');
+            document.getElementById('authScreen').classList.remove('hidden');
+            showLogin();
+            showToast('🚪 Déconnecté !');
+        }
+        
+        // ============ CHARGEMENT DU CONTENU (PLEIN ÉCRAN) ============
+        async function loadAllContent() {
+            const feed = document.getElementById('videoFeed');
+            if (!feed) return;
+            feed.innerHTML = '';
+            
+            const result = await fetchVideosFromSupabase();
+            if (result.success && result.videos.length > 0) {
+                result.videos.forEach(video => {
+                    feed.appendChild(createSupabaseVideoElement(video));
+                });
+            }
+            
+            if (typeof videos !== 'undefined' && videos.length > 0) {
+                videos.forEach(video => {
+                    const user = registeredUsers.find(u => u.id === video.userId);
+                    if (user) feed.appendChild(createLocalVideoElement(video, user));
+                });
+            }
+            
+            const photos = JSON.parse(localStorage.getItem('bdiamond_photos')) || [];
+            photos.forEach(photo => feed.appendChild(createPhotoElement(photo)));
+            
+            if (feed.innerHTML === '') {
+                feed.innerHTML = '<p style="text-align:center; color:#a8a8a8; padding:40px;">Aucun contenu pour le moment 💎</p>';
+            }
+        }
+        
+        function createSupabaseVideoElement(video) {
+            const container = document.createElement('div');
+            container.className = 'video-container';
+            container.style.height = 'calc(100vh - 60px)';
+            container.style.width = '100%';
+            container.innerHTML = `
+                <video src="${video.video_url}" loop playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+                <div class="video-overlay">
+                    <div class="video-user"><span class="video-username">@user_${video.user_id}</span></div>
+                    <p class="video-caption">${video.caption || ''}</p>
+                </div>
+                <div class="video-actions">
+                    <button class="action-btn">❤️<span>${formatNumber(video.likes)}</span></button>
+                    <button class="action-btn">💬<span>${formatNumber(video.comments_count)}</span></button>
+                    <button class="action-btn">📤<span>${formatNumber(video.shares)}</span></button>
+                </div>
+            `;
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const videoEl = entry.target.querySelector('video');
+                    if (videoEl) { if (entry.isIntersecting) { videoEl.play().catch(() => {}); } else { videoEl.pause(); } }
+                });
+            }, { threshold: 0.5 });
+            observer.observe(container);
+            return container;
+        }
+        
+        function createLocalVideoElement(video, user) {
+            const container = document.createElement('div');
+            container.className = 'video-container';
+            container.style.height = 'calc(100vh - 60px)';
+            container.style.width = '100%';
+            container.innerHTML = `
+                <video src="${video.videoUrl}" loop playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+                <div class="video-overlay">
+                    <div class="video-user">
+                        <img src="${user.avatar}" alt="${user.username}">
+                        <span class="video-username">@${user.username}</span>
+                    </div>
+                    <p class="video-caption">${video.caption}</p>
+                </div>
+                <div class="video-actions">
+                    <button class="action-btn">❤️<span>${formatNumber(video.likes)}</span></button>
+                    <button class="action-btn">💬<span>${formatNumber(video.comments)}</span></button>
+                    <button class="action-btn">📤<span>${formatNumber(video.shares)}</span></button>
+                </div>
+            `;
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const videoEl = entry.target.querySelector('video');
+                    if (videoEl) { if (entry.isIntersecting) { videoEl.play().catch(() => {}); } else { videoEl.pause(); } }
+                });
+            }, { threshold: 0.5 });
+            observer.observe(container);
+            return container;
+        }
+        
+        function createPhotoElement(photo) {
+            const container = document.createElement('div');
+            container.className = 'video-container';
+            container.style.height = 'calc(100vh - 60px)';
+            container.style.width = '100%';
+            container.innerHTML = `
+                <img src="${photo.photoUrl}" style="width:100%; height:100%; object-fit:cover;">
+                <div class="video-overlay">
+                    <div class="video-user"><span class="video-username">@user_${photo.userId}</span></div>
+                    <p class="video-caption">${photo.caption || ''}</p>
+                </div>
+                <div class="video-actions">
+                    <button class="action-btn">❤️<span>${formatNumber(photo.likes || 0)}</span></button>
+                    <button class="action-btn">💬<span>${formatNumber(photo.comments || 0)}</span></button>
+                    <button class="action-btn">📤<span>${formatNumber(photo.shares || 0)}</span></button>
+                </div>
+            `;
+            return container;
+        }
+        
+        // ============ INITIALISATION ============
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('authScreen').classList.remove('hidden');
+            document.getElementById('app').classList.add('hidden');
+            showLogin();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classement - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">🏆 Classement des Inviteurs</div>
+            
+            <!-- Top 3 -->
+            <div class="top3-section" id="top3Section"></div>
+            
+            <!-- Liste complète -->
+            <div class="ranking-list" id="rankingList"></div>
+            
+            <!-- Bouton retour -->
+            <button class="btn-primary" style="margin-top: 20px; width: 100%; background: #333;" onclick="window.location.href='index.html'">
+                ← Retour
+            </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Accueil</span>
+            </a>
+            <a href="decouverte.html" class="nav-item">
+                <span class="nav-icon">🔍</span>
+                <span>Découvrir</span>
+            </a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'">
+                <span class="nav-icon">➕</span>
+            </button>
+            <a href="recherche.html" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span>Recherche</span>
+            </a>
+            <a href="profil.html" class="nav-item active">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="propagation.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const rankings = updateRankings();
+            
+            // Afficher le top 3
+            const top3Section = document.getElementById('top3Section');
+            top3Section.innerHTML = '';
+            
+            const top3 = rankings.slice(0, 3);
+            const medals = ['🥇', '🥈', '🥉'];
+            
+            top3.forEach((rank, index) => {
+                const div = document.createElement('div');
+                div.className = 'top3-item';
+                div.innerHTML = `
+                    <div class="medal">${medals[index]}</div>
+                    <img src="${rank.avatar}" alt="${rank.username}" style="width:50px;height:50px;border-radius:50%;">
+                    <strong>@${rank.username}</strong>
+                    <span style="color:#FFD700;">${rank.totalInvites} invités</span>
+                    <span style="color:#a8a8a8; font-size:0.8rem;">${rank.badge}</span>
+                `;
+                top3Section.appendChild(div);
+            });
+            
+            // Afficher la liste complète
+            const rankingList = document.getElementById('rankingList');
+            rankingList.innerHTML = '';
+            
+            rankings.slice(3, 50).forEach(rank => {
+                const div = document.createElement('div');
+                div.className = 'notification-item';
+                div.innerHTML = `
+                    <span style="font-weight:bold; color:#FFD700;">#${rank.position}</span>
+                    <img src="${rank.avatar}" alt="${rank.username}">
+                    <div style="flex:1;">
+                        <strong>@${rank.username}</strong>
+                        <p style="color:#a8a8a8; font-size:0.9rem;">${rank.totalInvites} invités | ${rank.badge}</p>
+                    </div>
+                    <span style="color:#FFD700;">${rank.totalRewards} 💎</span>
+                `;
+                rankingList.appendChild(div);
+            });
+        });
+    </script>
+</body>
+</html>

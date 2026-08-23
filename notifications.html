@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">🔔 Messages</div>
+            
+            <!-- ============ STORIES EN HAUT ============ -->
+            <div class="stories-bar" style="margin-bottom: 20px;">
+                <div class="story-circle" onclick="window.location.href='stories.html'">
+                    <img src="https://i.pravatar.cc/150?img=1" alt="Ma story" style="width:50px; height:50px; border-radius:50%; border:2px solid #FFD700; object-fit:cover;">
+                    <span style="font-size:0.6rem; color:#FFD700;">Ma story</span>
+                </div>
+                <div class="story-circle" onclick="window.location.href='stories.html'">
+                    <img src="https://i.pravatar.cc/150?img=1" alt="Story" style="width:50px; height:50px; border-radius:50%; border:2px solid #FFD700; object-fit:cover;">
+                    <span style="font-size:0.6rem; color:#a8a8a8;">Story 1</span>
+                </div>
+                <div class="story-circle" onclick="window.location.href='stories.html'">
+                    <img src="https://i.pravatar.cc/150?img=1" alt="Story" style="width:50px; height:50px; border-radius:50%; border:2px solid #FFD700; object-fit:cover;">
+                    <span style="font-size:0.6rem; color:#a8a8a8;">Story 2</span>
+                </div>
+            </div>
+            
+            <!-- Onglets -->
+            <div class="auth-tabs" style="margin-bottom: 15px;">
+                <button class="tab-btn active" onclick="showNotificationTab('all', this)">Toutes</button>
+                <button class="tab-btn" onclick="showNotificationTab('system', this)">🔔 Système</button>
+                <button class="tab-btn" onclick="showNotificationTab('interaction', this)">❤️ Interactions</button>
+                <button class="tab-btn" onclick="showNotificationTab('warning', this)">⚠️ Alertes</button>
+            </div>
+            
+            <!-- Liste des notifications -->
+            <div id="notificationsList">
+                <div class="notification-item">
+                    <span style="font-size:1.5rem;">🔔</span>
+                    <div style="flex:1;">
+                        <p style="font-size:0.9rem;">Bienvenue sur B Diamond ! 💎</p>
+                        <p style="color:#a8a8a8; font-size:0.7rem;">À l'instant</p>
+                    </div>
+                </div>
+                <div class="notification-item">
+                    <span style="font-size:1.5rem;">💎</span>
+                    <div style="flex:1;">
+                        <p style="font-size:0.9rem;">Ton compte est prêt ! Commence à créer du contenu.</p>
+                        <p style="color:#a8a8a8; font-size:0.7rem;">À l'instant</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bouton messages privés -->
+            <button class="btn-primary" style="margin-top: 20px; width: 100%;" onclick="window.location.href='messages.html'">
+                💬 Ouvrir la messagerie privée
+            </button>
+            
+            <!-- Bouton retour -->
+            <button class="btn-primary" style="margin-top: 10px; width: 100%; background: #333;" onclick="window.location.href='index.html'">
+                ← Retour
+            </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Accueil</span></a>
+            <a href="decouverte.html" class="nav-item"><span class="nav-icon">🔍</span><span>Découvrir</span></a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'"><span class="nav-icon">➕</span></button>
+            <a href="notifications.html" class="nav-item active"><span class="nav-icon">🔔</span><span>Messages</span></a>
+            <a href="profil.html" class="nav-item"><span class="nav-icon">👤</span><span>Profil</span></a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="securite.js"></script>
+    <script>
+        let currentTab = 'all';
+        
+        function showNotificationTab(tab, button) {
+            currentTab = tab;
+            document.querySelectorAll('.auth-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            const list = document.getElementById('notificationsList');
+            
+            if (tab === 'all') {
+                list.innerHTML = `
+                    <div class="notification-item">
+                        <span style="font-size:1.5rem;">🔔</span>
+                        <div style="flex:1;">
+                            <p style="font-size:0.9rem;">Bienvenue sur B Diamond ! 💎</p>
+                            <p style="color:#a8a8a8; font-size:0.7rem;">À l'instant</p>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <span style="font-size:1.5rem;">💎</span>
+                        <div style="flex:1;">
+                            <p style="font-size:0.9rem;">Ton compte est prêt ! Commence à créer du contenu.</p>
+                            <p style="color:#a8a8a8; font-size:0.7rem;">À l'instant</p>
+                        </div>
+                    </div>
+                `;
+            } else if (tab === 'system') {
+                list.innerHTML = `
+                    <div class="notification-item">
+                        <span style="font-size:1.5rem;">🔔</span>
+                        <div style="flex:1;">
+                            <p style="font-size:0.9rem;">Bienvenue sur B Diamond ! 💎</p>
+                            <p style="color:#a8a8a8; font-size:0.7rem;">À l'instant</p>
+                        </div>
+                    </div>
+                `;
+            } else if (tab === 'interaction') {
+                list.innerHTML = '<p style="text-align:center; color:#a8a8a8; padding:40px;">Aucune interaction pour le moment</p>';
+            } else if (tab === 'warning') {
+                list.innerHTML = '<p style="text-align:center; color:#a8a8a8; padding:40px;">Aucune alerte</p>';
+            }
+        }
+    </script>
+</body>
+</html>

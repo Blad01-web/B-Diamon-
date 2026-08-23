@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">➕ Créer du contenu</div>
+            
+            <!-- Onglets : Caméra / Upload -->
+            <div class="auth-tabs" style="margin-bottom: 15px;">
+                <button class="tab-btn active" onclick="showCameraTab(this)">📸 Caméra</button>
+                <button class="tab-btn" onclick="showUploadTab(this)">📤 Upload</button>
+            </div>
+            
+            <!-- ============ MODE CAMÉRA ============ -->
+            <div id="cameraMode">
+                <!-- Zone caméra -->
+                <div id="cameraZone" class="camera-zone">
+                    <video id="cameraPreview" autoplay playsinline style="width:100%; border-radius:15px; background:#000;"></video>
+                    
+                    <!-- Filtres -->
+                    <div class="filter-overlay" id="filterOverlay"></div>
+                    
+                    <!-- Boutons de contrôle caméra -->
+                    <div class="camera-controls">
+                        <button onclick="toggleCamera()" class="camera-btn">🔄</button>
+                        <button onclick="capturePhoto()" class="camera-btn capture-btn">📸</button>
+                        <button onclick="toggleRecording()" class="camera-btn record-btn">🔴</button>
+                    </div>
+                </div>
+                
+                <!-- Filtres disponibles -->
+                <div class="filters-row">
+                    <button class="filter-btn active" onclick="applyFilter('none', this)">✨ Normal</button>
+                    <button class="filter-btn" onclick="applyFilter('gold', this)">🌟 Doré</button>
+                    <button class="filter-btn" onclick="applyFilter('pink', this)">🌸 Rose</button>
+                    <button class="filter-btn" onclick="applyFilter('blue', this)">💙 Bleu</button>
+                    <button class="filter-btn" onclick="applyFilter('vivid', this)">🔥 Vif</button>
+                    <button class="filter-btn" onclick="applyFilter('bw', this)">⚫ Noir/Blanc</button>
+                    <button class="filter-btn" onclick="applyFilter('sepia', this)">🟤 Sépia</button>
+                    <button class="filter-btn" onclick="applyFilter('cool', this)">❄️ Froid</button>
+                    <button class="filter-btn" onclick="applyFilter('warm', this)">☀️ Chaud</button>
+                    <button class="filter-btn" onclick="applyFilter('neon', this)">💚 Néon</button>
+                </div>
+                
+                <!-- Sons/Musique -->
+                <div class="music-row">
+                    <label style="display:block; margin-bottom:5px; font-weight:bold;">🎵 Musique de fond :</label>
+                    <select id="musicSelect" style="width:100%; padding:12px; border-radius:10px; border:1px solid #333; background:#1a1a1a; color:#fff;">
+                        <option value="">Aucune musique</option>
+                        <option value="beat1">🎵 Beat Diamond</option>
+                        <option value="beat2">🎵 Viral Sound</option>
+                        <option value="beat3">🎵 Dance Remix</option>
+                        <option value="beat4">🎵 Chill Vibes</option>
+                        <option value="beat5">🎵 Hip Hop Beat</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- ============ MODE UPLOAD ============ -->
+            <div id="uploadMode" class="hidden">
+                <!-- Bouton upload vidéo -->
+                <div class="upload-zone" onclick="document.getElementById('videoInput').click()" style="margin-bottom:10px;">
+                    <div style="font-size: 2rem;">🎬</div>
+                    <p style="font-weight: bold;">Uploader une vidéo</p>
+                    <input type="file" id="videoInput" accept="video/*" style="display: none;" onchange="handleVideoUpload(event)">
+                </div>
+                
+                <!-- Bouton upload photo -->
+                <div class="upload-zone" onclick="document.getElementById('photoInput').click()">
+                    <div style="font-size: 2rem;">📷</div>
+                    <p style="font-weight: bold;">Uploader une photo</p>
+                    <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+                </div>
+                
+                <!-- Aperçu upload -->
+                <div id="uploadPreview" class="hidden" style="margin-top: 15px;">
+                    <div id="uploadPreviewContainer"></div>
+                </div>
+            </div>
+            
+            <!-- Aperçu capture caméra -->
+            <div id="cameraCapturePreview" class="hidden" style="margin-top: 15px;">
+                <div id="captureContainer"></div>
+            </div>
+            
+            <!-- Formulaire publication -->
+            <form id="publishForm" class="hidden" style="margin-top: 20px;" onsubmit="publishContent(event)">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">📝 Légende</label>
+                    <textarea id="caption" rows="3" placeholder="Décrivez votre contenu... #hashtags" style="width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #2a2a2a; background: #121212; color: #fff; font-size: 1rem; outline: none; resize: vertical;"></textarea>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">#️⃣ Hashtags rapides</label>
+                    <div class="hashtag-list">
+                        <div class="hashtag" onclick="addHashtag('diamond')">💎 diamond</div>
+                        <div class="hashtag" onclick="addHashtag('viral')">🔥 viral</div>
+                        <div class="hashtag" onclick="addHashtag('trend')">✨ trend</div>
+                        <div class="hashtag" onclick="addHashtag('music')">🎵 music</div>
+                        <div class="hashtag" onclick="addHashtag('dance')">💃 dance</div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary" style="width: 100%; font-size: 1.2rem; padding: 18px;">🚀 Publier</button>
+            </form>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Accueil</span></a>
+            <a href="decouverte.html" class="nav-item"><span class="nav-icon">🔍</span><span>Découvrir</span></a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'"><span class="nav-icon">➕</span></button>
+            <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span><span>Messages</span></a>
+            <a href="profil.html" class="nav-item"><span class="nav-icon">👤</span><span>Profil</span></a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        let selectedMedia = null;
+        let mediaType = 'video'; // 'video' ou 'photo'
+        let currentFilter = 'none';
+        let isRecording = false;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let cameraStream = null;
+        
+        // ============ ONGLETS ============
+        function showCameraTab(button) {
+            document.querySelectorAll('.auth-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            document.getElementById('cameraMode').classList.remove('hidden');
+            document.getElementById('uploadMode').classList.add('hidden');
+            initCamera();
+        }
+        
+        function showUploadTab(button) {
+            document.querySelectorAll('.auth-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            document.getElementById('uploadMode').classList.remove('hidden');
+            document.getElementById('cameraMode').classList.add('hidden');
+            stopCamera();
+        }
+        
+        // ============ CAMÉRA ============
+        async function initCamera() {
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
+                const video = document.getElementById('cameraPreview');
+                video.srcObject = cameraStream;
+                video.play();
+                showToast('📸 Caméra activée');
+            } catch(e) {
+                console.log('⚠️ Caméra non disponible :', e.message);
+                showToast('⚠️ Caméra non disponible, utilisez Upload');
+            }
+        }
+        
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+        }
+        
+        function toggleCamera() {
+            if (cameraStream) {
+                const track = cameraStream.getVideoTracks()[0];
+                if (track) {
+                    const facingMode = track.getSettings().facingMode;
+                    const newMode = facingMode === 'user' ? 'environment' : 'user';
+                    track.applyConstraints({ facingMode: newMode });
+                    showToast('🔄 Caméra basculée');
+                }
+            }
+        }
+        
+        function capturePhoto() {
+            const video = document.getElementById('cameraPreview');
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Appliquer le filtre
+            applyFilterToCanvas(ctx, canvas.width, canvas.height);
+            
+            const photoUrl = canvas.toDataURL('image/jpeg');
+            selectedMedia = photoUrl;
+            mediaType = 'photo';
+            
+            document.getElementById('captureContainer').innerHTML = `<img src="${photoUrl}" style="width:100%; border-radius:10px;">`;
+            document.getElementById('cameraCapturePreview').classList.remove('hidden');
+            document.getElementById('publishForm').classList.remove('hidden');
+            
+            showToast('📸 Photo capturée !');
+        }
+        
+        function toggleRecording() {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+        
+        function startRecording() {
+            if (!cameraStream) return;
+            
+            recordedChunks = [];
+            mediaRecorder = new MediaRecorder(cameraStream);
+            
+            mediaRecorder.ondataavailable = function(event) {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+            
+            mediaRecorder.onstop = function() {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                selectedMedia = url;
+                mediaType = 'video';
+                
+                document.getElementById('captureContainer').innerHTML = `<video src="${url}" controls style="width:100%; border-radius:10px;"></video>`;
+                document.getElementById('cameraCapturePreview').classList.remove('hidden');
+                document.getElementById('publishForm').classList.remove('hidden');
+                
+                showToast('✅ Vidéo enregistrée !');
+            };
+            
+            mediaRecorder.start();
+            isRecording = true;
+            document.querySelector('.record-btn').style.background = '#ff0000';
+            showToast('🔴 Enregistrement...');
+        }
+        
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                document.querySelector('.record-btn').style.background = '';
+                showToast('⏹️ Enregistrement terminé');
+            }
+        }
+        
+        // ============ FILTRES ============
+        function applyFilter(filter, button) {
+            currentFilter = filter;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            const overlay = document.getElementById('filterOverlay');
+            
+            const filters = {
+                'none': 'none',
+                'gold': 'sepia(0.5) saturate(2) hue-rotate(-10deg) brightness(1.1)',
+                'pink': 'sepia(0.3) saturate(2) hue-rotate(-50deg) brightness(1.1)',
+                'blue': 'sepia(0.3) saturate(2) hue-rotate(150deg) brightness(1.05)',
+                'vivid': 'saturate(3) contrast(1.2) brightness(1.1)',
+                'bw': 'grayscale(1) contrast(1.3)',
+                'sepia': 'sepia(1) contrast(1.1)',
+                'cool': 'hue-rotate(30deg) saturate(1.5) brightness(0.9)',
+                'warm': 'hue-rotate(-20deg) saturate(1.8) brightness(1.1)',
+                'neon': 'saturate(2.5) contrast(1.5) brightness(1.2) hue-rotate(90deg)'
+            };
+            
+            overlay.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                pointer-events: none;
+                border-radius: 15px;
+                filter: ${filters[filter] || 'none'};
+                z-index: 10;
+            `;
+            
+            showToast('✨ Filtre : ' + filter);
+        }
+        
+        function applyFilterToCanvas(ctx, width, height) {
+            const filters = {
+                'none': null,
+                'gold': 'sepia(0.5) saturate(2) brightness(1.1)',
+                'pink': 'sepia(0.3) saturate(2) hue-rotate(-50deg)',
+                'blue': 'sepia(0.3) saturate(2) hue-rotate(150deg)',
+                'vivid': 'saturate(3) contrast(1.2)',
+                'bw': 'grayscale(1)',
+                'sepia': 'sepia(1)',
+                'cool': 'hue-rotate(30deg) saturate(1.5)',
+                'warm': 'hue-rotate(-20deg) saturate(1.8)',
+                'neon': 'saturate(2.5) contrast(1.5) hue-rotate(90deg)'
+            };
+            
+            if (filters[currentFilter]) {
+                ctx.filter = filters[currentFilter];
+                const imgData = ctx.getImageData(0, 0, width, height);
+                // Redessiner avec filtre
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx2 = canvas.getContext('2d');
+                ctx2.filter = filters[currentFilter];
+                ctx2.putImageData(imgData, 0, 0);
+                ctx.clearRect(0, 0, width, height);
+                ctx.drawImage(canvas, 0, 0);
+                ctx.filter = 'none';
+            }
+        }
+        
+        // ============ UPLOAD ============
+        function handleVideoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedMedia = file;
+                mediaType = 'video';
+                const url = URL.createObjectURL(file);
+                document.getElementById('uploadPreviewContainer').innerHTML = `<video src="${url}" controls style="width:100%; border-radius:10px;"></video>`;
+                document.getElementById('uploadPreview').classList.remove('hidden');
+                document.getElementById('publishForm').classList.remove('hidden');
+                showToast('✅ Vidéo sélectionnée !');
+            }
+        }
+        
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedMedia = file;
+                mediaType = 'photo';
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('uploadPreviewContainer').innerHTML = `<img src="${e.target.result}" style="width:100%; border-radius:10px;">`;
+                };
+                reader.readAsDataURL(file);
+                document.getElementById('uploadPreview').classList.remove('hidden');
+                document.getElementById('publishForm').classList.remove('hidden');
+                showToast('✅ Photo sélectionnée !');
+            }
+        }
+        
+        function addHashtag(tag) {
+            const caption = document.getElementById('caption');
+            caption.value += ' #' + tag;
+        }
+        
+        // ============ PUBLICATION ============
+        function publishContent(event) {
+            event.preventDefault();
+            
+            if (!selectedMedia) { showToast('❌ Sélectionnez un contenu'); return; }
+            
+            const caption = document.getElementById('caption').value;
+            if (!caption.trim()) { showToast('❌ Ajoutez une légende'); return; }
+            
+            const music = document.getElementById('musicSelect') ? document.getElementById('musicSelect').value : '';
+            const fullCaption = caption + (music ? ' 🎵 ' + music : '');
+            
+            if (mediaType === 'video') {
+                const newVideo = {
+                    id: Date.now(),
+                    userId: currentUser ? currentUser.id : 1,
+                    videoUrl: typeof selectedMedia === 'string' ? selectedMedia : URL.createObjectURL(selectedMedia),
+                    caption: fullCaption,
+                    music: music ? '🎵 ' + music : '',
+                    likes: 0,
+                    comments: 0,
+                    shares: 0,
+                    views: 0,
+                    liked: false,
+                    category: 'general',
+                    createdAt: new Date().toISOString().split('T')[0]
+                };
+                videos.unshift(newVideo);
+                localStorage.setItem('bdiamond_videos', JSON.stringify(videos));
+            } else {
+                let photoUrl = selectedMedia;
+                if (typeof selectedMedia !== 'string') {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        photoUrl = e.target.result;
+                        savePhoto(photoUrl, fullCaption, music);
+                    };
+                    reader.readAsDataURL(selectedMedia);
+                } else {
+                    savePhoto(photoUrl, fullCaption, music);
+                }
+            }
+            
+            showToast('🎉 Publié avec succès !');
+            setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+        }
+        
+        function savePhoto(photoUrl, caption, music) {
+            const newPhoto = {
+                id: Date.now(),
+                userId: currentUser ? currentUser.id : 1,
+                photoUrl: photoUrl,
+                caption: caption,
+                music: music || '',
+                likes: 0,
+                comments: 0,
+                shares: 0,
+                createdAt: new Date().toISOString()
+            };
+            let photos = JSON.parse(localStorage.getItem('bdiamond_photos')) || [];
+            photos.unshift(newPhoto);
+            localStorage.setItem('bdiamond_photos', JSON.stringify(photos));
+        }
+    </script>
+</body>
+</html>

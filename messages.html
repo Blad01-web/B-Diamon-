@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">💬 Messages Privés</div>
+            
+            <!-- Liste des conversations -->
+            <div id="conversationsList"></div>
+            
+            <!-- Zone de chat -->
+            <div id="chatArea" class="hidden">
+                <div class="chat-header">
+                    <button class="back-btn" onclick="closeChat()">←</button>
+                    <img src="" alt="" id="chatAvatar" style="width:40px;height:40px;border-radius:50%;">
+                    <span id="chatUsername" style="font-weight:bold;"></span>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages"></div>
+                
+                <div class="chat-input">
+                    <input type="text" id="messageInput" placeholder="Écrire un message..." 
+                           onkeyup="if(event.key==='Enter') sendMessage()">
+                    <button onclick="sendMessage()">📤</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Accueil</span>
+            </a>
+            <a href="decouverte.html" class="nav-item">
+                <span class="nav-icon">🔍</span>
+                <span>Découvrir</span>
+            </a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'">
+                <span class="nav-icon">➕</span>
+            </button>
+            <a href="notifications.html" class="nav-item active">
+                <span class="nav-icon">💬</span>
+                <span>Messages</span>
+            </a>
+            <a href="profil.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        let currentUserId = null;
+        let activeChatUser = null;
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (savedUser) {
+                currentUserId = JSON.parse(savedUser).id;
+                loadConversations();
+            }
+        });
+        
+        function loadConversations() {
+            const list = document.getElementById('conversationsList');
+            if (!list || !currentUserId) return;
+            
+            // Trouver toutes les conversations
+            const conversations = [];
+            const userMessages = messages.filter(m => 
+                m.fromUserId === currentUserId || m.toUserId === currentUserId
+            );
+            
+            // Regrouper par utilisateur
+            const uniqueUsers = new Set();
+            userMessages.forEach(msg => {
+                const otherUserId = msg.fromUserId === currentUserId ? msg.toUserId : msg.fromUserId;
+                uniqueUsers.add(otherUserId);
+            });
+            
+            uniqueUsers.forEach(otherUserId => {
+                const user = registeredUsers.find(u => u.id === otherUserId);
+                if (user) {
+                    const lastMessage = userMessages
+                        .filter(m => (m.fromUserId === otherUserId && m.toUserId === currentUserId) || 
+                                   (m.fromUserId === currentUserId && m.toUserId === otherUserId))
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+                    
+                    conversations.push({
+                        user: user,
+                        lastMessage: lastMessage,
+                        unreadCount: userMessages.filter(m => 
+                            m.fromUserId === otherUserId && 
+                            m.toUserId === currentUserId && 
+                            !m.read
+                        ).length
+                    });
+                }
+            });
+            
+            list.innerHTML = '';
+            
+            if (conversations.length === 0) {
+                list.innerHTML = '<p style="text-align:center; color:#a8a8a8; padding:40px;">Aucune conversation</p>';
+                return;
+            }
+            
+            conversations.forEach(conv => {
+                const div = document.createElement('div');
+                div.className = 'notification-item';
+                div.style.cursor = 'pointer';
+                div.onclick = () => openChat(conv.user);
+                
+                div.innerHTML = `
+                    <img src="${conv.user.avatar}" alt="${conv.user.username}">
+                    <div style="flex:1;">
+                        <strong>@${conv.user.username}</strong>
+                        <p style="color:#a8a8a8; font-size:0.8rem;">${conv.lastMessage ? conv.lastMessage.content : ''}</p>
+                    </div>
+                    ${conv.unreadCount > 0 ? 
+                        `<span style="background:#FFD700; color:#000; border-radius:50%; width:25px; height:25px; display:flex; align-items:center; justify-content:center; font-weight:bold;">${conv.unreadCount}</span>` : 
+                        ''}
+                `;
+                
+                list.appendChild(div);
+            });
+        }
+        
+        function openChat(user) {
+            activeChatUser = user;
+            
+            document.getElementById('conversationsList').classList.add('hidden');
+            document.getElementById('chatArea').classList.remove('hidden');
+            
+            document.getElementById('chatAvatar').src = user.avatar;
+            document.getElementById('chatUsername').textContent = '@' + user.username;
+            
+            loadChatMessages();
+        }
+        
+        function closeChat() {
+            activeChatUser = null;
+            document.getElementById('chatArea').classList.add('hidden');
+            document.getElementById('conversationsList').classList.remove('hidden');
+            loadConversations();
+        }
+        
+        function loadChatMessages() {
+            const chatMessages = document.getElementById('chatMessages');
+            if (!chatMessages || !activeChatUser) return;
+            
+            const conversation = messages.filter(m => 
+                (m.fromUserId === currentUserId && m.toUserId === activeChatUser.id) ||
+                (m.fromUserId === activeChatUser.id && m.toUserId === currentUserId)
+            ).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+            
+            // Marquer comme lu
+            conversation.forEach(msg => {
+                if (msg.toUserId === currentUserId) {
+                    msg.read = true;
+                }
+            });
+            
+            chatMessages.innerHTML = '';
+            
+            conversation.forEach(msg => {
+                const isMine = msg.fromUserId === currentUserId;
+                const div = document.createElement('div');
+                div.className = 'ai-message' + (isMine ? ' user' : '');
+                div.innerHTML = `
+                    <div class="ai-bubble ${isMine ? 'user-bubble' : ''}">${msg.content}</div>
+                `;
+                chatMessages.appendChild(div);
+            });
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const content = input.value.trim();
+            
+            if (!content || !activeChatUser) return;
+            
+            messages.push({
+                id: messages.length + 1,
+                fromUserId: currentUserId,
+                toUserId: activeChatUser.id,
+                content: content,
+                read: false,
+                createdAt: new Date().toISOString()
+            });
+            
+            input.value = '';
+            loadChatMessages();
+            showToast('📤 Message envoyé !');
+        }
+    </script>
+</body>
+</html>

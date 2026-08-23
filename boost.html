@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boost - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">🚀 Booster ma Visibilité</div>
+            
+            <!-- Boosts actifs -->
+            <div id="activeBoostsSection" class="founder-section">
+                <h3>⚡ Boosts Actifs</h3>
+                <div id="activeBoostsList">
+                    <p style="color:#a8a8a8;">Aucun boost actif</p>
+                </div>
+            </div>
+            
+            <!-- Statistiques -->
+            <div class="founder-stats">
+                <div class="stat-card gold">
+                    <span class="stat-icon">🚀</span>
+                    <span class="stat-value" id="totalBoosts">0</span>
+                    <span class="stat-label">Boosts achetés</span>
+                </div>
+                <div class="stat-card gold">
+                    <span class="stat-icon">👁️</span>
+                    <span class="stat-value" id="totalViewsGained">0</span>
+                    <span class="stat-label">Vues gagnées</span>
+                </div>
+            </div>
+            
+            <!-- Boost recommandé -->
+            <div id="recommendedBoost" class="verification-card premium">
+                <h3>💡 Boost Recommandé pour vous</h3>
+                <div id="recommendedBoostContent"></div>
+            </div>
+            
+            <!-- Catalogue des boosts -->
+            <h3 style="margin: 20px 0 15px;">📦 Catalogue des Boosts</h3>
+            <div id="boostCatalog"></div>
+            
+            <!-- Bouton retour -->
+            <button class="btn-primary" style="margin-top: 20px; width: 100%; background: #333;" onclick="window.location.href='profil.html'">
+                ← Retour
+            </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Accueil</span>
+            </a>
+            <a href="decouverte.html" class="nav-item">
+                <span class="nav-icon">🔍</span>
+                <span>Découvrir</span>
+            </a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'">
+                <span class="nav-icon">➕</span>
+            </button>
+            <a href="notifications.html" class="nav-item">
+                <span class="nav-icon">🔔</span>
+                <span>Messages</span>
+            </a>
+            <a href="profil.html" class="nav-item active">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="boost.js"></script>
+    <script>
+        let currentUserId = null;
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (savedUser) {
+                currentUserId = JSON.parse(savedUser).id;
+                loadBoostPage();
+            }
+        });
+        
+        function loadBoostPage() {
+            // Charger les boosts actifs
+            loadActiveBoosts();
+            
+            // Charger les statistiques
+            loadBoostStats();
+            
+            // Charger le boost recommandé
+            loadRecommendedBoost();
+            
+            // Charger le catalogue
+            loadBoostCatalog();
+        }
+        
+        function loadActiveBoosts() {
+            const list = document.getElementById('activeBoostsList');
+            const activeBoosts = checkActiveBoosts(currentUserId);
+            
+            if (activeBoosts.length === 0) {
+                list.innerHTML = '<p style="color:#a8a8a8;">Aucun boost actif</p>';
+                return;
+            }
+            
+            list.innerHTML = '';
+            activeBoosts.forEach(boost => {
+                const div = document.createElement('div');
+                div.className = 'notification-item';
+                div.innerHTML = `
+                    <span style="font-size:1.5rem;">${boost.boostIcon}</span>
+                    <div style="flex:1;">
+                        <strong>${boost.boostName}</strong>
+                        <p style="color:#a8a8a8; font-size:0.8rem;">
+                            +${boost.viewsBoost} vues | +${boost.likesBoost} likes | +${boost.followersBoost} abonnés
+                        </p>
+                        <p style="color:#00ff00; font-size:0.7rem;">
+                            Expire : ${new Date(boost.expiresAt).toLocaleString('fr-FR')}
+                        </p>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+        
+        function loadBoostStats() {
+            const stats = getBoostStats(currentUserId);
+            document.getElementById('totalBoosts').textContent = stats.totalBoosts;
+            document.getElementById('totalViewsGained').textContent = formatNumber(stats.totalViewsGained);
+        }
+        
+        function loadRecommendedBoost() {
+            const boost = getBoostRecommendation(currentUserId);
+            const container = document.getElementById('recommendedBoostContent');
+            
+            if (boost) {
+                container.innerHTML = `
+                    <div style="text-align:center; margin:15px 0;">
+                        <span style="font-size:3rem;">${boost.icon}</span>
+                        <h3 style="margin:10px 0;">${boost.name}</h3>
+                        <p style="color:#a8a8a8;">${boost.description}</p>
+                        <p style="color:#FFD700; font-size:1.2rem; margin:10px 0;">${boost.price}€</p>
+                        <p style="color:#a8a8a8; font-size:0.9rem;">
+                            +${boost.viewsBoost} vues | +${boost.likesBoost} likes | +${boost.followersBoost} abonnés
+                        </p>
+                        <button class="btn-primary" style="margin-top:10px;" onclick="buyBoost('${boost.id}')">
+                            🚀 Activer ce boost
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        function loadBoostCatalog() {
+            const catalog = document.getElementById('boostCatalog');
+            catalog.innerHTML = '';
+            
+            boostData.boostPackages.forEach(boost => {
+                const div = document.createElement('div');
+                div.className = 'verification-card';
+                div.style.borderColor = boost.color;
+                div.innerHTML = `
+                    <div class="verification-header">
+                        <h3>${boost.icon} ${boost.name}</h3>
+                        <span class="price">${boost.price}€</span>
+                    </div>
+                    <p style="color:#a8a8a8; margin-bottom:10px;">${boost.description}</p>
+                    <div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
+                        <span style="background:#333; padding:5px 10px; border-radius:15px; font-size:0.8rem;">👁️ +${boost.viewsBoost} vues</span>
+                        <span style="background:#333; padding:5px 10px; border-radius:15px; font-size:0.8rem;">❤️ +${boost.likesBoost} likes</span>
+                        <span style="background:#333; padding:5px 10px; border-radius:15px; font-size:0.8rem;">👥 +${boost.followersBoost} abonnés</span>
+                    </div>
+                    <p style="color:#a8a8a8; font-size:0.8rem;">⏱️ Durée : ${boost.duration}</p>
+                    <button class="btn-primary" style="margin-top:10px; width:100%;" onclick="buyBoost('${boost.id}')">
+                        🚀 Acheter
+                    </button>
+                `;
+                catalog.appendChild(div);
+            });
+        }
+        
+        function buyBoost(boostId) {
+            const result = purchaseBoost(currentUserId, boostId);
+            
+            if (result.success) {
+                showToast(result.message);
+                setTimeout(() => {
+                    loadBoostPage();
+                }, 1000);
+            } else {
+                showToast('❌ ' + result.message);
+            }
+        }
+    </script>
+</body>
+</html>

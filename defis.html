@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Défis - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">🎯 Défis Hebdomadaires</div>
+            
+            <div id="challengesList"></div>
+            
+            <!-- Bouton retour -->
+            <button class="btn-primary" style="margin-top: 20px; width: 100%; background: #333;" onclick="window.location.href='index.html'">
+                ← Retour
+            </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Accueil</span>
+            </a>
+            <a href="decouverte.html" class="nav-item">
+                <span class="nav-icon">🔍</span>
+                <span>Découvrir</span>
+            </a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'">
+                <span class="nav-icon">➕</span>
+            </button>
+            <a href="recherche.html" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span>Recherche</span>
+            </a>
+            <a href="profil.html" class="nav-item active">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="propagation.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (propagationData.challenges.length === 0) {
+                createWeeklyChallenges();
+            }
+            
+            const challengesList = document.getElementById('challengesList');
+            challengesList.innerHTML = '';
+            
+            propagationData.challenges.forEach(challenge => {
+                const div = document.createElement('div');
+                div.className = 'verification-card';
+                div.innerHTML = `
+                    <div class="verification-header">
+                        <h3>${challenge.day} - ${challenge.title}</h3>
+                        <span class="price">+${challenge.reward} 💎</span>
+                    </div>
+                    <p style="color:#a8a8a8; margin-bottom:10px;">${challenge.description}</p>
+                    <div class="source-bar" style="margin-bottom:10px;">
+                        <div class="source-fill" style="width:${challenge.completed ? 100 : (challenge.progress / challenge.target * 100)}%;"></div>
+                    </div>
+                    <p style="font-size:0.8rem; color:#a8a8a8;">
+                        ${challenge.completed ? '✅ Complété !' : challenge.progress + '/' + challenge.target}
+                    </p>
+                `;
+                challengesList.appendChild(div);
+            });
+        });
+    </script>
+</body>
+</html>

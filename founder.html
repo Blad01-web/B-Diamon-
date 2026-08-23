@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Fondateur - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="founder-header">
+                <h1>👑 Espace Fondateur</h1>
+                <p style="color:#FFD700;">Contrôle Total - B Diamond</p>
+            </div>
+            
+            <!-- Revenus -->
+            <div class="founder-section">
+                <h3>💰 Revenus Totaux</h3>
+                <div class="revenue-display">
+                    <span class="revenue-amount" id="totalRevenue">0€</span>
+                    <span class="revenue-monthly" id="monthlyRevenue">+0€ ce mois</span>
+                </div>
+            </div>
+            
+            <!-- Statistiques -->
+            <div class="founder-stats">
+                <div class="stat-card gold">
+                    <span class="stat-icon">👥</span>
+                    <span class="stat-value" id="totalUsers">0</span>
+                    <span class="stat-label">Utilisateurs</span>
+                </div>
+                <div class="stat-card gold">
+                    <span class="stat-icon">📹</span>
+                    <span class="stat-value" id="totalVideos">0</span>
+                    <span class="stat-label">Vidéos</span>
+                </div>
+                <div class="stat-card gold">
+                    <span class="stat-icon">💎</span>
+                    <span class="stat-value" id="totalDiamonds">0</span>
+                    <span class="stat-label">Diamants</span>
+                </div>
+                <div class="stat-card gold">
+                    <span class="stat-icon">💸</span>
+                    <span class="stat-value" id="totalWithdrawals">0€</span>
+                    <span class="stat-label">Retraits</span>
+                </div>
+            </div>
+            
+            <!-- ============ PERMISSIONS FONCTIONNALITÉS DE BASE ============ -->
+            <div class="founder-section">
+                <h3>🔧 Permissions Fonctionnalités de Base</h3>
+                <ul class="settings-list">
+                    <li><span>📹 Flux vidéo</span><div class="toggle active" onclick="toggleFeature('videoFeed', this)"></div></li>
+                    <li><span>➕ Création de contenu</span><div class="toggle active" onclick="toggleFeature('contentCreation', this)"></div></li>
+                    <li><span>💬 Commentaires</span><div class="toggle active" onclick="toggleFeature('comments', this)"></div></li>
+                    <li><span>❤️ Likes</span><div class="toggle active" onclick="toggleFeature('likes', this)"></div></li>
+                    <li><span>📤 Partages</span><div class="toggle active" onclick="toggleFeature('shares', this)"></div></li>
+                    <li><span>💌 Messagerie privée</span><div class="toggle active" onclick="toggleFeature('messaging', this)"></div></li>
+                    <li><span>🔍 Recherche</span><div class="toggle active" onclick="toggleFeature('search', this)"></div></li>
+                    <li><span>🧭 Découverte</span><div class="toggle active" onclick="toggleFeature('discover', this)"></div></li>
+                    <li><span>👤 Profil utilisateur</span><div class="toggle active" onclick="toggleFeature('userProfile', this)"></div></li>
+                    <li><span>📸 Photo de profil</span><div class="toggle active" onclick="toggleFeature('profilePhoto', this)"></div></li>
+                    <li><span>📊 Tableau de bord utilisateur</span><div class="toggle active" onclick="toggleFeature('userDashboard', this)"></div></li>
+                    <li><span>🌍 Carte géographique</span><div class="toggle active" onclick="toggleFeature('worldMap', this)"></div></li>
+                    <li><span>📝 Hashtags</span><div class="toggle active" onclick="toggleFeature('hashtags', this)"></div></li>
+                </ul>
+            </div>
+            
+            <!-- ============ PERMISSIONS FONCTIONNALITÉS AVANCÉES ============ -->
+            <div class="founder-section">
+                <h3>🚀 Permissions Fonctionnalités Avancées</h3>
+                <ul class="settings-list">
+                    <li><span>🤖 Assistant IA</span><div class="toggle active" onclick="toggleFeature('aiAssistant', this)"></div></li>
+                    <li><span>💬 IA Conversationnelle</span><div class="toggle active" onclick="toggleFeature('aiConversational', this)"></div></li>
+                    <li><span>📊 Analyses Prédictives</span><div class="toggle active" onclick="toggleFeature('predictiveAnalytics', this)"></div></li>
+                    <li><span>💙 Vérification payante</span><div class="toggle active" onclick="toggleFeature('verification', this)"></div></li>
+                    <li><span>🎁 Système d'invitation</span><div class="toggle active" onclick="toggleFeature('invitations', this)"></div></li>
+                    <li><span>🎯 Défis hebdomadaires</span><div class="toggle active" onclick="toggleFeature('challenges', this)"></div></li>
+                    <li><span>🏆 Classement</span><div class="toggle active" onclick="toggleFeature('rankings', this)"></div></li>
+                    <li><span>🎁 Récompenses</span><div class="toggle active" onclick="toggleFeature('rewards', this)"></div></li>
+                    <li><span>🚀 Système de Boost</span><div class="toggle active" onclick="toggleFeature('boost', this)"></div></li>
+                    <li><span>💸 Retrait d'argent</span><div class="toggle active" onclick="toggleFeature('withdrawal', this)"></div></li>
+                    <li><span>👻 Mode Fantôme</span><div class="toggle active" onclick="toggleFeature('ghostMode', this)"></div></li>
+                    <li><span>💬 Messages éphémères</span><div class="toggle active" onclick="toggleFeature('ephemeralMessages', this)"></div></li>
+                    <li><span>🎨 Éditeur vidéo</span><div class="toggle active" onclick="toggleFeature('videoEditor', this)"></div></li>
+                    <li><span>🤝 Duos et réactions</span><div class="toggle active" onclick="toggleFeature('duets', this)"></div></li>
+                    <li><span>🎁 Cadeaux virtuels</span><div class="toggle active" onclick="toggleFeature('virtualGifts', this)"></div></li>
+                    <li><span>📅 Publication programmée</span><div class="toggle active" onclick="toggleFeature('scheduledPosts', this)"></div></li>
+                    <li><span>🏪 Boutique créateurs</span><div class="toggle active" onclick="toggleFeature('creatorShop', this)"></div></li>
+                    <li><span>🌐 Multilingue</span><div class="toggle active" onclick="toggleFeature('multilingual', this)"></div></li>
+                    <li><span>🎵 Studio musical</span><div class="toggle active" onclick="toggleFeature('musicStudio', this)"></div></li>
+                    <li><span>🎯 Quêtes et missions</span><div class="toggle active" onclick="toggleFeature('quests', this)"></div></li>
+                    <li><span>🎬 Stories avancées</span><div class="toggle active" onclick="toggleFeature('stories2', this)"></div></li>
+                    <li><span>👥 Communautés</span><div class="toggle active" onclick="toggleFeature('communities', this)"></div></li>
+                    <li><span>📍 Géolocalisation</span><div class="toggle active" onclick="toggleFeature('geolocation', this)"></div></li>
+                    <li><span>🎮 Gamification</span><div class="toggle active" onclick="toggleFeature('gamification', this)"></div></li>
+                    <li><span>💰 Portefeuille</span><div class="toggle active" onclick="toggleFeature('wallet', this)"></div></li>
+                    <li><span>🔔 Notifications contextuelles</span><div class="toggle active" onclick="toggleFeature('contextualNotifications', this)"></div></li>
+                    <li><span>📹 Live streaming</span><div class="toggle active" onclick="toggleFeature('liveStreaming', this)"></div></li>
+                    <li><span>🎨 Personnalisation</span><div class="toggle active" onclick="toggleFeature('customization', this)"></div></li>
+                </ul>
+            </div>
+            
+            <!-- ============ PERMISSIONS MONÉTISATION ============ -->
+            <div class="founder-section">
+                <h3>💰 Permissions de Monétisation</h3>
+                <ul class="settings-list">
+                    <li><span>💎 Vente de diamants</span><div class="toggle active" onclick="toggleMonetization('diamondSales', this)"></div></li>
+                    <li><span>📱 Abonnements Premium</span><div class="toggle active" onclick="toggleMonetization('premium', this)"></div></li>
+                    <li><span>💙 Vérification payante</span><div class="toggle active" onclick="toggleMonetization('verification', this)"></div></li>
+                    <li><span>🎁 Cadeaux virtuels</span><div class="toggle active" onclick="toggleMonetization('gifts', this)"></div></li>
+                    <li><span>📢 Publicités</span><div class="toggle active" onclick="toggleMonetization('ads', this)"></div></li>
+                    <li><span>💸 Pourboires aux créateurs</span><div class="toggle active" onclick="toggleMonetization('tips', this)"></div></li>
+                    <li><span>🏪 Boutique intégrée</span><div class="toggle active" onclick="toggleMonetization('shop', this)"></div></li>
+                    <li><span>🚀 Boost payant</span><div class="toggle active" onclick="toggleMonetization('boost', this)"></div></li>
+                    <li><span>💸 Retrait d'argent</span><div class="toggle active" onclick="toggleMonetization('withdrawal', this)"></div></li>
+                    <li><span>👻 Mode Fantôme premium</span><div class="toggle active" onclick="toggleMonetization('ghostPremium', this)"></div></li>
+                    <li><span>🎵 Studio Musical premium</span><div class="toggle active" onclick="toggleMonetization('musicPremium', this)"></div></li>
+                </ul>
+            </div>
+            
+            <!-- ============ PERMISSIONS PAR PAYS ============ -->
+            <div class="founder-section">
+                <h3>🌍 Permissions par Pays</h3>
+                <ul class="settings-list">
+                    <li onclick="showCountrySettings('France')"><span>🇫🇷 France (€)</span><span style="color:#00ff00;">Actif ></span></li>
+                    <li onclick="showCountrySettings('Belgique')"><span>🇧🇪 Belgique (€)</span><span style="color:#00ff00;">Actif ></span></li>
+                    <li onclick="showCountrySettings('Suisse')"><span>🇨🇭 Suisse (CHF)</span><span style="color:#00ff00;">Actif ></span></li>
+                    <li onclick="showCountrySettings('Canada')"><span>🇨🇦 Canada ($)</span><span style="color:#00ff00;">Actif ></span></li>
+                    <li onclick="showCountrySettings('USA')"><span>🇺🇸 USA ($)</span><span style="color:#00ff00;">Actif ></span></li>
+                    <li onclick="showCountrySettings('Maroc')"><span>🇲🇦 Maroc (DH)</span><span style="color:#00ff00;">Actif ></span></li>
+                    <li onclick="showCountrySettings('Algérie')"><span>🇩🇿 Algérie (DA)</span><span style="color:#00ff00;">Actif ></span></li>
+                    <li onclick="showCountrySettings('Tunisie')"><span>🇹🇳 Tunisie (DT)</span><span style="color:#00ff00;">Actif ></span></li>
+                    <li onclick="showCountrySettings('Sénégal')"><span>🇸🇳 Sénégal (CFA)</span><span style="color:#00ff00;">Actif ></span></li>
+                    <li onclick="showCountrySettings('Côte d\'Ivoire')"><span>🇨🇮 Côte d'Ivoire (CFA)</span><span style="color:#00ff00;">Actif ></span></li>
+                    <li onclick="showCountrySettings('Cameroun')"><span>🇨🇲 Cameroun (CFA)</span><span style="color:#00ff00;">Actif ></span></li>
+                    <li onclick="showCountrySettings('RDC')"><span>🇨🇩 RD Congo (CFA)</span><span style="color:#00ff00;">Actif ></span></li>
+                    <li onclick="showCountrySettings('Brésil')"><span>🇧🇷 Brésil (R$)</span><span style="color:#ff9900;">Limité ></span></li>
+                    <li onclick="showCountrySettings('Inde')"><span>🇮🇳 Inde (₹)</span><span style="color:#ff9900;">Limité ></span></li>
+                    <li onclick="showCountrySettings('Chine')"><span>🇨🇳 Chine (¥)</span><span style="color:#ff0000;">Bloqué ></span></li>
+                    <li onclick="showCountrySettings('Russie')"><span>🇷🇺 Russie (₽)</span><span style="color:#ff0000;">Bloqué ></span></li>
+                </ul>
+            </div>
+            
+            <!-- ============ CONTRÔLE IA ============ -->
+            <div class="founder-section">
+                <h3>🤖 Contrôle de l'IA</h3>
+                <ul class="settings-list">
+                    <li><span>🧠 Apprentissage automatique</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
+                    <li><span>📹 Recommandations personnalisées</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
+                    <li><span>🔥 Détection de tendances</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
+                    <li><span>🚫 Modération automatique</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
+                    <li><span>📊 Prédiction de viralité</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
+                    <li><span>🏷️ Optimisation hashtags</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
+                    <li><span>🔔 Notifications intelligentes</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
+                </ul>
+            </div>
+            
+            <!-- ============ SÉCURITÉ ============ -->
+            <div class="founder-section">
+                <h3>🛡️ Sécurité</h3>
+                <ul class="settings-list">
+                    <li onclick="window.location.href='securite.html'"><span>🚫 Anti-VPN</span><span style="color:#FFD700;">Configurer ></span></li>
+                    <li onclick="window.location.href='securite.html'"><span>🚫 Anti-Nudité</span><span style="color:#FFD700;">Configurer ></span></li>
+                    <li onclick="window.location.href='securite.html'"><span>🚫 Anti-Faux Comptes</span><span style="color:#FFD700;">Configurer ></span></li>
+                    <li><span>🔞 Filtre contenu adulte</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
+                    <li><span>⚡ Détection spam</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
+                </ul>
+            </div>
+            
+            <!-- ============ GESTION PROFIL FONDATEUR ============ -->
+            <div class="founder-section">
+                <h3>👤 Profil du Fondateur</h3>
+                <ul class="settings-list">
+                    <li onclick="changeFounderPhoto()">
+                        <span>📸 Changer la photo de profil</span>
+                        <span style="color:#FFD700;">></span>
+                    </li>
+                    <li onclick="changeFounderBio()">
+                        <span>✏️ Modifier la bio</span>
+                        <span style="color:#FFD700;">></span>
+                    </li>
+                    <li onclick="changeFounderUsername()">
+                        <span>👤 Modifier le nom d'utilisateur</span>
+                        <span style="color:#FFD700;">></span>
+                    </li>
+                    <li onclick="changeFounderEmail()">
+                        <span>📧 Modifier l'email</span>
+                        <span style="color:#FFD700;">></span>
+                    </li>
+                    <li onclick="changeFounderPin()">
+                        <span>🔐 Changer le code PIN</span>
+                        <span style="color:#FFD700;">></span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- ============ NOTIFICATION GLOBALE ============ -->
+            <div class="founder-section">
+                <h3>🔔 Notification Globale</h3>
+                <div class="ai-input">
+                    <input type="text" id="globalNotification" placeholder="Envoyer une notification à tous...">
+                    <button onclick="sendGlobalNotification()">📤</button>
+                </div>
+            </div>
+            
+            <!-- ============ MODE MAINTENANCE ============ -->
+            <div class="founder-section">
+                <h3>🔧 Mode Maintenance</h3>
+                <ul class="settings-list">
+                    <li><span>🔧 Activer le mode maintenance</span><div class="toggle" onclick="toggleMaintenance(this)"></div></li>
+                </ul>
+            </div>
+            
+            <!-- ============ JOURNAL ============ -->
+            <div class="founder-section">
+                <h3>📋 Journal d'Accès</h3>
+                <div id="accessLog">
+                    <p style="color:#a8a8a8;">Aucun accès enregistré</p>
+                </div>
+            </div>
+            
+            <!-- Déconnexion -->
+            <button class="btn-primary" style="margin-top: 20px; width: 100%; background: #ff0050;" onclick="closeFounderSession()">
+                🔒 Fermer la session
+            </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Accueil</span>
+            </a>
+            <a href="decouverte.html" class="nav-item">
+                <span class="nav-icon">🔍</span>
+                <span>Découvrir</span>
+            </a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'">
+                <span class="nav-icon">➕</span>
+            </button>
+            <a href="notifications.html" class="nav-item">
+                <span class="nav-icon">🔔</span>
+                <span>Messages</span>
+            </a>
+            <a href="profil.html" class="nav-item active">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="propagation.js"></script>
+    <script src="securite.js"></script>
+    <script src="boost.js"></script>
+    <script src="hashtags.js"></script>
+    <script src="features.js"></script>
+    <script src="retrait.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!checkFounderSession()) {
+                showToast('❌ Accès non autorisé');
+                setTimeout(() => window.location.href = 'profil.html', 2000);
+                return;
+            }
+            
+            loadFounderData();
+            loadAccessLog();
+        });
+        
+        function loadFounderData() {
+            document.getElementById('totalRevenue').textContent = formatNumber(founderData.totalRevenue || 0) + '€';
+            document.getElementById('monthlyRevenue').textContent = '+' + formatNumber(founderData.monthlyRevenue || 0) + '€ ce mois';
+            document.getElementById('totalUsers').textContent = formatNumber(founderData.totalUsers || 0);
+            document.getElementById('totalVideos').textContent = formatNumber(founderData.totalVideos || 0);
+            document.getElementById('totalDiamonds').textContent = formatNumber(founderData.totalDiamondsSold || 0);
+            document.getElementById('totalWithdrawals').textContent = formatNumber(founderData.totalWithdrawals || 0) + '€';
+        }
+        
+        function loadAccessLog() {
+            const logContainer = document.getElementById('accessLog');
+            if (founderData.accessLog && founderData.accessLog.length > 0) {
+                logContainer.innerHTML = '';
+                founderData.accessLog.slice(-5).reverse().forEach(entry => {
+                    const div = document.createElement('div');
+                    div.className = 'notification-item';
+                    div.innerHTML = `
+                        <div style="flex:1;">
+                            <strong>🔓 Accès tableau de bord</strong>
+                            <p style="color:#a8a8a8; font-size:0.8rem;">${new Date(entry.timestamp).toLocaleString('fr-FR')}</p>
+                        </div>
+                    `;
+                    logContainer.appendChild(div);
+                });
+            }
+        }
+        
+        function toggleFeature(feature, button) {
+            button.classList.toggle('active');
+            const isActive = button.classList.contains('active');
+            if (!founderData.featurePermissions) founderData.featurePermissions = {};
+            founderData.featurePermissions[feature] = isActive;
+            localStorage.setItem('bdiamond_founder_data', JSON.stringify(founderData));
+            showToast(isActive ? '✅ ' + feature + ' activé' : '❌ ' + feature + ' désactivé');
+        }
+        
+        function toggleMonetization(feature, button) {
+            button.classList.toggle('active');
+            const isActive = button.classList.contains('active');
+            if (!founderData.monetizationPermissions) founderData.monetizationPermissions = {};
+            founderData.monetizationPermissions[feature] = isActive;
+            localStorage.setItem('bdiamond_founder_data', JSON.stringify(founderData));
+            showToast(isActive ? '💰 ' + feature + ' activé' : '❌ ' + feature + ' désactivé');
+        }
+        
+        function showCountrySettings(country) {
+            const current = prompt('🌍 ' + country + '\n\nOptions : Actif, Limité, Bloqué');
+            if (current) showToast('✅ ' + country + ' : ' + current);
+        }
+        
+        // ============ FONCTIONS PROFIL FONDATEUR ============
+        function changeFounderPhoto() {
+            const newPhoto = prompt('📸 URL de la nouvelle photo de profil :');
+            if (newPhoto && newPhoto.trim() !== '') {
+                showToast('✅ Photo de profil mise à jour !');
+            }
+        }
+        
+        function changeFounderBio() {
+            const newBio = prompt('✏️ Nouvelle bio :');
+            if (newBio && newBio.trim() !== '') {
+                showToast('✅ Bio mise à jour !');
+            }
+        }
+        
+        function changeFounderUsername() {
+            const newUsername = prompt('👤 Nouveau nom d\'utilisateur :');
+            if (newUsername && newUsername.trim() !== '') {
+                showToast('✅ Nom d\'utilisateur mis à jour !');
+            }
+        }
+        
+        function changeFounderEmail() {
+            const newEmail = prompt('📧 Nouvel email :');
+            if (newEmail && newEmail.trim() !== '') {
+                showToast('✅ Email mis à jour !');
+            }
+        }
+        
+        function changeFounderPin() {
+            const currentPin = prompt('🔐 Code PIN actuel :');
+            if (currentPin === founderData.founderPin) {
+                const newPin = prompt('🔐 Nouveau code PIN (4 chiffres) :');
+                if (newPin && newPin.length === 4) {
+                    founderData.founderPin = newPin;
+                    localStorage.setItem('bdiamond_founder_data', JSON.stringify(founderData));
+                    showToast('✅ Code PIN changé !');
+                } else {
+                    showToast('❌ PIN invalide (4 chiffres requis)');
+                }
+            } else {
+                showToast('❌ PIN incorrect');
+            }
+        }
+        
+        function sendGlobalNotification() {
+            const input = document.getElementById('globalNotification');
+            const message = input.value.trim();
+            if (message) {
+                showToast('📤 Notification envoyée à tous !');
+                input.value = '';
+            }
+        }
+        
+        function toggleMaintenance(button) {
+            button.classList.toggle('active');
+            showToast(button.classList.contains('active') ? '🔧 Mode maintenance activé' : '✅ Mode maintenance désactivé');
+        }
+        
+        function closeFounderSession() {
+            logoutFounder();
+            window.location.href = 'profil.html';
+        }
+    </script>
+</body>
+</html>

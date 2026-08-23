@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            
+            <!-- En-tête avec boutons -->
+            <div class="profile-header-top">
+                <div class="page-header" style="margin-bottom: 0;">👤 Mon Profil</div>
+                <button class="settings-icon-btn" onclick="window.location.href='stories.html'" title="Stories">📖</button>
+                <button class="settings-icon-btn" onclick="window.location.href='retrait.html'" title="Retrait">💸</button>
+                <button class="settings-icon-btn" onclick="window.location.href='boost.html'" title="Boost">🚀</button>
+                <button class="settings-icon-btn" onclick="toggleDashboard()" title="Tableau de bord">📊</button>
+                <button class="settings-icon-btn" onclick="toggleSettings()" title="Paramètres">☰</button>
+            </div>
+            
+            <!-- Bouton Fondateur SECRET -->
+            <div id="founderButton" class="founder-button hidden">
+                <button onclick="accessFounderDashboard()" style="width: 100%; padding: 15px; background: linear-gradient(45deg, #FFD700, #FFA500); border: 2px solid #FFD700; border-radius: 15px; color: #000; font-weight: bold; cursor: pointer; font-size: 1.1rem;">
+                    👑 Espace Fondateur
+                </button>
+            </div>
+            
+            <!-- ============ TABLEAU DE BORD PERSONNEL ============ -->
+            <div id="dashboardPanel" class="dashboard-panel hidden">
+                <div class="dashboard-header">
+                    <h3>📊 Tableau de Bord</h3>
+                    <button class="close-btn" onclick="toggleDashboard()">✕</button>
+                </div>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-card gold">
+                        <span class="stat-icon">👁️</span>
+                        <span class="stat-value" id="totalViews">0</span>
+                        <span class="stat-label">Vues totales</span>
+                    </div>
+                    <div class="stat-card gold">
+                        <span class="stat-icon">❤️</span>
+                        <span class="stat-value" id="totalLikes">0</span>
+                        <span class="stat-label">Likes</span>
+                    </div>
+                    <div class="stat-card gold">
+                        <span class="stat-icon">💬</span>
+                        <span class="stat-value" id="totalComments">0</span>
+                        <span class="stat-label">Commentaires</span>
+                    </div>
+                    <div class="stat-card gold">
+                        <span class="stat-icon">💰</span>
+                        <span class="stat-value" id="walletBalanceDash">0 💎</span>
+                        <span class="stat-label">Diamants</span>
+                    </div>
+                </div>
+                
+                <!-- CARTE GÉOGRAPHIQUE MONDIALE -->
+                <div class="map-section">
+                    <h4 style="margin-bottom: 15px;">🌍 Audience Mondiale</h4>
+                    <div class="world-map">
+                        <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:400px; margin:0 auto; display:block;">
+                            <rect width="800" height="400" fill="#1a1a1a" rx="10"/>
+                            <ellipse cx="150" cy="100" rx="80" ry="60" fill="#2a2a2a" stroke="#333"/>
+                            <circle cx="150" cy="100" r="40" fill="rgba(255, 215, 0, 0.7)" opacity="0.8">
+                                <animate attributeName="r" values="35;45;35" dur="2s" repeatCount="indefinite"/>
+                            </circle>
+                            <text x="150" y="100" fill="#fff" text-anchor="middle" font-size="12">0%</text>
+                            <ellipse cx="200" cy="220" rx="50" ry="70" fill="#2a2a2a" stroke="#333"/>
+                            <circle cx="200" cy="220" r="30" fill="rgba(255, 215, 0, 0.6)" opacity="0.7">
+                                <animate attributeName="r" values="25;35;25" dur="2.5s" repeatCount="indefinite"/>
+                            </circle>
+                            <text x="200" y="220" fill="#fff" text-anchor="middle" font-size="12">0%</text>
+                            <ellipse cx="400" cy="90" rx="60" ry="40" fill="#2a2a2a" stroke="#333"/>
+                            <circle cx="400" cy="90" r="35" fill="rgba(255, 215, 0, 0.8)" opacity="0.9">
+                                <animate attributeName="r" values="30;40;30" dur="1.8s" repeatCount="indefinite"/>
+                            </circle>
+                            <text x="400" y="90" fill="#fff" text-anchor="middle" font-size="12">0%</text>
+                            <ellipse cx="420" cy="200" rx="55" ry="70" fill="#2a2a2a" stroke="#333"/>
+                            <circle cx="420" cy="200" r="35" fill="rgba(255, 215, 0, 0.7)" opacity="0.8">
+                                <animate attributeName="r" values="30;40;30" dur="2.2s" repeatCount="indefinite"/>
+                            </circle>
+                            <text x="420" y="200" fill="#fff" text-anchor="middle" font-size="12">0%</text>
+                            <ellipse cx="580" cy="100" rx="100" ry="70" fill="#2a2a2a" stroke="#333"/>
+                            <circle cx="580" cy="100" r="45" fill="rgba(255, 215, 0, 0.9)" opacity="0.95">
+                                <animate attributeName="r" values="40;50;40" dur="1.5s" repeatCount="indefinite"/>
+                            </circle>
+                            <text x="580" y="100" fill="#fff" text-anchor="middle" font-size="12">0%</text>
+                            <ellipse cx="650" cy="280" rx="40" ry="30" fill="#2a2a2a" stroke="#333"/>
+                            <circle cx="650" cy="280" r="20" fill="rgba(255, 215, 0, 0.5)" opacity="0.6">
+                                <animate attributeName="r" values="15;25;15" dur="3s" repeatCount="indefinite"/>
+                            </circle>
+                            <text x="650" y="280" fill="#fff" text-anchor="middle" font-size="12">0%</text>
+                        </svg>
+                    </div>
+                    <div class="map-legend">
+                        <span>🔴 = Audience active</span>
+                        <span>🟡 = Croissance</span>
+                    </div>
+                </div>
+                
+                <!-- Assistant IA -->
+                <div class="ai-assistant">
+                    <h4 style="margin-bottom: 15px;">🤖 Assistant B Diamond IA</h4>
+                    <div class="ai-chat" id="aiChat">
+                        <div class="ai-message">
+                            <span class="ai-avatar">💎</span>
+                            <div class="ai-bubble">Bonjour ! Je suis B Diamond IA. Je peux t'aider !</div>
+                        </div>
+                    </div>
+                    <div class="ai-input">
+                        <input type="text" id="aiInput" placeholder="Pose ta question..." onkeyup="if(event.key==='Enter') sendAIMessage()">
+                        <button onclick="sendAIMessage()">📤</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ============ PANNEAU PARAMÈTRES ============ -->
+            <div id="settingsPanel" class="settings-panel hidden">
+                <div class="settings-panel-header">
+                    <h3>⚙️ Paramètres</h3>
+                    <button class="close-btn" onclick="toggleSettings()">✕</button>
+                </div>
+                
+                <ul class="settings-list">
+                    <li onclick="window.location.href='stories.html'"><span>📖 Stories</span><span style="color:#FFD700;">></span></li>
+                    <li onclick="window.location.href='retrait.html'"><span>💸 Retrait d'argent</span><span style="color:#FFD700;">></span></li>
+                    <li onclick="window.location.href='boost.html'"><span>🚀 Booster ma visibilité</span><span style="color:#FFD700;">></span></li>
+                    <li onclick="window.location.href='verification.html'"><span>💙 Vérification du compte</span><span style="color:#FFD700;">></span></li>
+                    <li onclick="window.location.href='invite.html'"><span>🎁 Inviter des amis</span><span style="color:#FFD700;">></span></li>
+                    <li onclick="window.location.href='defis.html'"><span>🎯 Défis hebdomadaires</span><span style="color:#FFD700;">></span></li>
+                    <li onclick="window.location.href='classement.html'"><span>🏆 Classement</span><span style="color:#FFD700;">></span></li>
+                    <li onclick="window.location.href='recompenses.html'"><span>🎁 Récompenses</span><span style="color:#FFD700;">></span></li>
+                    <li onclick="window.location.href='messages.html'"><span>💬 Messages privés</span><span style="color:#FFD700;">></span></li>
+                    <li onclick="toggleGhostModeLocal()"><span>👻 Mode Fantôme</span><span style="color:#FFD700;" id="ghostStatus">OFF ></span></li>
+                    <li onclick="editProfileLocal()"><span>✏️ Modifier le profil</span><span style="color:#a8a8a8;">></span></li>
+                    <li onclick="changeProfilePhoto()"><span>📸 Changer la photo</span><span style="color:#a8a8a8;">></span></li>
+                    <li onclick="showNotificationSettings()"><span>🔔 Notifications</span><span style="color:#a8a8a8;">></span></li>
+                    <li onclick="showPrivacySettings()"><span>🔒 Confidentialité</span><span style="color:#a8a8a8;">></span></li>
+                    <li onclick="showAISettings()"><span>🤖 Assistant IA</span><span style="color:#a8a8a8;">></span></li>
+                    <li onclick="showAboutSettings()"><span>ℹ️ À propos</span><span style="color:#a8a8a8;">v3.0.0 ></span></li>
+                </ul>
+                
+                <button class="btn-primary" style="margin-top: 20px; width: 100%; background: #ff0050;" onclick="logout()">🚪 Déconnexion</button>
+            </div>
+            
+            <!-- Sous-panneaux -->
+            <div id="subSettingsPanel" class="settings-panel hidden">
+                <div class="settings-panel-header">
+                    <button class="back-btn" onclick="backToMainSettings()">← Retour</button>
+                    <h3 id="subSettingsTitle">Paramètres</h3>
+                    <button class="close-btn" onclick="closeAllSettings()">✕</button>
+                </div>
+                <div id="subSettingsContent"></div>
+            </div>
+            
+            <!-- En-tête profil -->
+            <div id="profileHeader" style="text-align: center; margin-bottom: 20px;">
+                <img src="https://i.pravatar.cc/150?img=1" alt="Avatar" id="profileAvatar"
+                     style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #FFD700; object-fit: cover; cursor:pointer;" onclick="changeProfilePhoto()">
+                <h2 style="margin-top: 10px;" id="profileUsername">@b_diamond_official</h2>
+                <p style="color: #a8a8a8;" id="profileBio">💎 Compte officiel B Diamond</p>
+                
+                <div style="display:flex; gap:10px; margin-top:15px; justify-content:center; flex-wrap:wrap;">
+                    <button class="btn-primary" style="width:auto; padding:10px 20px; font-size:0.9rem;" onclick="editProfileLocal()">✏️ Modifier</button>
+                    <button class="btn-primary" style="width:auto; padding:10px 20px; font-size:0.9rem; background:#FFD700; color:#000;" onclick="window.location.href='stories.html'">📖 Stories</button>
+                    <button class="btn-primary" style="width:auto; padding:10px 20px; font-size:0.9rem; background:linear-gradient(45deg, #FFD700, #FFA500);" onclick="window.location.href='boost.html'">🚀 Booster</button>
+                    <button class="btn-primary" style="width:auto; padding:10px 20px; font-size:0.9rem; background:#00cc00; color:#000;" onclick="window.location.href='retrait.html'">💸 Retrait</button>
+                    <button class="btn-primary" style="width:auto; padding:10px 20px; font-size:0.9rem; background:#333;" onclick="window.location.href='invite.html'">🎁 Inviter</button>
+                    <button class="btn-primary" style="width:auto; padding:10px 20px; font-size:0.9rem; background:#444;" id="ghostBtn" onclick="toggleGhostModeLocal()">👻 Fantôme</button>
+                </div>
+            </div>
+            
+            <!-- Statistiques -->
+            <div style="display: flex; justify-content: space-around; text-align: center; margin-bottom: 20px;">
+                <div><strong style="font-size: 1.2rem;" id="followersCount">0</strong><br><span style="color: #a8a8a8;">Abonnés</span></div>
+                <div><strong style="font-size: 1.2rem;" id="followingCount">0</strong><br><span style="color: #a8a8a8;">Abonnements</span></div>
+                <div><strong style="font-size: 1.2rem;" id="likesCount">0</strong><br><span style="color: #a8a8a8;">Likes</span></div>
+            </div>
+            
+            <!-- Onglets -->
+            <div class="auth-tabs" style="margin-bottom: 15px;">
+                <button class="tab-btn active" onclick="showMyVideos(this)">📹 Vidéos</button>
+                <button class="tab-btn" onclick="showLikedVideos(this)">❤️ Aimées</button>
+                <button class="tab-btn" onclick="showPrivateVideos(this)">🔒 Privées</button>
+                <button class="tab-btn" onclick="showCollections(this)">📁 Collections</button>
+            </div>
+            
+            <!-- Grille vidéos -->
+            <div class="profile-grid" id="profileGrid"></div>
+            
+            <!-- Déconnexion -->
+            <button class="btn-primary" style="margin-top: 20px; width: 100%; background: #ff0050;" onclick="logout()">🚪 Déconnexion</button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Accueil</span></a>
+            <a href="decouverte.html" class="nav-item"><span class="nav-icon">🔍</span><span>Découvrir</span></a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'"><span class="nav-icon">➕</span></button>
+            <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span><span>Messages</span></a>
+            <a href="profil.html" class="nav-item active"><span class="nav-icon">👤</span><span>Profil</span></a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="boost.js"></script>
+    <script src="hashtags.js"></script>
+    <script src="features.js"></script>
+    <script src="retrait.js"></script>
+    <script>
+        let ghostModeActive = false;
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (savedUser) {
+                try {
+                    const user = JSON.parse(savedUser);
+                    document.getElementById('profileAvatar').src = user.avatar || 'https://i.pravatar.cc/150?img=1';
+                    
+                    // VÉRIFICATION DIRECTE DU FONDATEUR
+                    if (user.isFounder === true || user.username === 'b_diamond_official' || user.id === 1) {
+                        document.getElementById('profileUsername').innerHTML = '@' + user.username + ' <span style="color:#FFD700;">✓ 👑</span>';
+                        document.getElementById('founderButton').classList.remove('hidden');
+                    } else {
+                        document.getElementById('profileUsername').textContent = '@' + (user.username || 'user');
+                    }
+                    
+                    document.getElementById('profileBio').textContent = user.bio || '💎 Nouveau sur B Diamond';
+                    document.getElementById('followersCount').textContent = formatNumber(user.followers || 0);
+                    document.getElementById('followingCount').textContent = formatNumber(user.following || 0);
+                    document.getElementById('likesCount').textContent = formatNumber(user.likes || 0);
+                    document.getElementById('walletBalanceDash').textContent = (user.diamonds || 0) + ' 💎';
+                } catch(e) {
+                    console.log('⚠️ Erreur :', e.message);
+                }
+            }
+            loadUserVideos();
+        });
+        
+        function changeProfilePhoto() {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            
+            fileInput.onchange = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('profileAvatar').src = e.target.result;
+                        const savedUser = localStorage.getItem('bdiamond_current_user');
+                        if (savedUser) {
+                            const user = JSON.parse(savedUser);
+                            user.avatar = e.target.result;
+                            localStorage.setItem('bdiamond_current_user', JSON.stringify(user));
+                        }
+                        showToast('✅ Photo de profil mise à jour !');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            fileInput.click();
+        }
+        
+        function toggleGhostModeLocal() {
+            ghostModeActive = !ghostModeActive;
+            const ghostBtn = document.getElementById('ghostBtn');
+            const ghostStatus = document.getElementById('ghostStatus');
+            
+            if (ghostModeActive) {
+                if (ghostBtn) { ghostBtn.textContent = '👻 ON'; ghostBtn.style.background = '#FFD700'; ghostBtn.style.color = '#000'; }
+                if (ghostStatus) ghostStatus.textContent = 'ON >';
+                showToast('👻 Mode Fantôme ACTIVÉ');
+            } else {
+                if (ghostBtn) { ghostBtn.textContent = '👻 Fantôme'; ghostBtn.style.background = '#444'; ghostBtn.style.color = '#fff'; }
+                if (ghostStatus) ghostStatus.textContent = 'OFF >';
+                showToast('✅ Mode Fantôme DÉSACTIVÉ');
+            }
+        }
+        
+        function editProfileLocal() {
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (!savedUser) { showToast('❌ Connectez-vous d\'abord'); return; }
+            const user = JSON.parse(savedUser);
+            const newBio = prompt('✏️ Modifier votre bio :', user.bio || '');
+            if (newBio && newBio.trim() !== '') {
+                user.bio = newBio;
+                localStorage.setItem('bdiamond_current_user', JSON.stringify(user));
+                document.getElementById('profileBio').textContent = newBio;
+                showToast('✅ Bio mise à jour !');
+            }
+        }
+        
+        function toggleDashboard() { document.getElementById('dashboardPanel').classList.toggle('hidden'); }
+        function toggleSettings() { document.getElementById('settingsPanel').classList.toggle('hidden'); }
+        function closeAllSettings() {
+            document.getElementById('settingsPanel').classList.add('hidden');
+            document.getElementById('subSettingsPanel').classList.add('hidden');
+            document.getElementById('dashboardPanel').classList.add('hidden');
+        }
+        function backToMainSettings() {
+            document.getElementById('subSettingsPanel').classList.add('hidden');
+            document.getElementById('settingsPanel').classList.remove('hidden');
+        }
+        function openSubSettings(title, contentHTML) {
+            document.getElementById('settingsPanel').classList.add('hidden');
+            document.getElementById('subSettingsPanel').classList.remove('hidden');
+            document.getElementById('subSettingsTitle').textContent = title;
+            document.getElementById('subSettingsContent').innerHTML = contentHTML;
+        }
+        
+        function showNotificationSettings() {
+            openSubSettings('🔔 Notifications', `<ul class="settings-list"><li><span>🔔 Notifications push</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li><li><span>❤️ Likes</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li></ul>`);
+        }
+        
+        function showPrivacySettings() {
+            openSubSettings('🔒 Confidentialité', `<ul class="settings-list"><li><span>🔒 Compte privé</span><div class="toggle" onclick="this.classList.toggle('active')"></div></li><li><span>📍 Localisation</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li></ul>`);
+        }
+        
+        function showAISettings() {
+            openSubSettings('🤖 Assistant IA', `<ul class="settings-list"><li><span>🤖 Assistant IA</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li></ul>`);
+        }
+        
+        function showAboutSettings() {
+            openSubSettings('ℹ️ À propos', `<div style="text-align:center; padding:30px;"><h1 style="font-size:3rem;">💎</h1><h2>B Diamond</h2><p style="color:#a8a8a8;">Version 3.0.0</p></div>`);
+        }
+        
+        function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const chat = document.getElementById('aiChat');
+            const question = input.value.trim();
+            if (!question) return;
+            chat.innerHTML += `<div class="ai-message user"><div class="ai-bubble user-bubble">${question}</div></div>`;
+            input.value = '';
+            setTimeout(() => {
+                chat.innerHTML += `<div class="ai-message"><span class="ai-avatar">💎</span><div class="ai-bubble">🤖 Je peux t'aider !</div></div>`;
+                chat.scrollTop = chat.scrollHeight;
+            }, 1000);
+        }
+        
+        function showMyVideos(button) { document.querySelectorAll('.auth-tabs .tab-btn').forEach(btn => btn.classList.remove('active')); button.classList.add('active'); loadUserVideos(); }
+        function showLikedVideos(button) { document.querySelectorAll('.auth-tabs .tab-btn').forEach(btn => btn.classList.remove('active')); button.classList.add('active'); showToast('❤️ Vidéos aimées'); }
+        function showPrivateVideos(button) { document.querySelectorAll('.auth-tabs .tab-btn').forEach(btn => btn.classList.remove('active')); button.classList.add('active'); showToast('🔒 Vidéos privées'); }
+        function showCollections(button) { document.querySelectorAll('.auth-tabs .tab-btn').forEach(btn => btn.classList.remove('active')); button.classList.add('active'); showToast('📁 Collections'); }
+        
+        function loadUserVideos() {
+            const grid = document.getElementById('profileGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            if (typeof videos === 'undefined' || videos.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; color:#a8a8a8; grid-column:1/-1; padding:40px;">Aucune vidéo</p>';
+                return;
+            }
+            videos.forEach(video => {
+                const div = document.createElement('div');
+                div.className = 'profile-video-item';
+                div.innerHTML = `<video src="${video.videoUrl}" onclick="this.play()"></video><div class="video-views-overlay"><span>👁️ ${formatNumber(video.views || 0)}</span></div>`;
+                grid.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>

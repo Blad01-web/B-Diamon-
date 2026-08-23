@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stories - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">📖 Stories</div>
+            
+            <!-- Zone "Créer une story" -->
+            <div class="story-create-section" onclick="createNewStory()">
+                <div class="story-avatar">
+                    <img src="https://i.pravatar.cc/150?img=1" alt="Mon avatar" id="myStoryAvatar">
+                    <span class="story-plus">➕</span>
+                </div>
+                <div>
+                    <strong style="color:#FFD700;">Créer une story</strong>
+                    <p style="color:#a8a8a8; font-size:0.8rem;">Partage un moment avec tes abonnés</p>
+                </div>
+            </div>
+            
+            <!-- Stories actives -->
+            <h3 style="margin: 20px 0 15px;">📖 Stories récentes</h3>
+            <div id="activeStories" class="stories-row"></div>
+            
+            <!-- Mes stories -->
+            <h3 style="margin: 20px 0 15px;">📖 Mes stories</h3>
+            <div id="myStories"></div>
+            
+            <!-- Stories expirées (historique) -->
+            <h3 style="margin: 20px 0 15px;">🗄️ Archivées</h3>
+            <div id="archivedStories">
+                <p style="color:#a8a8a8;">Aucune story archivée</p>
+            </div>
+            
+            <!-- Bouton retour -->
+            <button class="btn-primary" style="margin-top: 20px; width: 100%; background: #333;" onclick="window.location.href='index.html'">
+                ← Retour
+            </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Accueil</span></a>
+            <a href="decouverte.html" class="nav-item"><span class="nav-icon">🔍</span><span>Découvrir</span></a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'"><span class="nav-icon">➕</span></button>
+            <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span><span>Messages</span></a>
+            <a href="profil.html" class="nav-item active"><span class="nav-icon">👤</span><span>Profil</span></a>
+        </nav>
+    </div>
+    
+    <!-- Visionneuse de story -->
+    <div id="storyViewer" class="story-viewer hidden">
+        <div class="story-viewer-header">
+            <img src="" alt="" id="storyViewerAvatar">
+            <span id="storyViewerUsername" style="font-weight:bold;"></span>
+            <span id="storyViewerTime" style="color:#a8a8a8; font-size:0.8rem;"></span>
+            <button class="close-btn" onclick="closeStoryViewer()">✕</button>
+        </div>
+        
+        <!-- Barre de progression -->
+        <div class="story-progress-bar" id="storyProgressBar"></div>
+        
+        <!-- Contenu de la story -->
+        <div id="storyViewerContent" style="flex:1; display:flex; align-items:center; justify-content:center;"></div>
+        
+        <!-- Réactions -->
+        <div class="story-reactions">
+            <input type="text" id="storyReplyInput" placeholder="Répondre à la story..." 
+                   onkeyup="if(event.key==='Enter') sendStoryReply()">
+            <button onclick="sendStoryReply()">📤</button>
+        </div>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        let storiesData = JSON.parse(localStorage.getItem('bdiamond_stories')) || [];
+        let currentUserId = null;
+        let currentStoryIndex = 0;
+        let storyViewerInterval = null;
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (savedUser) {
+                try {
+                    currentUserId = JSON.parse(savedUser).id;
+                    document.getElementById('myStoryAvatar').src = JSON.parse(savedUser).avatar || 'https://i.pravatar.cc/150?img=1';
+                } catch(e) {
+                    console.log('⚠️ Erreur :', e.message);
+                }
+            }
+            
+            checkExpiredStories();
+            loadStories();
+        });
+        
+        // ============ VÉRIFIER LES STORIES EXPIRÉES ============
+        function checkExpiredStories() {
+            const now = new Date();
+            
+            storiesData.forEach(story => {
+                if (new Date(story.expiresAt) < now && story.status === 'active') {
+                    story.status = 'archived';
+                }
+            });
+            
+            saveStories();
+        }
+        
+        // ============ CRÉER UNE STORY ============
+        function createNewStory() {
+            const choice = prompt('📖 Créer une story :\n\n1. 📷 Photo\n2. 🎬 Vidéo\n\nTapez 1 ou 2 :');
+            
+            if (choice === '1') {
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*';
+                
+                fileInput.onchange = function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const caption = prompt('📝 Légende de la story (optionnel) :');
+                            addStory(e.target.result, 'photo', caption || '');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                
+                fileInput.click();
+            } else if (choice === '2') {
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'video/*';
+                
+                fileInput.onchange = function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const url = URL.createObjectURL(file);
+                        const caption = prompt('📝 Légende de la story (optionnel) :');
+                        addStory(url, 'video', caption || '');
+                    }
+                };
+                
+                fileInput.click();
+            }
+        }
+        
+        function addStory(mediaUrl, mediaType, caption) {
+            const story = {
+                id: Date.now(),
+                userId: currentUserId || 1,
+                mediaUrl: mediaUrl,
+                mediaType: mediaType,
+                caption: caption,
+                createdAt: new Date().toISOString(),
+                expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+                status: 'active',
+                views: 0,
+                replies: [],
+                reactions: []
+            };
+            
+            storiesData.unshift(story);
+            saveStories();
+            loadStories();
+            
+            showToast('📖 Story publiée ! Expire dans 24h');
+        }
+        
+        // ============ CHARGER LES STORIES ============
+        function loadStories() {
+            checkExpiredStories();
+            
+            const activeStories = storiesData.filter(s => s.status === 'active');
+            const myStories = activeStories.filter(s => s.userId === currentUserId);
+            const otherStories = activeStories.filter(s => s.userId !== currentUserId);
+            const archivedStories = storiesData.filter(s => s.status === 'archived');
+            
+            // Afficher les stories actives
+            const activeContainer = document.getElementById('activeStories');
+            activeContainer.innerHTML = '';
+            
+            if (otherStories.length === 0) {
+                activeContainer.innerHTML = '<p style="color:#a8a8a8;">Aucune story récente</p>';
+            } else {
+                const userStories = {};
+                otherStories.forEach(story => {
+                    if (!userStories[story.userId]) {
+                        userStories[story.userId] = [];
+                    }
+                    userStories[story.userId].push(story);
+                });
+                
+                Object.keys(userStories).forEach(userId => {
+                    const userStoriesList = userStories[userId];
+                    const user = registeredUsers.find(u => u.id === parseInt(userId)) || { username: 'user_' + userId, avatar: 'https://i.pravatar.cc/150?img=1' };
+                    
+                    const storyCircle = document.createElement('div');
+                    storyCircle.className = 'story-circle';
+                    storyCircle.onclick = () => openStoryViewer(userStoriesList, 0);
+                    
+                    storyCircle.innerHTML = `
+                        <img src="${user.avatar}" alt="${user.username}" style="width:60px; height:60px; border-radius:50%; border:3px solid #FFD700; object-fit:cover;">
+                        <span style="font-size:0.7rem; color:#a8a8a8;">${user.username}</span>
+                    `;
+                    
+                    activeContainer.appendChild(storyCircle);
+                });
+            }
+            
+            // Afficher mes stories
+            const myContainer = document.getElementById('myStories');
+            myContainer.innerHTML = '';
+            
+            if (myStories.length === 0) {
+                myContainer.innerHTML = '<p style="color:#a8a8a8;">Aucune story</p>';
+            } else {
+                myStories.forEach(story => {
+                    const storyItem = document.createElement('div');
+                    storyItem.className = 'notification-item';
+                    storyItem.innerHTML = `
+                        <div style="width:50px; height:70px; background:#000; border-radius:5px; overflow:hidden; flex-shrink:0;">
+                            ${story.mediaType === 'photo' ? 
+                                `<img src="${story.mediaUrl}" style="width:100%; height:100%; object-fit:cover;">` : 
+                                `<video src="${story.mediaUrl}" style="width:100%; height:100%; object-fit:cover;"></video>`}
+                        </div>
+                        <div style="flex:1;">
+                            <p style="font-size:0.9rem;">${story.caption || 'Sans légende'}</p>
+                            <p style="color:#a8a8a8; font-size:0.7rem;">👁️ ${story.views} vues</p>
+                            <p style="color:#FFD700; font-size:0.7rem;">Expire : ${formatStoryTime(story.expiresAt)}</p>
+                        </div>
+                        <button class="btn-primary" style="padding:8px 15px; font-size:0.8rem;" onclick="openStoryViewer([${JSON.stringify(story).replace(/'/g, "&#39;")}], 0)">Voir</button>
+                        <button style="background:none; border:none; color:#ff0000; cursor:pointer;" onclick="deleteStory(${story.id})">🗑️</button>
+                    `;
+                    myContainer.appendChild(storyItem);
+                });
+            }
+            
+            // Afficher les stories archivées
+            const archivedContainer = document.getElementById('archivedStories');
+            archivedContainer.innerHTML = '';
+            
+            if (archivedStories.length === 0) {
+                archivedContainer.innerHTML = '<p style="color:#a8a8a8;">Aucune story archivée</p>';
+            } else {
+                archivedStories.forEach(story => {
+                    const storyItem = document.createElement('div');
+                    storyItem.className = 'notification-item';
+                    storyItem.innerHTML = `
+                        <div style="flex:1;">
+                            <p style="font-size:0.9rem;">${story.caption || 'Sans légende'}</p>
+                            <p style="color:#a8a8a8; font-size:0.7rem;">Expirée : ${formatStoryTime(story.expiresAt)}</p>
+                        </div>
+                        <button style="background:none; border:none; color:#ff0000; cursor:pointer;" onclick="deleteStory(${story.id})">🗑️</button>
+                    `;
+                    archivedContainer.appendChild(storyItem);
+                });
+            }
+        }
+        
+        // ============ VISIONNEUSE DE STORY ============
+        function openStoryViewer(stories, startIndex) {
+            currentStoryIndex = startIndex;
+            const story = stories[currentStoryIndex];
+            const user = registeredUsers.find(u => u.id === story.userId) || { username: 'user_' + story.userId, avatar: 'https://i.pravatar.cc/150?img=1' };
+            
+            document.getElementById('storyViewerAvatar').src = user.avatar;
+            document.getElementById('storyViewerUsername').textContent = '@' + user.username;
+            document.getElementById('storyViewerTime').textContent = formatStoryTime(story.createdAt);
+            
+            const content = document.getElementById('storyViewerContent');
+            content.innerHTML = '';
+            
+            if (story.mediaType === 'photo') {
+                content.innerHTML = `<img src="${story.mediaUrl}" style="max-width:100%; max-height:100%; border-radius:10px;">`;
+            } else {
+                content.innerHTML = `<video src="${story.mediaUrl}" autoplay loop style="max-width:100%; max-height:100%; border-radius:10px;"></video>`;
+            }
+            
+            if (story.caption) {
+                content.innerHTML += `<p style="position:absolute; bottom:60px; left:20px; right:20px; color:#fff; text-shadow:1px 1px 3px #000;">${story.caption}</p>`;
+            }
+            
+            document.getElementById('storyViewer').classList.remove('hidden');
+            
+            story.views++;
+            saveStories();
+            
+            const progressBar = document.getElementById('storyProgressBar');
+            progressBar.style.width = '0%';
+            
+            clearInterval(storyViewerInterval);
+            storyViewerInterval = setInterval(() => {
+                const currentWidth = parseFloat(progressBar.style.width || '0');
+                if (currentWidth >= 100) {
+                    clearInterval(storyViewerInterval);
+                    nextStory(stories);
+                } else {
+                    progressBar.style.width = (currentWidth + 2) + '%';
+                }
+            }, 100);
+        }
+        
+        function nextStory(stories) {
+            currentStoryIndex++;
+            if (currentStoryIndex < stories.length) {
+                openStoryViewer(stories, currentStoryIndex);
+            } else {
+                closeStoryViewer();
+            }
+        }
+        
+        function closeStoryViewer() {
+            clearInterval(storyViewerInterval);
+            document.getElementById('storyViewer').classList.add('hidden');
+            loadStories();
+        }
+        
+        function deleteStory(storyId) {
+            if (confirm('🗑️ Supprimer cette story ?')) {
+                storiesData = storiesData.filter(s => s.id !== storyId);
+                saveStories();
+                loadStories();
+                showToast('🗑️ Story supprimée');
+            }
+        }
+        
+        function sendStoryReply() {
+            const input = document.getElementById('storyReplyInput');
+            const reply = input.value.trim();
+            
+            if (reply) {
+                showToast('📤 Réponse envoyée !');
+                input.value = '';
+            }
+        }
+        
+        function formatStoryTime(timestamp) {
+            const now = new Date();
+            const date = new Date(timestamp);
+            const diffMinutes = Math.floor((now - date) / 60000);
+            
+            if (diffMinutes < 1) return 'À l\'instant';
+            if (diffMinutes < 60) return 'Il y a ' + diffMinutes + ' min';
+            
+            const diffHours = Math.floor(diffMinutes / 60);
+            if (diffHours < 24) return 'Il y a ' + diffHours + ' h';
+            
+            const diffDays = Math.floor(diffHours / 24);
+            return 'Il y a ' + diffDays + ' jour(s)';
+        }
+        
+        function saveStories() {
+            localStorage.setItem('bdiamond_stories', JSON.stringify(storiesData));
+        }
+    </script>
+</body>
+</html>

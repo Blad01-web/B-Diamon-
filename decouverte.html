@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Découvrir - B Diamond</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="page">
+            <div class="page-header">🔍 Découvrir</div>
+            
+            <!-- Barre de recherche -->
+            <div class="search-bar">
+                <input type="text" placeholder="Rechercher vidéos, hashtags..." id="discoverSearch">
+                <button onclick="searchDiscover()">🔍</button>
+            </div>
+            
+            <!-- Hashtags tendance -->
+            <h3 style="margin-bottom: 15px;">🔥 Hashtags tendance</h3>
+            <div class="hashtag-list" id="hashtagList"></div>
+            
+            <!-- Catégories -->
+            <h3 style="margin: 25px 0 15px;">📂 Catégories</h3>
+            <div class="hashtag-list" id="categoryList">
+                <div class="hashtag" onclick="showToast('🎵 Musique')">🎵 Musique</div>
+                <div class="hashtag" onclick="showToast('💃 Danse')">💃 Danse</div>
+                <div class="hashtag" onclick="showToast('😂 Humour')">😂 Humour</div>
+                <div class="hashtag" onclick="showToast('🏋️ Sport')">🏋️ Sport</div>
+                <div class="hashtag" onclick="showToast('🍳 Cuisine')">🍳 Cuisine</div>
+                <div class="hashtag" onclick="showToast('🎮 Gaming')">🎮 Gaming</div>
+            </div>
+            
+            <!-- Créateurs populaires -->
+            <h3 style="margin: 25px 0 15px;">⭐ Créateurs populaires</h3>
+            <div id="popularUsers"></div>
+            
+            <!-- Vidéos tendance -->
+            <h3 style="margin: 25px 0 15px;">📈 Vidéos tendance</h3>
+            <div id="trendingVideos"></div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Accueil</span>
+            </a>
+            <a href="decouverte.html" class="nav-item active">
+                <span class="nav-icon">🔍</span>
+                <span>Découvrir</span>
+            </a>
+            <button class="nav-item create-btn" onclick="createVideo()">
+                <span class="nav-icon">➕</span>
+            </button>
+            <a href="recherche.html" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span>Recherche</span>
+            </a>
+            <a href="profil.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Afficher les hashtags
+        const hashtagList = document.getElementById('hashtagList');
+        hashtags.forEach(tag => {
+            const div = document.createElement('div');
+            div.className = 'hashtag';
+            div.innerHTML = `${tag.name} <span style="color:#a8a8a8;">(${tag.count})</span>`;
+            div.onclick = () => searchHashtag(tag.name);
+            hashtagList.appendChild(div);
+        });
+        
+        // Afficher les créateurs populaires
+        const popularUsers = document.getElementById('popularUsers');
+        users.forEach(user => {
+            const div = document.createElement('div');
+            div.className = 'notification-item';
+            const verifiedBadge = user.verified ? ' ✓' : '';
+            div.innerHTML = `
+                <img src="${user.avatar}" alt="${user.username}" onerror="this.src='https://i.pravatar.cc/150?img=1'">
+                <div style="flex:1;">
+                    <strong>@${user.username}${verifiedBadge}</strong>
+                    <p style="color:#a8a8a8; font-size: 0.9rem;">${user.bio}</p>
+                    <p style="color:#00f2ea; font-size: 0.8rem;">${formatNumber(user.followers)} abonnés</p>
+                </div>
+                <button class="btn-primary" style="padding: 8px 15px; font-size: 0.8rem;" onclick="followUser(this, '${user.username}')">
+                    Suivre
+                </button>
+            `;
+            popularUsers.appendChild(div);
+        });
+        
+        // Afficher les vidéos tendance
+        const trendingVideos = document.getElementById('trendingVideos');
+        const sortedVideos = [...videos].sort((a, b) => b.likes - a.likes);
+        
+        sortedVideos.forEach(video => {
+            const user = users.find(u => u.id === video.userId);
+            if (user) {
+                const div = document.createElement('div');
+                div.className = 'notification-item';
+                div.innerHTML = `
+                    <div style="width: 50px; height: 70px; background: #000; border-radius: 5px; overflow: hidden; flex-shrink: 0;">
+                        <video src="${video.videoUrl}" style="width: 100%; height: 100%; object-fit: cover;"></video>
+                    </div>
+                    <div style="flex:1;">
+                        <p style="font-size: 0.9rem; margin-bottom: 5px;">${video.caption}</p>
+                        <p style="color:#a8a8a8; font-size: 0.8rem;">@${user.username}</p>
+                        <p style="color:#a8a8a8; font-size: 0.8rem;">❤️ ${formatNumber(video.likes)} | 💬 ${formatNumber(video.comments)}</p>
+                    </div>
+                    <button class="btn-primary" style="padding: 8px 15px; font-size: 0.8rem;" onclick="watchVideo(${video.id})">
+                        ▶️
+                    </button>
+                `;
+                trendingVideos.appendChild(div);
+            }
+        });
+        
+        function searchDiscover() {
+            const query = document.getElementById('discoverSearch').value;
+            if (query && query.trim() !== '') {
+                showToast('🔍 Recherche : "' + query + '"');
+            }
+        }
+        
+        function searchHashtag(tagName) {
+            showToast('🔍 Recherche du hashtag ' + tagName);
+        }
+        
+        function followUser(button, username) {
+            if (button.textContent === 'Suivre') {
+                button.textContent = 'Suivi ✓';
+                button.style.background = '#00f2ea';
+                showToast('✅ Vous suivez @' + username);
+            } else {
+                button.textContent = 'Suivre';
+                button.style.background = '';
+                showToast('❌ Vous ne suivez plus @' + username);
+            }
+        }
+        
+        function watchVideo(videoId) {
+            showToast('▶️ Lecture de la vidéo...');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
