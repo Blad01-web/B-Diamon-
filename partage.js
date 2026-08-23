@@ -1,4 +1,4 @@
-// ============ B DIAMOND - SYSTÈME DE PARTAGE OBLIGATOIRE INTELLIGENT ============
+// ============ B DIAMOND - SYSTÈME DE PARTAGE OBLIGATOIRE ============
 
 let sharingData = JSON.parse(localStorage.getItem('bdiamond_sharing')) || initializeSharing();
 
@@ -13,17 +13,14 @@ function initializeSharing() {
     };
 }
 
-// ============ VÉRIFIER SI L'UTILISATEUR A DÉJÀ PARTAGÉ ============
 function hasUserShared(userId) {
     return sharingData.usersWhoShared[userId] && sharingData.usersWhoShared[userId].shared === true;
 }
 
-// ============ VÉRIFIER SI LA RÉCOMPENSE BADGE EST ENCORE DISPONIBLE ============
 function isBadgeRewardAvailable() {
     return sharingData.badgeRewardsGranted < sharingData.verifiedBadgeRewardLimit;
 }
 
-// ============ VÉRIFIER SI L'UTILISATEUR DOIT PARTAGER ============
 function mustUserShare(userId) {
     if (hasUserShared(userId)) {
         return false;
@@ -31,7 +28,6 @@ function mustUserShare(userId) {
     return true;
 }
 
-// ============ ENREGISTRER UN NOUVEL UTILISATEUR ============
 function registerNewUser(userId, username) {
     sharingData.totalRegisteredUsers++;
     sharingData.usersWhoShared[userId] = {
@@ -45,7 +41,6 @@ function registerNewUser(userId, username) {
     saveSharingData();
 }
 
-// ============ ENREGISTRER LE PARTAGE ============
 function recordShare(userId, platform) {
     if (!sharingData.usersWhoShared[userId]) {
         sharingData.usersWhoShared[userId] = {
@@ -77,9 +72,8 @@ function recordShare(userId, platform) {
             user.badgeRewarded = true;
             sharingData.badgeRewardsGranted++;
             grantVerificationBadge(userId);
-            
             saveSharingData();
-            return { success: true, badgeRewarded: true, remainingBadges: sharingData.verifiedBadgeRewardLimit - sharingData.badgeRewardsGranted };
+            return { success: true, badgeRewarded: true };
         }
         
         saveSharingData();
@@ -87,50 +81,21 @@ function recordShare(userId, platform) {
     }
     
     saveSharingData();
-    return { success: true, badgeRewarded: false, remainingShares: 5 - user.shareCount, shareCount: user.shareCount };
+    return { success: true, remainingShares: 5 - user.shareCount, shareCount: user.shareCount };
 }
 
-// ============ ATTRIBUER LE BADGE DE VÉRIFICATION ============
 function grantVerificationBadge(userId) {
     if (currentUser && currentUser.id === userId) {
-        currentUser.verification = {
-            type: 'blue',
-            badge: '💙',
-            verifiedAt: new Date().toISOString(),
-            expiresAt: null,
-            source: 'sharing_reward'
-        };
+        currentUser.verification = { type: 'blue', badge: '💙' };
         localStorage.setItem('bdiamond_current_user', JSON.stringify(currentUser));
     }
-    
     const user = registeredUsers.find(u => u.id === userId);
     if (user) {
-        user.verification = {
-            type: 'blue',
-            badge: '💙',
-            verifiedAt: new Date().toISOString(),
-            expiresAt: null,
-            source: 'sharing_reward'
-        };
+        user.verification = { type: 'blue', badge: '💙' };
         localStorage.setItem('bdiamond_users', JSON.stringify(registeredUsers));
     }
-    
-    if (typeof sendNotification === 'function') {
-        sendNotification(userId, 'reward', '💙 Badge de vérification offert !');
-    }
 }
 
-// ============ OBTENIR LES STATISTIQUES ============
-function getSharingStats() {
-    return {
-        totalUsers: sharingData.totalRegisteredUsers,
-        totalShares: sharingData.totalShares,
-        badgeRewardsGranted: sharingData.badgeRewardsGranted,
-        remainingBadges: sharingData.verifiedBadgeRewardLimit - sharingData.badgeRewardsGranted
-    };
-}
-
-// ============ SAUVEGARDE ============
 function saveSharingData() {
     localStorage.setItem('bdiamond_sharing', JSON.stringify(sharingData));
 }
@@ -141,7 +106,6 @@ function showMandatorySharingModal(userId, username) {
         return;
     }
     
-    // TON VRAI LIEN
     const shareLink = 'https://blad01-web.github.io/B-Diamon-/';
     const shareMessage = '💎 Rejoins-moi sur B Diamond ! Le nouveau réseau social qui cartonne ! 🚀\n\n📱 Lien : ' + shareLink + '\n\n🎁 Les 10 000 premiers reçoivent un badge de vérification GRATUIT !';
     
@@ -172,97 +136,26 @@ function showMandatorySharingModal(userId, username) {
             ${isBadgeRewardAvailable() ? `
                 <div style="background:rgba(255,215,0,0.1); border:1px solid #FFD700; border-radius:10px; padding:15px; margin-bottom:20px; text-align:center;">
                     <p style="color:#FFD700; font-weight:bold;">🎁 RÉCOMPENSE SPÉCIALE</p>
-                    <p style="color:#a8a8a8; font-size:0.9rem;">Encore <strong style="color:#FFD700;">${sharingData.verifiedBadgeRewardLimit - sharingData.badgeRewardsGranted}</strong> badges de vérification GRATUITS !</p>
+                    <p style="color:#a8a8a8; font-size:0.9rem;">Encore <strong style="color:#FFD700;">${sharingData.verifiedBadgeRewardLimit - sharingData.badgeRewardsGranted}</strong> badges GRATUITS !</p>
                 </div>
-            ` : `
-                <div style="background:rgba(255,0,0,0.1); border:1px solid #ff0000; border-radius:10px; padding:15px; margin-bottom:20px; text-align:center;">
-                    <p style="color:#ff0000; font-weight:bold;">⚠️ LIMITE ATTEINTE</p>
-                    <p style="color:#a8a8a8; font-size:0.9rem;">Continue à partager pour débloquer ton compte.</p>
-                </div>
-            `}
+            ` : ''}
             
             <p style="text-align:center; margin-bottom:15px; color:#FFD700; font-weight:bold;">Progression : <span id="shareProgress">0/5</span></p>
             
-            <div style="display:grid; grid-template-columns: repeat(1, 1fr); gap:10px;">
-                <button onclick="shareToWhatsAppReal('${shareMessage}', ${userId})" style="padding:15px; border-radius:10px; border:none; background:#25D366; color:#fff; font-weight:bold; cursor:pointer; font-size:1rem;">
-                    📱 Partager sur WhatsApp
-                </button>
-                <button onclick="shareToFacebookReal('${shareLink}', '${shareMessage}', ${userId})" style="padding:15px; border-radius:10px; border:none; background:#1877F2; color:#fff; font-weight:bold; cursor:pointer; font-size:1rem;">
-                    📘 Partager sur Facebook
-                </button>
-                <button onclick="shareToTwitterReal('${shareMessage}', ${userId})" style="padding:15px; border-radius:10px; border:none; background:#1DA1F2; color:#fff; font-weight:bold; cursor:pointer; font-size:1rem;">
-                    🐦 Partager sur Twitter/X
-                </button>
-                <button onclick="shareToSMSText('${shareMessage}', ${userId})" style="padding:15px; border-radius:10px; border:none; background:#FF9800; color:#fff; font-weight:bold; cursor:pointer; font-size:1rem;">
-                    💬 Partager par SMS
-                </button>
-                <button onclick="shareNative('${shareMessage}', ${userId})" style="padding:15px; border-radius:10px; border:none; background:#607D8B; color:#fff; font-weight:bold; cursor:pointer; font-size:1rem;">
-                    📤 Autre (Partage natif)
-                </button>
-            </div>
+            <button onclick="doShare('${shareMessage}', ${userId})" style="width:100%; padding:18px; border-radius:15px; border:none; background:linear-gradient(45deg, #FFD700, #FFA500); color:#000; font-weight:bold; cursor:pointer; font-size:1.2rem;">
+                📤 PARTAGER MAINTENANT
+            </button>
             
-            <p style="text-align:center; margin-top:15px; color:#a8a8a8; font-size:0.8rem;">Chaque partage compte ! Ouvre l'application et partage.</p>
+            <p style="text-align:center; margin-top:15px; color:#a8a8a8; font-size:0.8rem;">Clique et choisis WhatsApp, Facebook, ou n'importe quelle app !</p>
         </div>
     `;
     
     document.body.appendChild(modal);
 }
 
-// ============ PARTAGE RÉEL VERS WHATSAPP ============
-function shareToWhatsAppReal(message, userId) {
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = 'https://wa.me/?text=' + encodedMessage;
-    
-    window.open(whatsappUrl, '_blank');
-    
-    const result = recordShare(userId, 'whatsapp');
-    handleShareResult(result);
-    
-    showToast('📱 WhatsApp ouvert ! Partage le message à un contact.');
-}
-
-// ============ PARTAGE RÉEL VERS FACEBOOK ============
-function shareToFacebookReal(link, message, userId) {
-    const encodedLink = encodeURIComponent(link);
-    const encodedMessage = encodeURIComponent(message);
-    const facebookUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodedLink + '&quote=' + encodedMessage;
-    
-    window.open(facebookUrl, '_blank');
-    
-    const result = recordShare(userId, 'facebook');
-    handleShareResult(result);
-    
-    showToast('📘 Facebook ouvert ! Partage le message.');
-}
-
-// ============ PARTAGE RÉEL VERS TWITTER/X ============
-function shareToTwitterReal(message, userId) {
-    const encodedMessage = encodeURIComponent(message);
-    const twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodedMessage;
-    
-    window.open(twitterUrl, '_blank');
-    
-    const result = recordShare(userId, 'twitter');
-    handleShareResult(result);
-    
-    showToast('🐦 Twitter ouvert ! Partage le message.');
-}
-
-// ============ PARTAGE RÉEL PAR SMS ============
-function shareToSMSText(message, userId) {
-    const encodedMessage = encodeURIComponent(message);
-    const smsUrl = 'sms:?body=' + encodedMessage;
-    
-    window.location.href = smsUrl;
-    
-    const result = recordShare(userId, 'sms');
-    handleShareResult(result);
-    
-    showToast('💬 SMS ouvert ! Partage le message.');
-}
-
-// ============ PARTAGE NATIF (Web Share API) ============
-async function shareNative(message, userId) {
+// ============ PARTAGE UNIVERSEL (fonctionne sur tous les téléphones) ============
+async function doShare(message, userId) {
+    // Vérifier si le navigateur supporte le partage natif
     if (navigator.share) {
         try {
             await navigator.share({
@@ -273,33 +166,49 @@ async function shareNative(message, userId) {
             
             const result = recordShare(userId, 'native');
             handleShareResult(result);
-            
-            showToast('📤 Partage effectué !');
+            showToast('✅ Partage effectué !');
         } catch (error) {
-            console.log('⚠️ Partage annulé :', error.message);
+            if (error.name === 'AbortError') {
+                showToast('⚠️ Partage annulé');
+            } else {
+                console.log('⚠️ Erreur partage :', error.message);
+                fallbackShare(message, userId);
+            }
         }
     } else {
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(message).then(() => {
-                const result = recordShare(userId, 'copy');
-                handleShareResult(result);
-                showToast('📋 Message copié ! Colle-le dans WhatsApp ou autre.');
-            });
-        }
+        // Fallback : copier le message
+        fallbackShare(message, userId);
     }
 }
 
-// ============ GÉRER LE RÉSULTAT DU PARTAGE ============
+function fallbackShare(message, userId) {
+    // Copier le message dans le presse-papier
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(message).then(() => {
+            const result = recordShare(userId, 'copy');
+            handleShareResult(result);
+            showToast('📋 Message copié ! Colle-le dans WhatsApp ou autre.');
+        }).catch(() => {
+            // Autre fallback : afficher le message
+            alert('📤 Copie ce message et partage-le :\n\n' + message);
+            const result = recordShare(userId, 'manual');
+            handleShareResult(result);
+        });
+    } else {
+        alert('📤 Copie ce message et partage-le :\n\n' + message);
+        const result = recordShare(userId, 'manual');
+        handleShareResult(result);
+    }
+}
+
+// ============ GÉRER LE RÉSULTAT ============
 function handleShareResult(result) {
     if (result.success) {
         const progressElement = document.getElementById('shareProgress');
         
         if (result.badgeRewarded) {
             showToast('🎉 Badge de Vérification OFFERT ! 💙');
-            
-            if (progressElement) {
-                progressElement.textContent = '5/5 ✅';
-            }
+            if (progressElement) progressElement.textContent = '5/5 ✅';
             
             setTimeout(() => {
                 const modal = document.getElementById('mandatorySharingModal');
@@ -308,9 +217,7 @@ function handleShareResult(result) {
             }, 2000);
         } else if (result.remainingShares !== undefined) {
             const completed = 5 - result.remainingShares;
-            if (progressElement) {
-                progressElement.textContent = completed + '/5';
-            }
+            if (progressElement) progressElement.textContent = completed + '/5';
             
             if (result.remainingShares === 0) {
                 showToast('✅ Compte débloqué !');
