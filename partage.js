@@ -141,7 +141,8 @@ function showMandatorySharingModal(userId, username) {
         return;
     }
     
-    const shareLink = 'https://bdiamond.app/invite/' + username;
+    // TON VRAI LIEN
+    const shareLink = 'https://blad01-web.github.io/B-Diamon-/';
     const shareMessage = '💎 Rejoins-moi sur B Diamond ! Le nouveau réseau social qui cartonne ! 🚀\n\n📱 Lien : ' + shareLink + '\n\n🎁 Les 10 000 premiers reçoivent un badge de vérification GRATUIT !';
     
     const modal = document.createElement('div');
@@ -209,14 +210,11 @@ function showMandatorySharingModal(userId, username) {
 
 // ============ PARTAGE RÉEL VERS WHATSAPP ============
 function shareToWhatsAppReal(message, userId) {
-    // Ouvrir WhatsApp avec le message pré-rempli
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = 'https://wa.me/?text=' + encodedMessage;
     
-    // Ouvrir WhatsApp dans un nouvel onglet
     window.open(whatsappUrl, '_blank');
     
-    // Enregistrer le partage
     const result = recordShare(userId, 'whatsapp');
     handleShareResult(result);
     
@@ -270,7 +268,7 @@ async function shareNative(message, userId) {
             await navigator.share({
                 title: 'B Diamond 💎',
                 text: message,
-                url: 'https://bdiamond.app'
+                url: 'https://blad01-web.github.io/B-Diamon-/'
             });
             
             const result = recordShare(userId, 'native');
@@ -281,7 +279,6 @@ async function shareNative(message, userId) {
             console.log('⚠️ Partage annulé :', error.message);
         }
     } else {
-        // Fallback : copier le message
         if (navigator.clipboard) {
             navigator.clipboard.writeText(message).then(() => {
                 const result = recordShare(userId, 'copy');
