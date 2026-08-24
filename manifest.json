@@ -1,58 +1,40 @@
 {
-    "name": "B Diamond",
-    "short_name": "B Diamond",
-    "description": "💎 B Diamond - Le réseau social nouvelle génération",
-    "id": "bdiamond-app",
-    "start_url": "/index.html",
-    "display": "standalone",
-    "background_color": "#000000",
-    "theme_color": "#FFD700",
-    "orientation": "portrait",
-    "categories": ["social", "entertainment", "video"],
-    "icons": [
-        {
-            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23000000'/><text x='50' y='65' font-size='50' text-anchor='middle'>💎</text></svg>",
-            "sizes": "192x192",
-            "type": "image/svg+xml",
-            "purpose": "any"
-        },
-        {
-            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23000000'/><text x='50' y='65' font-size='50' text-anchor='middle'>💎</text></svg>",
-            "sizes": "512x512",
-            "type": "image/svg+xml",
-            "purpose": "any"
-        },
-        {
-            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23FFD700'/><text x='50' y='65' font-size='50' text-anchor='middle'>💎</text></svg>",
-            "sizes": "192x192",
-            "type": "image/svg+xml",
-            "purpose": "maskable"
-        }
-    ],
-    "screenshots": [
-        {
-            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 800'><rect width='400' height='800' fill='%23000000'/><text x='200' y='400' font-size='80' text-anchor='middle'>💎</text><text x='200' y='500' font-size='30' text-anchor='middle' fill='%23FFD700'>B Diamond</text></svg>",
-            "sizes": "400x800",
-            "type": "image/svg+xml"
-        }
-    ],
-    "shortcuts": [
-        {
-            "name": "Créer une vidéo",
-            "url": "/creation.html",
-            "description": "Créer du contenu"
-        },
-        {
-            "name": "Mon profil",
-            "url": "/profil.html",
-            "description": "Voir mon profil"
-        },
-        {
-            "name": "Stories",
-            "url": "/stories.html",
-            "description": "Voir les stories"
-        }
-    ],
-    "prefer_related_applications": false,
-    "display_override": ["standalone", "fullscreen", "minimal-ui"]
+  "name": "B Diamond",
+  "short_name": "B Diamond",
+  "description": "💎 B Diamond - Le réseau social nouvelle génération",
+  "id": "bdiamond-app",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#FFD700",
+  "orientation": "portrait",
+  "categories": ["social", "entertainment", "video"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Créer une vidéo",
+      "url": "creation.html",
+      "description": "Créer du contenu"
+    },
+    {
+      "name": "Mon profil",
+      "url": "profil.html",
+      "description": "Voir mon profil"
+    }
+  ],
+  "prefer_related_applications": false,
+  "display_override": ["standalone", "fullscreen", "minimal-ui"]
 }
