@@ -8,7 +8,11 @@
   "background_color": "#000000",
   "theme_color": "#FFD700",
   "orientation": "portrait",
-  "categories": ["social", "entertainment", "video"],
+  "categories": [
+    "social",
+    "entertainment",
+    "video"
+  ],
   "icons": [
     {
       "src": "icon-192.png",
@@ -48,5 +52,11 @@
     }
   ],
   "prefer_related_applications": false,
-  "display_override": ["standalone", "fullscreen", "minimal-ui"]
+  "display_override": [
+    "standalone",
+    "fullscreen",
+    "minimal-ui",
+    "browser",
+    "window-controls-overlay"
+  ]
 }
