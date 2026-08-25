@@ -1,62 +1,26 @@
-{
-  "name": "B Diamond",
-  "short_name": "B Diamond",
-  "description": "💎 B Diamond - Le réseau social nouvelle génération",
-  "id": "bdiamond-app",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#FFD700",
-  "orientation": "portrait",
-  "categories": [
-    "social",
-    "entertainment",
-    "video"
-  ],
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
-  ],
-  "shortcuts": [
-    {
-      "name": "Créer une vidéo",
-      "url": "creation.html",
-      "description": "Créer du contenu"
-    },
-    {
-      "name": "Mon profil",
-      "url": "profil.html",
-      "description": "Voir mon profil"
-    }
-  ],
-  "prefer_related_applications": false,
-  "display_override": [
-    "standalone",
-    "fullscreen",
-    "minimal-ui",
-    "browser",
-    "window-controls-overlay"
   ]
-}
