@@ -8,13 +8,12 @@
     
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-    <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="theme-color" content="#FFD700">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="B Diamond">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23FFD700'/><text x='50' y='65' font-size='50' text-anchor='middle'>💎</text></svg>">
     
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -54,7 +53,7 @@
         <!-- Flux vidéo PLEIN ÉCRAN -->
         <div id="videoFeed" class="video-feed"></div>
 
-        <!-- Navigation -->
+        <!-- Barre de navigation -->
         <nav class="bottom-nav">
             <a href="index.html" class="nav-item active"><span class="nav-icon">🏠</span><span>Accueil</span></a>
             <a href="decouverte.html" class="nav-item"><span class="nav-icon">🔍</span><span>Découvrir</span></a>
@@ -201,7 +200,7 @@
             showToast('🚪 Déconnecté !');
         }
         
-        // ============ CHARGEMENT DU CONTENU (PLEIN ÉCRAN) ============
+        // ============ CHARGEMENT DU CONTENU ============
         async function loadAllContent() {
             const feed = document.getElementById('videoFeed');
             if (!feed) return;
@@ -307,7 +306,35 @@
         }
         
         // ============ INITIALISATION ============
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Vérifier d'abord la session locale
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    document.getElementById('authScreen').classList.add('hidden');
+                    document.getElementById('app').classList.remove('hidden');
+                    loadAllContent();
+                    return;
+                } catch(e) {
+                    console.log('⚠️ Erreur session :', e.message);
+                }
+            }
+            
+            // Ensuite vérifier Supabase
+            const result = await getCurrentSupabaseUser();
+            if (result && result.user) {
+                if (result.profile) {
+                    currentUser = result.profile;
+                    localStorage.setItem('bdiamond_current_user', JSON.stringify(result.profile));
+                }
+                document.getElementById('authScreen').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
+                loadAllContent();
+                return;
+            }
+            
+            // Sinon, afficher l'écran de connexion
             document.getElementById('authScreen').classList.remove('hidden');
             document.getElementById('app').classList.add('hidden');
             showLogin();
