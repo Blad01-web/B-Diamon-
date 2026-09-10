@@ -61,6 +61,8 @@
                     <li><span>🧭 Découverte</span><div class="toggle active" onclick="toggleFeature('discover', this)"></div></li>
                     <li><span>👤 Profil utilisateur</span><div class="toggle active" onclick="toggleFeature('userProfile', this)"></div></li>
                     <li><span>📸 Photo de profil</span><div class="toggle active" onclick="toggleFeature('profilePhoto', this)"></div></li>
+                    <li><span>⭐ Mode Pro</span><div class="toggle active" onclick="toggleFeature('proMode', this)"></div></li>
+                    <li><span>💰 Monétisation</span><div class="toggle active" onclick="toggleFeature('monetization', this)"></div></li>
                     <li><span>📊 Tableau de bord utilisateur</span><div class="toggle active" onclick="toggleFeature('userDashboard', this)"></div></li>
                     <li><span>🌍 Carte géographique</span><div class="toggle active" onclick="toggleFeature('worldMap', this)"></div></li>
                     <li><span>📝 Hashtags</span><div class="toggle active" onclick="toggleFeature('hashtags', this)"></div></li>
@@ -80,7 +82,6 @@
                     <li><span>🏆 Classement</span><div class="toggle active" onclick="toggleFeature('rankings', this)"></div></li>
                     <li><span>🎁 Récompenses</span><div class="toggle active" onclick="toggleFeature('rewards', this)"></div></li>
                     <li><span>🚀 Système de Boost</span><div class="toggle active" onclick="toggleFeature('boost', this)"></div></li>
-                    <li><span>💸 Retrait d'argent</span><div class="toggle active" onclick="toggleFeature('withdrawal', this)"></div></li>
                     <li><span>👻 Mode Fantôme</span><div class="toggle active" onclick="toggleFeature('ghostMode', this)"></div></li>
                     <li><span>💬 Messages éphémères</span><div class="toggle active" onclick="toggleFeature('ephemeralMessages', this)"></div></li>
                     <li><span>🎨 Éditeur vidéo</span><div class="toggle active" onclick="toggleFeature('videoEditor', this)"></div></li>
@@ -115,8 +116,10 @@
                     <li><span>🏪 Boutique intégrée</span><div class="toggle active" onclick="toggleMonetization('shop', this)"></div></li>
                     <li><span>🚀 Boost payant</span><div class="toggle active" onclick="toggleMonetization('boost', this)"></div></li>
                     <li><span>💸 Retrait d'argent</span><div class="toggle active" onclick="toggleMonetization('withdrawal', this)"></div></li>
-                    <li><span>👻 Mode Fantôme premium</span><div class="toggle active" onclick="toggleMonetization('ghostPremium', this)"></div></li>
-                    <li><span>🎵 Studio Musical premium</span><div class="toggle active" onclick="toggleMonetization('musicPremium', this)"></div></li>
+                    <li><span>⭐ Mode Pro obligatoire</span><div class="toggle active" onclick="toggleMonetization('proModeRequired', this)"></div></li>
+                    <li><span>📍 Pays éligibles</span><div class="toggle active" onclick="toggleMonetization('eligibleCountries', this)"></div></li>
+                    <li><span>🎂 Âge minimum 18 ans</span><div class="toggle active" onclick="toggleMonetization('ageRequirement', this)"></div></li>
+                    <li><span>👁️ 60000 minutes de visionnage</span><div class="toggle active" onclick="toggleMonetization('watchTimeRequirement', this)"></div></li>
                 </ul>
             </div>
             
@@ -154,6 +157,7 @@
                     <li><span>📊 Prédiction de viralité</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
                     <li><span>🏷️ Optimisation hashtags</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
                     <li><span>🔔 Notifications intelligentes</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
+                    <li><span>👁️ Pousser vidéos pour visionnage</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
                 </ul>
             </div>
             
@@ -169,30 +173,15 @@
                 </ul>
             </div>
             
-            <!-- ============ GESTION PROFIL FONDATEUR ============ -->
+            <!-- ============ PROFIL FONDATEUR ============ -->
             <div class="founder-section">
                 <h3>👤 Profil du Fondateur</h3>
                 <ul class="settings-list">
-                    <li onclick="changeFounderPhoto()">
-                        <span>📸 Changer la photo de profil</span>
-                        <span style="color:#FFD700;">></span>
-                    </li>
-                    <li onclick="changeFounderBio()">
-                        <span>✏️ Modifier la bio</span>
-                        <span style="color:#FFD700;">></span>
-                    </li>
-                    <li onclick="changeFounderUsername()">
-                        <span>👤 Modifier le nom d'utilisateur</span>
-                        <span style="color:#FFD700;">></span>
-                    </li>
-                    <li onclick="changeFounderEmail()">
-                        <span>📧 Modifier l'email</span>
-                        <span style="color:#FFD700;">></span>
-                    </li>
-                    <li onclick="changeFounderPin()">
-                        <span>🔐 Changer le code PIN</span>
-                        <span style="color:#FFD700;">></span>
-                    </li>
+                    <li onclick="changeFounderPhoto()"><span>📸 Changer la photo</span><span style="color:#FFD700;">></span></li>
+                    <li onclick="changeFounderBio()"><span>✏️ Modifier la bio</span><span style="color:#FFD700;">></span></li>
+                    <li onclick="changeFounderUsername()"><span>👤 Modifier le nom</span><span style="color:#FFD700;">></span></li>
+                    <li onclick="changeFounderEmail()"><span>📧 Modifier l'email</span><span style="color:#FFD700;">></span></li>
+                    <li onclick="changeFounderPin()"><span>🔐 Changer le PIN</span><span style="color:#FFD700;">></span></li>
                 </ul>
             </div>
             
@@ -229,25 +218,11 @@
         
         <!-- Navigation -->
         <nav class="bottom-nav">
-            <a href="index.html" class="nav-item">
-                <span class="nav-icon">🏠</span>
-                <span>Accueil</span>
-            </a>
-            <a href="decouverte.html" class="nav-item">
-                <span class="nav-icon">🔍</span>
-                <span>Découvrir</span>
-            </a>
-            <button class="nav-item create-btn" onclick="window.location.href='creation.html'">
-                <span class="nav-icon">➕</span>
-            </button>
-            <a href="notifications.html" class="nav-item">
-                <span class="nav-icon">🔔</span>
-                <span>Messages</span>
-            </a>
-            <a href="profil.html" class="nav-item active">
-                <span class="nav-icon">👤</span>
-                <span>Profil</span>
-            </a>
+            <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Accueil</span></a>
+            <a href="decouverte.html" class="nav-item"><span class="nav-icon">🔍</span><span>Découvrir</span></a>
+            <button class="nav-item create-btn" onclick="window.location.href='creation.html'"><span class="nav-icon">➕</span></button>
+            <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span><span>Messages</span></a>
+            <a href="profil.html" class="nav-item active"><span class="nav-icon">👤</span><span>Profil</span></a>
         </nav>
     </div>
     
@@ -259,6 +234,7 @@
     <script src="hashtags.js"></script>
     <script src="features.js"></script>
     <script src="retrait.js"></script>
+    <script src="paiement.js"></script>
     <script>
         window.addEventListener('DOMContentLoaded', () => {
             if (!checkFounderSession()) {
@@ -266,7 +242,6 @@
                 setTimeout(() => window.location.href = 'profil.html', 2000);
                 return;
             }
-            
             loadFounderData();
             loadAccessLog();
         });
@@ -321,33 +296,24 @@
             if (current) showToast('✅ ' + country + ' : ' + current);
         }
         
-        // ============ FONCTIONS PROFIL FONDATEUR ============
         function changeFounderPhoto() {
             const newPhoto = prompt('📸 URL de la nouvelle photo de profil :');
-            if (newPhoto && newPhoto.trim() !== '') {
-                showToast('✅ Photo de profil mise à jour !');
-            }
+            if (newPhoto && newPhoto.trim() !== '') showToast('✅ Photo mise à jour !');
         }
         
         function changeFounderBio() {
             const newBio = prompt('✏️ Nouvelle bio :');
-            if (newBio && newBio.trim() !== '') {
-                showToast('✅ Bio mise à jour !');
-            }
+            if (newBio && newBio.trim() !== '') showToast('✅ Bio mise à jour !');
         }
         
         function changeFounderUsername() {
             const newUsername = prompt('👤 Nouveau nom d\'utilisateur :');
-            if (newUsername && newUsername.trim() !== '') {
-                showToast('✅ Nom d\'utilisateur mis à jour !');
-            }
+            if (newUsername && newUsername.trim() !== '') showToast('✅ Nom mis à jour !');
         }
         
         function changeFounderEmail() {
             const newEmail = prompt('📧 Nouvel email :');
-            if (newEmail && newEmail.trim() !== '') {
-                showToast('✅ Email mis à jour !');
-            }
+            if (newEmail && newEmail.trim() !== '') showToast('✅ Email mis à jour !');
         }
         
         function changeFounderPin() {
@@ -386,4 +352,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
