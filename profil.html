@@ -14,7 +14,6 @@
             <div class="profile-header-top">
                 <div class="page-header" style="margin-bottom: 0;">👤 Mon Profil</div>
                 <button class="settings-icon-btn" onclick="window.location.href='stories.html'" title="Stories">📖</button>
-                <button class="settings-icon-btn" onclick="window.location.href='retrait.html'" title="Retrait">💸</button>
                 <button class="settings-icon-btn" onclick="window.location.href='boost.html'" title="Boost">🚀</button>
                 <button class="settings-icon-btn" onclick="toggleDashboard()" title="Tableau de bord">📊</button>
                 <button class="settings-icon-btn" onclick="toggleSettings()" title="Paramètres">☰</button>
@@ -25,6 +24,20 @@
                 <button onclick="accessFounderDashboard()" style="width: 100%; padding: 15px; background: linear-gradient(45deg, #FFD700, #FFA500); border: 2px solid #FFD700; border-radius: 15px; color: #000; font-weight: bold; cursor: pointer; font-size: 1.1rem;">
                     👑 Espace Fondateur
                 </button>
+            </div>
+            
+            <!-- ============ MODE PRO ============ -->
+            <div id="proModeSection" style="background: linear-gradient(135deg, #1a1a1a, #2a2a0a); border: 2px solid #FFD700; border-radius: 15px; padding: 20px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 style="color: #FFD700;">⭐ Mode Pro</h3>
+                    <div class="toggle" id="proModeToggle" onclick="toggleProMode()"></div>
+                </div>
+                <p style="color: #a8a8a8; font-size: 0.9rem; margin-bottom: 10px;">
+                    Active le mode Pro pour accéder à la monétisation et aux outils avancés.
+                </p>
+                <div id="proModeStatus" style="font-size: 0.85rem;">
+                    <span style="color: #ff9900;">⏳ Non activé</span>
+                </div>
             </div>
             
             <!-- ============ TABLEAU DE BORD PERSONNEL ============ -->
@@ -57,7 +70,7 @@
                     </div>
                 </div>
                 
-                <!-- CARTE GÉOGRAPHIQUE MONDIALE -->
+                <!-- Carte mondiale -->
                 <div class="map-section">
                     <h4 style="margin-bottom: 15px;">🌍 Audience Mondiale</h4>
                     <div class="world-map">
@@ -88,16 +101,7 @@
                                 <animate attributeName="r" values="40;50;40" dur="1.5s" repeatCount="indefinite"/>
                             </circle>
                             <text x="580" y="100" fill="#fff" text-anchor="middle" font-size="12">0%</text>
-                            <ellipse cx="650" cy="280" rx="40" ry="30" fill="#2a2a2a" stroke="#333"/>
-                            <circle cx="650" cy="280" r="20" fill="rgba(255, 215, 0, 0.5)" opacity="0.6">
-                                <animate attributeName="r" values="15;25;15" dur="3s" repeatCount="indefinite"/>
-                            </circle>
-                            <text x="650" y="280" fill="#fff" text-anchor="middle" font-size="12">0%</text>
                         </svg>
-                    </div>
-                    <div class="map-legend">
-                        <span>🔴 = Audience active</span>
-                        <span>🟡 = Croissance</span>
                     </div>
                 </div>
                 
@@ -126,7 +130,6 @@
                 
                 <ul class="settings-list">
                     <li onclick="window.location.href='stories.html'"><span>📖 Stories</span><span style="color:#FFD700;">></span></li>
-                    <li onclick="window.location.href='retrait.html'"><span>💸 Retrait d'argent</span><span style="color:#FFD700;">></span></li>
                     <li onclick="window.location.href='boost.html'"><span>🚀 Booster ma visibilité</span><span style="color:#FFD700;">></span></li>
                     <li onclick="window.location.href='verification.html'"><span>💙 Vérification du compte</span><span style="color:#FFD700;">></span></li>
                     <li onclick="window.location.href='invite.html'"><span>🎁 Inviter des amis</span><span style="color:#FFD700;">></span></li>
@@ -139,7 +142,6 @@
                     <li onclick="changeProfilePhoto()"><span>📸 Changer la photo</span><span style="color:#a8a8a8;">></span></li>
                     <li onclick="showNotificationSettings()"><span>🔔 Notifications</span><span style="color:#a8a8a8;">></span></li>
                     <li onclick="showPrivacySettings()"><span>🔒 Confidentialité</span><span style="color:#a8a8a8;">></span></li>
-                    <li onclick="showAISettings()"><span>🤖 Assistant IA</span><span style="color:#a8a8a8;">></span></li>
                     <li onclick="showAboutSettings()"><span>ℹ️ À propos</span><span style="color:#a8a8a8;">v3.0.0 ></span></li>
                 </ul>
                 
@@ -156,6 +158,16 @@
                 <div id="subSettingsContent"></div>
             </div>
             
+            <!-- ============ MONÉTISATION ============ -->
+            <div id="monetizationPanel" class="settings-panel hidden">
+                <div class="settings-panel-header">
+                    <button class="back-btn" onclick="closeMonetization()">← Retour</button>
+                    <h3>💰 Monétisation</h3>
+                    <button class="close-btn" onclick="closeMonetization()">✕</button>
+                </div>
+                <div id="monetizationContent"></div>
+            </div>
+            
             <!-- En-tête profil -->
             <div id="profileHeader" style="text-align: center; margin-bottom: 20px;">
                 <img src="https://i.pravatar.cc/150?img=1" alt="Avatar" id="profileAvatar"
@@ -167,7 +179,7 @@
                     <button class="btn-primary" style="width:auto; padding:10px 20px; font-size:0.9rem;" onclick="editProfileLocal()">✏️ Modifier</button>
                     <button class="btn-primary" style="width:auto; padding:10px 20px; font-size:0.9rem; background:#FFD700; color:#000;" onclick="window.location.href='stories.html'">📖 Stories</button>
                     <button class="btn-primary" style="width:auto; padding:10px 20px; font-size:0.9rem; background:linear-gradient(45deg, #FFD700, #FFA500);" onclick="window.location.href='boost.html'">🚀 Booster</button>
-                    <button class="btn-primary" style="width:auto; padding:10px 20px; font-size:0.9rem; background:#00cc00; color:#000;" onclick="window.location.href='retrait.html'">💸 Retrait</button>
+                    <button class="btn-primary" style="width:auto; padding:10px 20px; font-size:0.9rem; background:#00cc00; color:#000;" onclick="openMonetization()">💰 Monétisation</button>
                     <button class="btn-primary" style="width:auto; padding:10px 20px; font-size:0.9rem; background:#333;" onclick="window.location.href='invite.html'">🎁 Inviter</button>
                     <button class="btn-primary" style="width:auto; padding:10px 20px; font-size:0.9rem; background:#444;" id="ghostBtn" onclick="toggleGhostModeLocal()">👻 Fantôme</button>
                 </div>
@@ -221,7 +233,6 @@
                     const user = JSON.parse(savedUser);
                     document.getElementById('profileAvatar').src = user.avatar || 'https://i.pravatar.cc/150?img=1';
                     
-                    // VÉRIFICATION DIRECTE DU FONDATEUR
                     if (user.isFounder === true || user.username === 'b_diamond_official' || user.id === 1) {
                         document.getElementById('profileUsername').innerHTML = '@' + user.username + ' <span style="color:#FFD700;">✓ 👑</span>';
                         document.getElementById('founderButton').classList.remove('hidden');
@@ -234,6 +245,8 @@
                     document.getElementById('followingCount').textContent = formatNumber(user.following || 0);
                     document.getElementById('likesCount').textContent = formatNumber(user.likes || 0);
                     document.getElementById('walletBalanceDash').textContent = (user.diamonds || 0) + ' 💎';
+                    
+                    updateProModeUI(user);
                 } catch(e) {
                     console.log('⚠️ Erreur :', e.message);
                 }
@@ -241,6 +254,160 @@
             loadUserVideos();
         });
         
+        // ============ MODE PRO ============
+        function toggleProMode() {
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (!savedUser) return;
+            
+            const user = JSON.parse(savedUser);
+            user.proMode = !user.proMode;
+            localStorage.setItem('bdiamond_current_user', JSON.stringify(user));
+            
+            const allUsers = JSON.parse(localStorage.getItem('bdiamond_users')) || [];
+            const index = allUsers.findIndex(u => u.id === user.id);
+            if (index !== -1) {
+                allUsers[index].proMode = user.proMode;
+                localStorage.setItem('bdiamond_users', JSON.stringify(allUsers));
+            }
+            
+            updateProModeUI(user);
+            
+            if (user.proMode) {
+                showToast('⭐ Mode Pro activé !');
+            } else {
+                showToast('❌ Mode Pro désactivé');
+            }
+        }
+        
+        function updateProModeUI(user) {
+            const toggle = document.getElementById('proModeToggle');
+            const status = document.getElementById('proModeStatus');
+            
+            if (user.proMode) {
+                toggle.classList.add('active');
+                status.innerHTML = '<span style="color:#00ff00;">✅ Mode Pro activé</span>';
+            } else {
+                toggle.classList.remove('active');
+                status.innerHTML = '<span style="color:#ff9900;">⏳ Non activé</span>';
+            }
+        }
+        
+        // ============ MONÉTISATION ============
+        function openMonetization() {
+            const savedUser = localStorage.getItem('bdiamond_current_user');
+            if (!savedUser) { showToast('❌ Connectez-vous'); return; }
+            
+            const user = JSON.parse(savedUser);
+            const panel = document.getElementById('monetizationPanel');
+            const content = document.getElementById('monetizationContent');
+            
+            panel.classList.remove('hidden');
+            
+            const eligibility = checkMonetizationEligibility(user);
+            
+            content.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <span style="font-size: 3rem;">💰</span>
+                    <h2 style="color:#FFD700;">Monétisation</h2>
+                    <p style="color:#a8a8a8;">Gagne de l'argent avec ton contenu</p>
+                </div>
+                
+                ${eligibility.eligible ? `
+                    <div style="background: rgba(0,255,0,0.1); border: 1px solid #00ff00; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px;">
+                        <p style="color: #00ff00; font-weight: bold; font-size: 1.2rem;">✅ ÉLIGIBLE À LA MONÉTISATION</p>
+                        <p style="color: #a8a8a8; font-size: 0.9rem;">Tu remplis toutes les conditions !</p>
+                    </div>
+                    
+                    <ul class="settings-list">
+                        <li onclick="window.location.href='retrait.html'">
+                            <span>💸 Retrait d'argent</span>
+                            <span style="color:#FFD700;">></span>
+                        </li>
+                        <li onclick="showToast('📊 Tableau des revenus')">
+                            <span>📊 Mes revenus</span>
+                            <span style="color:#FFD700;">></span>
+                        </li>
+                        <li onclick="showToast('💳 Méthodes de paiement')">
+                            <span>💳 Méthodes de paiement</span>
+                            <span style="color:#FFD700;">></span>
+                        </li>
+                        <li onclick="showToast('📈 Statistiques')">
+                            <span>📈 Statistiques détaillées</span>
+                            <span style="color:#FFD700;">></span>
+                        </li>
+                    </ul>
+                ` : `
+                    <div style="background: rgba(255,153,0,0.1); border: 1px solid #ff9900; border-radius: 15px; padding: 20px; margin-bottom: 20px;">
+                        <p style="color: #ff9900; font-weight: bold; text-align: center; margin-bottom: 15px;">⏳ CONDITIONS À REMPLIR</p>
+                        
+                        <div style="margin-bottom: 10px;">
+                            <p style="color: #fff;">📍 Pays éligible : ${eligibility.country.eligible ? '✅' : '❌'}</p>
+                            <p style="color: #a8a8a8; font-size: 0.8rem;">${eligibility.country.message}</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 10px;">
+                            <p style="color: #fff;">🎂 Âge (18+) : ${eligibility.age.eligible ? '✅' : '❌'}</p>
+                            <p style="color: #a8a8a8; font-size: 0.8rem;">${eligibility.age.message}</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 10px;">
+                            <p style="color: #fff;">⭐ Mode Pro : ${eligibility.proMode.eligible ? '✅' : '❌'}</p>
+                            <p style="color: #a8a8a8; font-size: 0.8rem;">${eligibility.proMode.message}</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 10px;">
+                            <p style="color: #fff;">👁️ Minutes de visionnage : ${eligibility.watchTime.eligible ? '✅' : '❌'}</p>
+                            <p style="color: #a8a8a8; font-size: 0.8rem;">${eligibility.watchTime.message}</p>
+                            <div style="background: #333; border-radius: 10px; height: 10px; margin-top: 5px; overflow: hidden;">
+                                <div style="background: #FFD700; height: 100%; width: ${eligibility.watchTime.progress}%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                `}
+            `;
+        }
+        
+        function checkMonetizationEligibility(user) {
+            const eligibleCountries = ['France', 'Belgique', 'Suisse', 'Canada', 'USA', 'Maroc', 'Sénégal', 'Côte d\'Ivoire', 'Cameroun', 'RDC', 'Tunisie', 'Algérie'];
+            const userCountry = user.country || 'France';
+            const countryEligible = eligibleCountries.includes(userCountry);
+            
+            const userAge = user.age || 0;
+            const ageEligible = userAge >= 18;
+            
+            const proModeEligible = user.proMode === true;
+            
+            const watchMinutes = user.watchMinutes || 0;
+            const watchTimeEligible = watchMinutes >= 60000;
+            const watchProgress = Math.min(100, (watchMinutes / 60000) * 100);
+            
+            return {
+                eligible: countryEligible && ageEligible && proModeEligible && watchTimeEligible,
+                country: {
+                    eligible: countryEligible,
+                    message: countryEligible ? `Ton pays (${userCountry}) est éligible` : `Ton pays (${userCountry}) n'est pas éligible`
+                },
+                age: {
+                    eligible: ageEligible,
+                    message: ageEligible ? 'Tu as 18 ans ou plus' : 'Tu dois avoir au moins 18 ans'
+                },
+                proMode: {
+                    eligible: proModeEligible,
+                    message: proModeEligible ? 'Mode Pro activé' : 'Active le Mode Pro ci-dessus'
+                },
+                watchTime: {
+                    eligible: watchTimeEligible,
+                    message: `${watchMinutes.toLocaleString()} / 60 000 minutes`,
+                    progress: watchProgress
+                }
+            };
+        }
+        
+        function closeMonetization() {
+            document.getElementById('monetizationPanel').classList.add('hidden');
+        }
+        
+        // ============ FONCTIONS EXISTANTES ============
         function changeProfilePhoto() {
             const fileInput = document.createElement('input');
             fileInput.type = 'file';
@@ -301,6 +468,7 @@
             document.getElementById('settingsPanel').classList.add('hidden');
             document.getElementById('subSettingsPanel').classList.add('hidden');
             document.getElementById('dashboardPanel').classList.add('hidden');
+            document.getElementById('monetizationPanel').classList.add('hidden');
         }
         function backToMainSettings() {
             document.getElementById('subSettingsPanel').classList.add('hidden');
@@ -319,10 +487,6 @@
         
         function showPrivacySettings() {
             openSubSettings('🔒 Confidentialité', `<ul class="settings-list"><li><span>🔒 Compte privé</span><div class="toggle" onclick="this.classList.toggle('active')"></div></li><li><span>📍 Localisation</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li></ul>`);
-        }
-        
-        function showAISettings() {
-            openSubSettings('🤖 Assistant IA', `<ul class="settings-list"><li><span>🤖 Assistant IA</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li></ul>`);
         }
         
         function showAboutSettings() {
@@ -364,4 +528,4 @@
         }
     </script>
 </body>
-</html>
+                                </html>
