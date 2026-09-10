@@ -15,17 +15,14 @@ function initializeFounderData() {
         founderUsername: "b_diamond_official",
         founderEmail: "contact@bdiamond.com",
         founderPin: "1234",
-        // REVENUS RÉELS (calculés dynamiquement)
         totalRevenue: 0,
         monthlyRevenue: 0,
         totalWithdrawals: 0,
         verificationRevenue: 0,
-        // STATISTIQUES RÉELLES (calculées dynamiquement)
         totalUsers: 0,
         totalVideos: 0,
         totalDiamondsSold: 0,
         premiumUsers: 0,
-        // CONFIGURATION
         commissionRate: 0.30,
         revenueHistory: [],
         transactions: [],
@@ -33,58 +30,25 @@ function initializeFounderData() {
         featurePermissions: {},
         monetizationPermissions: {},
         countryPermissions: {
-            'France': 'active',
-            'Belgique': 'active',
-            'Suisse': 'active',
-            'Canada': 'active',
-            'USA': 'active',
-            'Maroc': 'active',
-            'Algérie': 'active',
-            'Tunisie': 'active',
-            'Sénégal': 'active',
-            'Côte d\'Ivoire': 'active',
-            'Cameroun': 'active',
-            'RDC': 'active',
-            'Brésil': 'limited',
-            'Inde': 'limited',
-            'Chine': 'blocked',
-            'Russie': 'blocked'
+            'France': 'active', 'Belgique': 'active', 'Suisse': 'active', 'Canada': 'active',
+            'USA': 'active', 'Maroc': 'active', 'Algérie': 'active', 'Tunisie': 'active',
+            'Sénégal': 'active', 'Côte d\'Ivoire': 'active', 'Cameroun': 'active', 'RDC': 'active',
+            'Brésil': 'limited', 'Inde': 'limited', 'Chine': 'blocked', 'Russie': 'blocked'
         }
     };
 }
 
 // ============ CALCUL DES STATISTIQUES RÉELLES ============
 function recalculateFounderStats() {
-    // Nombre réel d'utilisateurs
     founderData.totalUsers = registeredUsers.length;
-    
-    // Nombre réel de vidéos
     founderData.totalVideos = (typeof videos !== 'undefined') ? videos.length : 0;
-    
-    // Total des diamants vendus (à partir des transactions)
-    founderData.totalDiamondsSold = founderData.transactions
-        .filter(t => t.type === 'diamonds')
-        .reduce((sum, t) => sum + (t.amount || 0), 0);
-    
-    // Revenus totaux
-    founderData.totalRevenue = founderData.transactions
-        .reduce((sum, t) => sum + (t.amount || 0), 0);
-    
-    // Revenus du mois en cours
+    founderData.totalDiamondsSold = founderData.transactions.filter(t => t.type === 'diamonds').reduce((sum, t) => sum + (t.amount || 0), 0);
+    founderData.totalRevenue = founderData.transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    founderData.monthlyRevenue = founderData.transactions
-        .filter(t => new Date(t.date) >= startOfMonth)
-        .reduce((sum, t) => sum + (t.amount || 0), 0);
-    
-    // Retraits totaux
-    founderData.totalWithdrawals = founderData.transactions
-        .filter(t => t.type === 'withdrawal')
-        .reduce((sum, t) => sum + (t.amount || 0), 0);
-    
-    // Utilisateurs premium (vérifiés)
+    founderData.monthlyRevenue = founderData.transactions.filter(t => new Date(t.date) >= startOfMonth).reduce((sum, t) => sum + (t.amount || 0), 0);
+    founderData.totalWithdrawals = founderData.transactions.filter(t => t.type === 'withdrawal').reduce((sum, t) => sum + (t.amount || 0), 0);
     founderData.premiumUsers = registeredUsers.filter(u => u.verification).length;
-    
     localStorage.setItem('bdiamond_founder_data', JSON.stringify(founderData));
 }
 
@@ -101,13 +65,7 @@ function isMonetizationEnabled(featureName) {
 
 function isCountryAllowed(countryName) {
     if (!founderData.countryPermissions) return true;
-    const status = founderData.countryPermissions[countryName];
-    return status === 'active' || status === undefined;
-}
-
-function isCountryLimited(countryName) {
-    if (!founderData.countryPermissions) return false;
-    return founderData.countryPermissions[countryName] === 'limited';
+    return founderData.countryPermissions[countryName] === 'active' || founderData.countryPermissions[countryName] === undefined;
 }
 
 function isCountryBlocked(countryName) {
@@ -121,14 +79,9 @@ function initializeAIModel() {
         version: "2.0",
         lastUpdate: new Date().toISOString(),
         contentCategories: {
-            dance: { weight: 1.0, videos: [] },
-            music: { weight: 1.0, videos: [] },
-            comedy: { weight: 1.0, videos: [] },
-            sport: { weight: 1.0, videos: [] },
-            cooking: { weight: 1.0, videos: [] },
-            gaming: { weight: 1.0, videos: [] },
-            beauty: { weight: 1.0, videos: [] },
-            education: { weight: 1.0, videos: [] }
+            dance: { weight: 1.0 }, music: { weight: 1.0 }, comedy: { weight: 1.0 },
+            sport: { weight: 1.0 }, cooking: { weight: 1.0 }, gaming: { weight: 1.0 },
+            beauty: { weight: 1.0 }, education: { weight: 1.0 }
         },
         userPreferences: {},
         trendingScores: {},
@@ -136,21 +89,15 @@ function initializeAIModel() {
     };
 }
 
-// Initialiser avec les utilisateurs par défaut
 if (registeredUsers.length === 0 && typeof users !== 'undefined') {
     registeredUsers = users;
     if (registeredUsers.length > 0) {
-        registeredUsers[0].verification = {
-            type: 'founder',
-            badge: '👑',
-            verifiedAt: '2024-01-01',
-            expiresAt: null
-        };
+        registeredUsers[0].verification = { type: 'founder', badge: '👑', verifiedAt: '2024-01-01', expiresAt: null };
     }
     localStorage.setItem('bdiamond_users', JSON.stringify(registeredUsers));
 }
 
-// ============ SYSTÈME DE VÉRIFICATION ============
+// ============ VÉRIFICATION ============
 const verificationSystem = {
     badges: {
         blue: { id: 'blue', name: "Badge Bleu", price: 4.99, color: "#1E90FF", icon: "💙" },
@@ -160,44 +107,23 @@ const verificationSystem = {
 };
 
 function requestVerification(badgeType) {
-    if (!currentUser) { showToast('❌ Connectez-vous d\'abord'); return; }
-    
-    if (!isMonetizationEnabled('verification')) {
-        showToast('❌ La vérification payante est désactivée');
-        return;
-    }
-    
+    if (!currentUser) { showToast('❌ Connectez-vous'); return; }
+    if (!isMonetizationEnabled('verification')) { showToast('❌ Vérification désactivée'); return; }
     const badge = verificationSystem.badges[badgeType];
     if (!badge) return;
-    
-    const cardNumber = prompt('💳 Numéro de carte bancaire (simulation) :');
+    const cardNumber = prompt('💳 Numéro de carte :');
     if (!cardNumber || cardNumber.length < 10) { showToast('❌ Carte invalide'); return; }
-    
-    const expiry = prompt('📅 Date d\'expiration (MM/AA) :');
+    const expiry = prompt('📅 Date d\'expiration :');
     if (!expiry) { showToast('❌ Date invalide'); return; }
-    
-    const cvv = prompt('🔒 CVV (3 chiffres) :');
+    const cvv = prompt('🔒 CVV :');
     if (!cvv || cvv.length !== 3) { showToast('❌ CVV invalide'); return; }
-    
-    const fullName = prompt('👤 Nom complet pour la vérification :');
+    const fullName = prompt('👤 Nom complet :');
     if (!fullName) { showToast('❌ Nom requis'); return; }
     
-    const request = {
-        id: verificationRequests.length + 1,
-        userId: currentUser.id,
-        username: currentUser.username,
-        badgeType: badgeType,
-        fullName: fullName,
-        amount: badge.price,
-        status: 'pending',
-        createdAt: new Date().toISOString()
-    };
-    
+    const request = { id: verificationRequests.length + 1, userId: currentUser.id, username: currentUser.username, badgeType, fullName, amount: badge.price, status: 'pending', createdAt: new Date().toISOString() };
     verificationRequests.push(request);
     localStorage.setItem('bdiamond_verification_requests', JSON.stringify(verificationRequests));
-    
     showToast('💳 Paiement en cours...');
-    
     setTimeout(() => {
         activateVerification(currentUser.id, badgeType);
         showToast('✅ ' + badge.name + ' activé !');
@@ -208,17 +134,9 @@ function requestVerification(badgeType) {
 function activateVerification(userId, badgeType) {
     const user = registeredUsers.find(u => u.id === userId);
     if (!user) return;
-    
     const badge = verificationSystem.badges[badgeType];
-    user.verification = {
-        type: badgeType,
-        badge: badge.icon,
-        verifiedAt: new Date().toISOString(),
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-    };
-    
+    user.verification = { type: badgeType, badge: badge.icon, verifiedAt: new Date().toISOString(), expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() };
     localStorage.setItem('bdiamond_users', JSON.stringify(registeredUsers));
-    
     if (currentUser && currentUser.id === userId) {
         currentUser = user;
         localStorage.setItem('bdiamond_current_user', JSON.stringify(user));
@@ -226,16 +144,8 @@ function activateVerification(userId, badgeType) {
 }
 
 function addFounderRevenue(type, amount) {
-    founderData.transactions.unshift({
-        id: founderData.transactions.length + 1,
-        type: type,
-        amount: amount,
-        date: new Date().toISOString(),
-        user: currentUser ? currentUser.username : 'unknown'
-    });
-    
+    founderData.transactions.unshift({ id: founderData.transactions.length + 1, type, amount, date: new Date().toISOString(), user: currentUser ? currentUser.username : 'unknown' });
     recalculateFounderStats();
-    localStorage.setItem('bdiamond_founder_data', JSON.stringify(founderData));
 }
 
 function getVerificationBadge(user) {
@@ -253,16 +163,14 @@ function checkVerificationExpiry() {
         if (!registeredUsers || registeredUsers.length === 0) return;
         registeredUsers.forEach(user => {
             if (user && user.verification && user.verification.expiresAt) {
-                if (new Date(user.verification.expiresAt) < new Date()) {
-                    user.verification = null;
-                }
+                if (new Date(user.verification.expiresAt) < new Date()) user.verification = null;
             }
         });
         localStorage.setItem('bdiamond_users', JSON.stringify(registeredUsers));
-    } catch(e) { console.log('⚠️ Erreur vérification :', e.message); }
+    } catch(e) {}
 }
 
-// ============ VÉRIFICATION FONDATEUR ============
+// ============ FONDATEUR ============
 function isFounder(user) {
     if (!user) return false;
     return user.id === founderData.founderId && user.username === founderData.founderUsername;
@@ -270,11 +178,7 @@ function isFounder(user) {
 
 function verifyFounderAccess(pin) {
     if (pin === founderData.founderPin) {
-        founderSession = {
-            authenticated: true,
-            timestamp: Date.now(),
-            expiresAt: Date.now() + (10 * 60 * 1000)
-        };
+        founderSession = { authenticated: true, timestamp: Date.now(), expiresAt: Date.now() + (10 * 60 * 1000) };
         localStorage.setItem('bdiamond_founder_session', JSON.stringify(founderSession));
         return true;
     }
@@ -301,7 +205,7 @@ function logFounderAccess() {
     localStorage.setItem('bdiamond_founder_data', JSON.stringify(founderData));
 }
 
-// ============ IA ALGORITHMIQUE ============
+// ============ IA ALGORITHMIQUE AMÉLIORÉE ============
 class BDiamondAI {
     constructor() {
         this.model = aiModel;
@@ -312,11 +216,7 @@ class BDiamondAI {
     analyzeUserBehavior(userId) {
         if (!userId) return;
         if (!userInteractions[userId]) {
-            userInteractions[userId] = {
-                watchedVideos: [], likedVideos: [], commentedVideos: [],
-                sharedVideos: [], skippedVideos: [], watchTime: {},
-                categories: {}, activeHours: {}, sessionCount: 0, totalWatchTime: 0
-            };
+            userInteractions[userId] = { watchedVideos: [], likedVideos: [], commentedVideos: [], sharedVideos: [], skippedVideos: [], watchTime: {}, categories: {}, activeHours: {}, sessionCount: 0, totalWatchTime: 0 };
         }
         return userInteractions[userId];
     }
@@ -331,7 +231,6 @@ class BDiamondAI {
                 if (!behavior.watchedVideos.includes(videoId)) behavior.watchedVideos.push(videoId);
                 behavior.watchTime[videoId] = (behavior.watchTime[videoId] || 0) + watchDuration;
                 behavior.totalWatchTime += watchDuration;
-                // Ajouter au watch time pour la monétisation
                 if (currentUser && currentUser.id === userId) {
                     currentUser.watchMinutes = (currentUser.watchMinutes || 0) + watchDuration;
                     localStorage.setItem('bdiamond_current_user', JSON.stringify(currentUser));
@@ -345,11 +244,8 @@ class BDiamondAI {
         
         const video = videos.find(v => v.id === videoId);
         if (video && video.category) behavior.categories[video.category] = (behavior.categories[video.category] || 0) + 1;
-        
-        const hour = new Date().getHours();
-        behavior.activeHours[hour] = (behavior.activeHours[hour] || 0) + 1;
+        behavior.activeHours[new Date().getHours()] = (behavior.activeHours[new Date().getHours()] || 0) + 1;
         behavior.sessionCount++;
-        
         localStorage.setItem('bdiamond_interactions', JSON.stringify(userInteractions));
         this.learnFromInteractions();
     }
@@ -376,7 +272,7 @@ class BDiamondAI {
             });
             this.model.lastUpdate = new Date().toISOString();
             localStorage.setItem('bdiamond_ai_model', JSON.stringify(this.model));
-        } catch(e) { console.log('⚠️ Erreur IA :', e.message); }
+        } catch(e) {}
     }
     
     calculateAvgWatchTime(behavior) {
@@ -394,11 +290,10 @@ class BDiamondAI {
     
     getRecommendations(userId, limit = 10) {
         if (!userId) return [];
+        if (!isFeatureEnabled('aiRecommendations')) return this.getTrendingVideos(limit);
         const behavior = this.analyzeUserBehavior(userId);
         const preferences = this.model.userPreferences[userId];
-        if (!preferences || !preferences.categories || Object.keys(preferences.categories).length === 0) {
-            return this.getTrendingVideos(limit);
-        }
+        if (!preferences || !preferences.categories || Object.keys(preferences.categories).length === 0) return this.getTrendingVideos(limit);
         const scoredVideos = videos.map(video => {
             let score = 0;
             if (video.category && preferences.categories[video.category]) score += preferences.categories[video.category] * 10;
@@ -418,10 +313,7 @@ class BDiamondAI {
         const now = Date.now();
         const scoredVideos = videos.map(video => {
             let score = 0;
-            score += video.likes * 0.002;
-            score += video.comments * 0.008;
-            score += video.shares * 0.015;
-            score += video.views * 0.0002;
+            score += video.likes * 0.002 + video.comments * 0.008 + video.shares * 0.015 + video.views * 0.0002;
             const hoursSinceCreation = (now - new Date(video.createdAt).getTime()) / (1000 * 60 * 60);
             score *= Math.max(0.5, 1 - (hoursSinceCreation / 72));
             return { video, score };
@@ -430,6 +322,7 @@ class BDiamondAI {
     }
     
     detectEmergingTrends() {
+        if (!isFeatureEnabled('aiTrends')) return [];
         const trends = [];
         Object.keys(this.model.contentCategories).forEach(category => {
             const weight = this.model.contentCategories[category].weight;
@@ -440,7 +333,7 @@ class BDiamondAI {
     }
     
     predictVirality(video) {
-        if (!video) return 0;
+        if (!video || !isFeatureEnabled('aiVirality')) return 0;
         let score = 0;
         score += (video.likes / (video.views || 1)) * 100;
         score += (video.comments / (video.views || 1)) * 200;
@@ -477,7 +370,7 @@ function showApp() {
     const app = document.getElementById('app');
     if (authScreen) authScreen.classList.add('hidden');
     if (app) app.classList.remove('hidden');
-    try { loadVideos(); } catch(e) { console.log('⚠️ Erreur chargement vidéos :', e.message); }
+    try { loadVideos(); } catch(e) {}
 }
 
 function logout() {
@@ -489,6 +382,7 @@ function logout() {
 
 // ============ FLUX VIDÉO ============
 function loadVideos() {
+    if (!isFeatureEnabled('videoFeed')) return;
     const feed = document.getElementById('videoFeed');
     if (!feed) return;
     if (typeof videos === 'undefined' || videos.length === 0) {
@@ -497,11 +391,8 @@ function loadVideos() {
     }
     feed.innerHTML = '';
     let recommendedVideos;
-    if (currentUser && currentUser.id) {
-        recommendedVideos = bDiamondAI.getRecommendations(currentUser.id, 10);
-    } else {
-        recommendedVideos = bDiamondAI.getTrendingVideos(10);
-    }
+    if (currentUser && currentUser.id) recommendedVideos = bDiamondAI.getRecommendations(currentUser.id, 10);
+    else recommendedVideos = bDiamondAI.getTrendingVideos(10);
     if (recommendedVideos.length === 0) recommendedVideos = videos;
     recommendedVideos.forEach(video => {
         const user = registeredUsers.find(u => u.id === video.userId);
@@ -559,6 +450,7 @@ function toggleLike(videoId, button) {
 }
 
 function toggleFollow(userId, button) {
+    if (!isFeatureEnabled('follow')) { showToast('❌ Le suivi est désactivé'); return; }
     if (button.classList.contains('following')) { button.classList.remove('following'); button.querySelector('span').textContent = 'Suivre'; }
     else { button.classList.add('following'); button.querySelector('span').textContent = 'Suivi ✓'; }
 }
@@ -573,7 +465,7 @@ function showComments(videoId) {
     });
     const newComment = prompt('💬 Commentaires :\n\n' + (commentList || 'Aucun commentaire') + '\n\nAjouter un commentaire :');
     if (newComment && newComment.trim() !== '') {
-        comments.push({ id: comments.length + 1, videoId: videoId, userId: currentUser && currentUser.id ? currentUser.id : 1, content: newComment, likes: 0, createdAt: new Date().toISOString().split('T')[0] });
+        comments.push({ id: comments.length + 1, videoId, userId: currentUser && currentUser.id ? currentUser.id : 1, content: newComment, likes: 0, createdAt: new Date().toISOString().split('T')[0] });
         if (currentUser && currentUser.id) bDiamondAI.trackInteraction(currentUser.id, videoId, 'comment');
         showToast('✅ Commentaire ajouté !');
     }
@@ -590,7 +482,7 @@ function createVideo() {
     window.location.href = 'creation.html';
 }
 
-// ============ FONCTIONS FONDATEUR ============
+// ============ FONDATEUR ============
 function accessFounderDashboard() {
     if (!currentUser || !isFounder(currentUser)) { showToast('❌ Accès refusé'); return; }
     const pin = prompt('🔐 Entrez votre code PIN Fondateur :');
@@ -598,9 +490,7 @@ function accessFounderDashboard() {
         logFounderAccess();
         showToast('👑 Bienvenue Fondateur !');
         window.location.href = 'founder.html';
-    } else {
-        showToast('❌ Code PIN incorrect');
-    }
+    } else showToast('❌ Code PIN incorrect');
 }
 
 // ============ TOAST ============
@@ -628,14 +518,8 @@ window.addEventListener('DOMContentLoaded', () => {
             } else currentUser = null;
         } catch(e) { currentUser = null; }
     }
-    
     recalculateFounderStats();
-    
     setInterval(() => {
-        try {
-            bDiamondAI.learnFromInteractions();
-            checkVerificationExpiry();
-            recalculateFounderStats();
-        } catch(e) {}
+        try { bDiamondAI.learnFromInteractions(); checkVerificationExpiry(); recalculateFounderStats(); } catch(e) {}
     }, 60000);
 });
