@@ -11,7 +11,7 @@ function initializeFeatures() {
         virtualGifts: { enabled: true, gifts: [], giftHistory: [], topGifters: [] },
         scheduledPosts: { enabled: true, scheduledVideos: [], calendar: {} },
         creatorShop: { enabled: true, products: [], orders: [] },
-        multilingual: { enabled: true, currentLanguage: 'fr', supportedLanguages: ['fr', 'en', 'es', 'ar'], translations: {} },
+        multilingual: { enabled: true, currentLanguage: 'fr', supportedLanguages: ['fr', 'en', 'es', 'ar', 'zh', 'de', 'it', 'pt', 'ru', 'ja'], translations: {} },
         musicStudio: { enabled: true, createdSounds: [], recordings: [], beats: [] },
         predictiveAnalytics: { enabled: true, predictions: {}, optimalTimes: {}, viralScores: {} },
         quests: { enabled: true, dailyQuests: [], weeklyQuests: [], seasonalEvents: [], userProgress: {} },
@@ -35,7 +35,7 @@ function initializeFeatures() {
     };
 }
 
-// ============ VÉRIFICATION DES PERMISSIONS FONDATEUR ============
+// ============ VÉRIFICATION DES PERMISSIONS ============
 function isFeatureEnabled(featureName) {
     const founderData = JSON.parse(localStorage.getItem('bdiamond_founder_data')) || {};
     if (!founderData.featurePermissions) return true;
@@ -75,12 +75,8 @@ function isProModeEnabled(userId) {
 function canMonetize(userId) {
     const user = registeredUsers.find(u => u.id === userId);
     if (!user) return false;
-    
-    // Vérifier si la monétisation est activée par le fondateur
     if (!isFeatureEnabled('monetization')) return false;
     if (!isMonetizationEnabled('withdrawal')) return false;
-    
-    // Vérifier si le pays est autorisé
     if (!isCountryAllowed(user.country || 'France')) return false;
     if (isCountryBlocked(user.country || 'France')) return false;
     
@@ -93,269 +89,163 @@ function canMonetize(userId) {
     return countryEligible && ageEligible && proModeEligible && watchTimeEligible;
 }
 
-function updateWatchTime(userId, minutes) {
-    const user = registeredUsers.find(u => u.id === userId);
-    if (user) {
-        user.watchMinutes = (user.watchMinutes || 0) + minutes;
-        localStorage.setItem('bdiamond_users', JSON.stringify(registeredUsers));
-    }
-}
-
-function pushVideosForWatchTime(userId) {
-    const user = registeredUsers.find(u => u.id === userId);
-    if (!user || user.proMode !== true) return null;
-    
-    if ((user.watchMinutes || 0) < featuresData.monetization.minWatchMinutes) {
-        if (typeof bDiamondAI !== 'undefined') {
-            return bDiamondAI.getRecommendations(userId, 20);
-        }
-    }
-    return null;
-}
-
-// ============ MODE FANTÔME ============
-function toggleGhostMode(userId) {
-    if (!isFeatureEnabled('ghostMode')) { showToast('❌ Mode Fantôme désactivé'); return; }
-    featuresData.ghostMode.activeForUsers[userId] = !featuresData.ghostMode.activeForUsers[userId];
-    if (featuresData.ghostMode.activeForUsers[userId]) {
-        featuresData.ghostMode.invisibleUsers.push(userId);
-        showToast('👻 Mode Fantôme activé');
-    } else {
-        featuresData.ghostMode.invisibleUsers = featuresData.ghostMode.invisibleUsers.filter(id => id !== userId);
-        showToast('✅ Mode Fantôme désactivé');
-    }
+// ============ STORIES AVANCÉES ============
+function createPoll(userId, question, options) {
+    if (!isFeatureEnabled('storyPolls')) { showToast('❌ Sondages désactivés'); return null; }
+    const poll = { id: Date.now(), userId, question, options, votes: {}, createdAt: new Date().toISOString() };
+    featuresData.stories2.polls.push(poll);
     saveFeaturesData();
+    return poll;
 }
 
-function isGhostModeActive(userId) {
-    return featuresData.ghostMode.activeForUsers[userId] || false;
-}
-
-// ============ MESSAGES ÉPHÉMÈRES ============
-function sendEphemeralMessage(fromUserId, toUserId, content, duration = 10) {
-    const message = {
-        id: Date.now(),
-        fromUserId: fromUserId,
-        toUserId: toUserId,
-        content: content,
-        duration: duration,
-        createdAt: new Date().toISOString(),
-        expiresAt: new Date(Date.now() + duration * 1000).toISOString(),
-        read: false
-    };
-    featuresData.ephemeralMessages.messages.push(message);
+function createQuestion(userId, question) {
+    if (!isFeatureEnabled('storyQuestions')) { showToast('❌ Questions désactivées'); return null; }
+    const q = { id: Date.now(), userId, question, answers: [], createdAt: new Date().toISOString() };
+    featuresData.stories2.questions.push(q);
     saveFeaturesData();
-    setTimeout(() => {
-        featuresData.ephemeralMessages.messages = featuresData.ephemeralMessages.messages.filter(m => m.id !== message.id);
+    return q;
+}
+
+function createCountdown(userId, title, endDate) {
+    if (!isFeatureEnabled('storyCountdowns')) { showToast('❌ Comptes à rebours désactivés'); return null; }
+    const countdown = { id: Date.now(), userId, title, endDate, createdAt: new Date().toISOString() };
+    featuresData.stories2.countdowns.push(countdown);
+    saveFeaturesData();
+    return countdown;
+}
+
+// ============ COMMUNAUTÉS AVANCÉES ============
+function createGroup(creatorId, groupData) {
+    if (!isFeatureEnabled('communities')) { showToast('❌ Communautés désactivées'); return null; }
+    const group = { id: Date.now(), creatorId, name: groupData.name, description: groupData.description, type: groupData.type || 'public', members: [creatorId], moderators: [creatorId], createdAt: new Date().toISOString() };
+    featuresData.communities.groups.push(group);
+    saveFeaturesData();
+    return group;
+}
+
+function joinGroup(userId, groupId) {
+    const group = featuresData.communities.groups.find(g => g.id === groupId);
+    if (!group) return;
+    if (!group.members.includes(userId)) {
+        group.members.push(userId);
+        if (!featuresData.communities.memberships[userId]) featuresData.communities.memberships[userId] = [];
+        featuresData.communities.memberships[userId].push(groupId);
         saveFeaturesData();
-    }, duration * 1000);
-    return message;
+    }
 }
 
-// ============ ÉDITEUR VIDÉO ============
-function saveVideoProject(userId, projectData) {
-    const project = {
-        id: Date.now(),
-        userId: userId,
-        projectData: projectData,
-        createdAt: new Date().toISOString(),
-        lastEdited: new Date().toISOString()
-    };
-    featuresData.videoEditor.savedProjects.push(project);
+// ============ GAMIFICATION AVANCÉE ============
+function addXP(userId, amount) {
+    if (!isFeatureEnabled('xpLevels')) return 0;
+    featuresData.gamification.xp[userId] = (featuresData.gamification.xp[userId] || 0) + amount;
+    const level = Math.floor(Math.sqrt(featuresData.gamification.xp[userId] / 100)) + 1;
+    featuresData.gamification.levels[userId] = level;
+    checkTrophies(userId);
     saveFeaturesData();
-    return project;
+    return level;
 }
 
-// ============ DUOS ============
-function createDuet(userId, originalVideoId, duetVideoUrl) {
-    const duet = {
-        id: Date.now(),
-        userId: userId,
-        originalVideoId: originalVideoId,
-        duetVideoUrl: duetVideoUrl,
-        createdAt: new Date().toISOString(),
-        likes: 0,
-        views: 0
-    };
-    featuresData.duets.duetVideos.push(duet);
-    saveFeaturesData();
-    return duet;
+function checkTrophies(userId) {
+    if (!isFeatureEnabled('trophies')) return;
+    const xp = featuresData.gamification.xp[userId] || 0;
+    const trophies = featuresData.gamification.trophies[userId] || [];
+    const milestones = [
+        { xp: 100, name: '🥉 Débutant', id: 'beginner' },
+        { xp: 1000, name: '🥈 Intermédiaire', id: 'intermediate' },
+        { xp: 5000, name: '🥇 Avancé', id: 'advanced' },
+        { xp: 10000, name: '💎 Expert', id: 'expert' },
+        { xp: 50000, name: '👑 Légende', id: 'legend' }
+    ];
+    milestones.forEach(m => {
+        if (xp >= m.xp && !trophies.includes(m.id)) {
+            trophies.push(m.id);
+            showToast('🏆 Trophée débloqué : ' + m.name + ' !');
+        }
+    });
+    featuresData.gamification.trophies[userId] = trophies;
 }
 
-// ============ CADEAUX VIRTUELS ============
-function sendVirtualGift(fromUserId, toUserId, giftId) {
-    if (!isMonetizationEnabled('gifts')) { showToast('❌ Cadeaux désactivés'); return null; }
-    const gift = featuresData.virtualGifts.gifts.find(g => g.id === giftId);
-    if (!gift) return null;
-    const transaction = {
-        id: Date.now(),
-        fromUserId: fromUserId,
-        toUserId: toUserId,
-        giftId: giftId,
-        giftName: gift.name,
-        price: gift.price,
-        createdAt: new Date().toISOString()
-    };
-    featuresData.virtualGifts.giftHistory.push(transaction);
+// ============ LIVE STREAMING ============
+function startLiveStream(userId, title) {
+    if (!isFeatureEnabled('liveStreaming')) { showToast('❌ Live désactivé'); return null; }
+    const stream = { id: Date.now(), userId, title, startedAt: new Date().toISOString(), viewers: 0, gifts: [], chat: [], status: 'live' };
+    featuresData.liveStreaming.liveStreams.push(stream);
     saveFeaturesData();
-    return transaction;
+    return stream;
 }
 
-// ============ PUBLICATION PROGRAMMÉE ============
-function schedulePost(userId, videoId, scheduledTime) {
-    const scheduledPost = {
-        id: Date.now(),
-        userId: userId,
-        videoId: videoId,
-        scheduledTime: scheduledTime,
-        status: 'scheduled',
-        createdAt: new Date().toISOString()
-    };
-    featuresData.scheduledPosts.scheduledVideos.push(scheduledPost);
-    saveFeaturesData();
-    return scheduledPost;
+function endLiveStream(streamId) {
+    const stream = featuresData.liveStreaming.liveStreams.find(s => s.id === streamId);
+    if (stream) {
+        stream.status = 'ended';
+        stream.endedAt = new Date().toISOString();
+        featuresData.liveStreaming.liveReplays.push(stream);
+        saveFeaturesData();
+    }
 }
 
-// ============ BOUTIQUE CRÉATEURS ============
-function addProduct(creatorId, productData) {
-    const product = {
-        id: Date.now(),
-        creatorId: creatorId,
-        name: productData.name,
-        price: productData.price,
-        image: productData.image,
-        stock: productData.stock || 100,
-        sold: 0,
-        createdAt: new Date().toISOString()
-    };
-    featuresData.creatorShop.products.push(product);
+// ============ PERSONNALISATION ============
+function setUserTheme(userId, theme) {
+    if (!isFeatureEnabled('customization')) { showToast('❌ Personnalisation désactivée'); return; }
+    featuresData.customization.themes[userId] = theme;
     saveFeaturesData();
-    return product;
+    showToast('🎨 Thème appliqué !');
+}
+
+function setAccentColor(userId, color) {
+    if (!isFeatureEnabled('customization')) return;
+    featuresData.customization.accentColors[userId] = color;
+    saveFeaturesData();
 }
 
 // ============ MULTILINGUE ============
 function setLanguage(userId, language) {
+    if (!isFeatureEnabled('multilingual')) { showToast('❌ Multilingue désactivé'); return; }
     if (!featuresData.multilingual.supportedLanguages.includes(language)) return;
     featuresData.multilingual.currentLanguage = language;
     saveFeaturesData();
     showToast('🌍 Langue changée : ' + language);
 }
 
-// ============ STUDIO MUSICAL ============
-function createSound(userId, soundData) {
-    const sound = {
-        id: Date.now(),
-        userId: userId,
-        name: soundData.name,
-        type: soundData.type,
-        duration: soundData.duration,
-        url: soundData.url,
-        createdAt: new Date().toISOString(),
-        uses: 0
+// ============ GÉOLOCALISATION ============
+function setUserLocation(userId, location) {
+    if (!isFeatureEnabled('geolocation')) return;
+    featuresData.geolocation.userLocations[userId] = {
+        latitude: location.latitude, longitude: location.longitude,
+        country: location.country, city: location.city, updatedAt: new Date().toISOString()
     };
-    featuresData.musicStudio.createdSounds.push(sound);
-    saveFeaturesData();
-    return sound;
-}
-
-// ============ QUÊTES ============
-function createDailyQuests() {
-    featuresData.quests.dailyQuests = [
-        { id: 'watch_10', title: 'Regarder 10 vidéos', reward: 10, target: 10, progress: 0 },
-        { id: 'like_5', title: 'Aimer 5 vidéos', reward: 5, target: 5, progress: 0 },
-        { id: 'comment_1', title: 'Commenter 1 vidéo', reward: 5, target: 1, progress: 0 },
-        { id: 'share_1', title: 'Partager 1 vidéo', reward: 10, target: 1, progress: 0 }
-    ];
     saveFeaturesData();
 }
 
-function completeQuest(userId, questId) {
-    const quest = featuresData.quests.dailyQuests.find(q => q.id === questId);
-    if (!quest || quest.progress >= quest.target) return;
-    quest.progress++;
-    if (quest.progress >= quest.target) {
-        const user = registeredUsers.find(u => u.id === userId);
-        if (user) { user.diamonds = (user.diamonds || 0) + quest.reward; localStorage.setItem('bdiamond_users', JSON.stringify(registeredUsers)); }
-        showToast('🎉 Quête complétée ! +' + quest.reward + ' 💎');
-    }
-    saveFeaturesData();
-}
-
-// ============ STORIES AVANCÉES ============
-function createStory(userId, storyData) {
-    const story = {
-        id: Date.now(),
-        userId: userId,
-        content: storyData.content,
-        type: storyData.type,
-        music: storyData.music,
-        createdAt: new Date().toISOString(),
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-        views: 0,
-        reactions: []
-    };
-    featuresData.stories2.stories.push(story);
-    saveFeaturesData();
-    return story;
-}
-
-// ============ COMMUNAUTÉS ============
-function createGroup(creatorId, groupData) {
-    const group = {
-        id: Date.now(),
-        creatorId: creatorId,
-        name: groupData.name,
-        description: groupData.description,
-        type: groupData.type || 'public',
-        members: [creatorId],
-        moderators: [creatorId],
-        createdAt: new Date().toISOString()
-    };
-    featuresData.communities.groups.push(group);
-    saveFeaturesData();
-    return group;
-}
-
-// ============ GAMIFICATION ============
-function addXP(userId, amount) {
-    featuresData.gamification.xp[userId] = (featuresData.gamification.xp[userId] || 0) + amount;
-    const level = Math.floor(Math.sqrt(featuresData.gamification.xp[userId] / 100)) + 1;
-    featuresData.gamification.levels[userId] = level;
-    saveFeaturesData();
-    return level;
+function getNearbyCreators(userId, radius = 10) {
+    if (!isFeatureEnabled('geolocation')) return [];
+    const userLocation = featuresData.geolocation.userLocations[userId];
+    if (!userLocation) return [];
+    const nearby = [];
+    Object.keys(featuresData.geolocation.userLocations).forEach(otherUserId => {
+        if (parseInt(otherUserId) === userId) return;
+        const otherLocation = featuresData.geolocation.userLocations[otherUserId];
+        const dx = (userLocation.latitude - otherLocation.latitude) * 111;
+        const dy = (userLocation.longitude - otherLocation.longitude) * 111;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance <= radius) {
+            const user = registeredUsers.find(u => u.id === parseInt(otherUserId));
+            nearby.push({ ...user, distance });
+        }
+    });
+    return nearby.sort((a, b) => a.distance - b.distance);
 }
 
 // ============ PORTEFEUILLE ============
 function getWalletBalance(userId) {
+    if (!isFeatureEnabled('wallet')) return 0;
     return featuresData.wallet.balances[userId] || 0;
 }
 
 function addFunds(userId, amount) {
+    if (!isFeatureEnabled('wallet')) { showToast('❌ Portefeuille désactivé'); return; }
     featuresData.wallet.balances[userId] = (featuresData.wallet.balances[userId] || 0) + amount;
-    featuresData.wallet.transactions.push({ id: Date.now(), userId: userId, type: 'deposit', amount: amount, date: new Date().toISOString() });
-    saveFeaturesData();
-}
-
-// ============ LIVE STREAMING ============
-function startLiveStream(userId, title) {
-    const stream = {
-        id: Date.now(),
-        userId: userId,
-        title: title,
-        startedAt: new Date().toISOString(),
-        viewers: 0,
-        gifts: [],
-        chat: [],
-        status: 'live'
-    };
-    featuresData.liveStreaming.liveStreams.push(stream);
-    saveFeaturesData();
-    return stream;
-}
-
-// ============ PERSONNALISATION ============
-function setUserTheme(userId, theme) {
-    featuresData.customization.themes[userId] = theme;
+    featuresData.wallet.transactions.push({ id: Date.now(), userId, type: 'deposit', amount, date: new Date().toISOString() });
     saveFeaturesData();
 }
 
@@ -366,7 +256,5 @@ function saveFeaturesData() {
 
 // ============ INITIALISATION ============
 document.addEventListener('DOMContentLoaded', () => {
-    if (featuresData.quests.dailyQuests.length === 0) createDailyQuests();
-    featuresData.stories2.stories = featuresData.stories2.stories.filter(s => new Date(s.expiresAt) > new Date());
     saveFeaturesData();
 });
