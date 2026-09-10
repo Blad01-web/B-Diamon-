@@ -100,9 +100,7 @@
             <div class="founder-section">
                 <h3>🌍 Permissions par Pays</h3>
                 <p style="color:#a8a8a8; font-size:0.8rem; margin-bottom:10px;">Clique sur un pays pour changer son statut</p>
-                <ul class="settings-list" id="countryList">
-                    <!-- Rempli dynamiquement -->
-                </ul>
+                <ul class="settings-list" id="countryList"></ul>
             </div>
             
             <!-- ============ SÉCURITÉ ============ -->
@@ -140,6 +138,17 @@
                 <div id="accessLog">
                     <p style="color:#a8a8a8;">Aucun accès enregistré</p>
                 </div>
+            </div>
+            
+            <!-- ============ RÉINITIALISATION ============ -->
+            <div class="founder-section" style="border: 2px solid #ff0000;">
+                <h3 style="color: #ff0000;">⚠️ Réinitialisation</h3>
+                <p style="color: #a8a8a8; font-size: 0.9rem; margin-bottom: 15px;">
+                    Remet TOUTES les données de l'application à zéro (utilisateurs, vidéos, likes, commentaires, revenus, statistiques).
+                </p>
+                <button class="btn-primary" style="width: 100%; background: #ff0000; color: #fff;" onclick="resetAllData()">
+                    🗑️ Réinitialiser TOUTES les données
+                </button>
             </div>
             
             <!-- Déconnexion -->
@@ -189,7 +198,6 @@
         });
         
         function loadFounderData() {
-            // TOUTES LES VALEURS SONT RÉELLES
             document.getElementById('totalRevenue').textContent = (founderData.totalRevenue || 0).toFixed(2) + '€';
             document.getElementById('monthlyRevenue').textContent = '+' + (founderData.monthlyRevenue || 0).toFixed(2) + '€ ce mois';
             document.getElementById('totalUsers').textContent = founderData.totalUsers || 0;
@@ -290,10 +298,65 @@
             showToast(isActive ? '🔧 Mode maintenance activé' : '✅ Mode maintenance désactivé');
         }
         
+        // ============ RÉINITIALISATION SANS CONSOLE ============
+        function resetAllData() {
+            const confirm1 = confirm('⚠️ ATTENTION !\n\nTu vas TOUT réinitialiser :\n- Tous les utilisateurs (sauf toi)\n- Toutes les vidéos\n- Tous les likes\n- Tous les commentaires\n- Tous les revenus\n- Toutes les statistiques\n\nContinuer ?');
+            
+            if (!confirm1) return;
+            
+            const confirm2 = confirm('🚨 DERNIÈRE CONFIRMATION\n\nCette action est IRRÉVERSIBLE.\n\nEs-tu vraiment sûr ?');
+            
+            if (!confirm2) return;
+            
+            const keysToReset = [
+                'bdiamond_users',
+                'bdiamond_videos',
+                'bdiamond_photos',
+                'bdiamond_comments',
+                'bdiamond_likes',
+                'bdiamond_follows',
+                'bdiamond_messages',
+                'bdiamond_notifications',
+                'bdiamond_stories',
+                'bdiamond_hashtags',
+                'bdiamond_sharing',
+                'bdiamond_boosts',
+                'bdiamond_withdrawals',
+                'bdiamond_payments',
+                'bdiamond_verification_requests',
+                'bdiamond_interactions',
+                'bdiamond_ai_model',
+                'bdiamond_propagation',
+                'bdiamond_features',
+                'bdiamond_security'
+            ];
+            
+            keysToReset.forEach(key => localStorage.removeItem(key));
+            
+            founderData.totalRevenue = 0;
+            founderData.monthlyRevenue = 0;
+            founderData.totalUsers = 0;
+            founderData.totalVideos = 0;
+            founderData.totalDiamondsSold = 0;
+            founderData.premiumUsers = 0;
+            founderData.totalWithdrawals = 0;
+            founderData.verificationRevenue = 0;
+            founderData.transactions = [];
+            founderData.accessLog = [];
+            
+            localStorage.setItem('bdiamond_founder_data', JSON.stringify(founderData));
+            
+            showToast('✅ Application réinitialisée !');
+            
+            setTimeout(() => {
+                window.location.href = 'profil.html';
+            }, 2000);
+        }
+        
         function closeFounderSession() {
             logoutFounder();
             window.location.href = 'profil.html';
         }
     </script>
 </body>
-                                                              </html>
+        </html>
