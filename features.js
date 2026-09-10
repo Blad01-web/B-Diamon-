@@ -4,141 +4,86 @@ let featuresData = JSON.parse(localStorage.getItem('bdiamond_features')) || init
 
 function initializeFeatures() {
     return {
-        ghostMode: {
-            enabled: false,
-            activeForUsers: {},
-            invisibleUsers: []
-        },
-        ephemeralMessages: {
-            enabled: true,
-            messages: [],
-            defaultDuration: 10,
-            screenshotBlocked: true
-        },
-        videoEditor: {
-            enabled: true,
-            tools: ['cut', 'text', 'filter', 'speed', 'reverse', 'stickers', 'transitions'],
-            savedProjects: []
-        },
-        duets: {
-            enabled: true,
-            duetVideos: [],
-            duetChains: []
-        },
+        ghostMode: { enabled: false, activeForUsers: {}, invisibleUsers: [] },
+        ephemeralMessages: { enabled: true, messages: [], defaultDuration: 10, screenshotBlocked: true },
+        videoEditor: { enabled: true, tools: ['cut', 'text', 'filter', 'speed', 'reverse', 'stickers', 'transitions'], savedProjects: [] },
+        duets: { enabled: true, duetVideos: [], duetChains: [] },
         virtualGifts: {
             enabled: true,
             gifts: [
-                { id: 'rose', name: '🌹 Rose', price: 1, animation: 'roseFloat' },
-                { id: 'heart', name: '❤️ Cœur', price: 5, animation: 'heartBurst' },
-                { id: 'diamond_gift', name: '💎 Diamant', price: 10, animation: 'diamondShine' },
-                { id: 'crown', name: '👑 Couronne', price: 50, animation: 'crownGlow' },
-                { id: 'rocket', name: '🚀 Fusée', price: 100, animation: 'rocketLaunch' }
+                { id: 'rose', name: '🌹 Rose', price: 1 },
+                { id: 'heart', name: '❤️ Cœur', price: 5 },
+                { id: 'diamond_gift', name: '💎 Diamant', price: 10 },
+                { id: 'crown', name: '👑 Couronne', price: 50 },
+                { id: 'rocket', name: '🚀 Fusée', price: 100 }
             ],
             giftHistory: [],
             topGifters: []
         },
-        scheduledPosts: {
+        scheduledPosts: { enabled: true, scheduledVideos: [], calendar: {} },
+        creatorShop: { enabled: true, products: [], orders: [] },
+        multilingual: { enabled: true, currentLanguage: 'fr', supportedLanguages: ['fr', 'en', 'es', 'ar', 'zh', 'de', 'it', 'pt', 'ru', 'ja'], translations: {} },
+        musicStudio: { enabled: true, createdSounds: [], recordings: [], beats: [] },
+        predictiveAnalytics: { enabled: true, predictions: {}, optimalTimes: {}, viralScores: {} },
+        quests: { enabled: true, dailyQuests: [], weeklyQuests: [], seasonalEvents: [], userProgress: {} },
+        aiConversational: { enabled: true, conversations: {}, voiceMessages: [], emotionalStates: {} },
+        stories2: { enabled: true, stories: [], polls: [], questions: [], countdowns: [] },
+        communities: { enabled: true, groups: [], memberships: {}, groupChats: {} },
+        geolocation: { enabled: true, userLocations: {}, localTrends: {}, nearbyCreators: [] },
+        gamification: { enabled: true, xp: {}, levels: {}, trophies: {}, streaks: {}, dailyRewards: {}, mysteryBoxes: [] },
+        wallet: { enabled: true, balances: {}, transactions: [], withdrawals: [], giftCards: [] },
+        contextualNotifications: { enabled: true, locationBased: [], trendAlerts: [], reminders: [], dailySummaries: [] },
+        liveStreaming: { enabled: true, liveStreams: [], liveChats: {}, liveGuests: {}, liveGifts: [], liveReplays: [] },
+        customization: { enabled: true, themes: {}, accentColors: {}, fonts: {}, layouts: {}, sounds: {}, animations: {}, widgets: {} },
+        proMode: { enabled: true, requiredForMonetization: true },
+        monetization: {
             enabled: true,
-            scheduledVideos: [],
-            calendar: {}
-        },
-        creatorShop: {
-            enabled: true,
-            products: [],
-            orders: []
-        },
-        multilingual: {
-            enabled: true,
-            currentLanguage: 'fr',
-            supportedLanguages: ['fr', 'en', 'es', 'ar', 'zh', 'de', 'it', 'pt', 'ru', 'ja'],
-            translations: {}
-        },
-        musicStudio: {
-            enabled: true,
-            createdSounds: [],
-            recordings: [],
-            beats: []
-        },
-        predictiveAnalytics: {
-            enabled: true,
-            predictions: {},
-            optimalTimes: {},
-            viralScores: {}
-        },
-        quests: {
-            enabled: true,
-            dailyQuests: [],
-            weeklyQuests: [],
-            seasonalEvents: [],
-            userProgress: {}
-        },
-        aiConversational: {
-            enabled: true,
-            conversations: {},
-            voiceMessages: [],
-            emotionalStates: {}
-        },
-        stories2: {
-            enabled: true,
-            stories: [],
-            polls: [],
-            questions: [],
-            countdowns: []
-        },
-        communities: {
-            enabled: true,
-            groups: [],
-            memberships: {},
-            groupChats: {}
-        },
-        geolocation: {
-            enabled: true,
-            userLocations: {},
-            localTrends: {},
-            nearbyCreators: []
-        },
-        gamification: {
-            enabled: true,
-            xp: {},
-            levels: {},
-            trophies: {},
-            streaks: {},
-            dailyRewards: {},
-            mysteryBoxes: []
-        },
-        wallet: {
-            enabled: true,
-            balances: {},
-            transactions: [],
-            withdrawals: [],
-            giftCards: []
-        },
-        contextualNotifications: {
-            enabled: true,
-            locationBased: [],
-            trendAlerts: [],
-            reminders: [],
-            dailySummaries: []
-        },
-        liveStreaming: {
-            enabled: true,
-            liveStreams: [],
-            liveChats: {},
-            liveGuests: {},
-            liveGifts: [],
-            liveReplays: []
-        },
-        customization: {
-            enabled: true,
-            themes: {},
-            accentColors: {},
-            fonts: {},
-            layouts: {},
-            sounds: {},
-            animations: {},
-            widgets: {}
+            eligibleCountries: ['France', 'Belgique', 'Suisse', 'Canada', 'USA', 'Maroc', 'Sénégal', 'Côte d\'Ivoire', 'Cameroun', 'RDC', 'Tunisie', 'Algérie'],
+            minAge: 18,
+            minWatchMinutes: 60000,
+            periodDays: 90
         }
     };
+}
+
+// ============ MODE PRO ET MONÉTISATION ============
+
+function isProModeEnabled(userId) {
+    const user = registeredUsers.find(u => u.id === userId);
+    return user && user.proMode === true;
+}
+
+function canMonetize(userId) {
+    const user = registeredUsers.find(u => u.id === userId);
+    if (!user) return false;
+    
+    const eligibleCountries = ['France', 'Belgique', 'Suisse', 'Canada', 'USA', 'Maroc', 'Sénégal', 'Côte d\'Ivoire', 'Cameroun', 'RDC', 'Tunisie', 'Algérie'];
+    const countryEligible = eligibleCountries.includes(user.country || 'France');
+    const ageEligible = (user.age || 0) >= 18;
+    const proModeEligible = user.proMode === true;
+    const watchTimeEligible = (user.watchMinutes || 0) >= 60000;
+    
+    return countryEligible && ageEligible && proModeEligible && watchTimeEligible;
+}
+
+function updateWatchTime(userId, minutes) {
+    const user = registeredUsers.find(u => u.id === userId);
+    if (user) {
+        user.watchMinutes = (user.watchMinutes || 0) + minutes;
+        localStorage.setItem('bdiamond_users', JSON.stringify(registeredUsers));
+    }
+}
+
+function pushVideosForWatchTime(userId) {
+    const user = registeredUsers.find(u => u.id === userId);
+    if (!user || user.proMode !== true) return null;
+    
+    if ((user.watchMinutes || 0) < 60000) {
+        if (typeof bDiamondAI !== 'undefined') {
+            return bDiamondAI.getRecommendations(userId, 20);
+        }
+    }
+    return null;
 }
 
 // ============ MODE FANTÔME ============
@@ -152,7 +97,6 @@ function toggleGhostMode(userId) {
         featuresData.ghostMode.invisibleUsers = featuresData.ghostMode.invisibleUsers.filter(id => id !== userId);
         showToast('✅ Mode Fantôme désactivé');
     }
-    
     saveFeaturesData();
 }
 
@@ -170,14 +114,12 @@ function sendEphemeralMessage(fromUserId, toUserId, content, duration = 10) {
         duration: duration,
         createdAt: new Date().toISOString(),
         expiresAt: new Date(Date.now() + duration * 1000).toISOString(),
-        read: false,
-        screenshotAttempted: false
+        read: false
     };
     
     featuresData.ephemeralMessages.messages.push(message);
     saveFeaturesData();
     
-    // Auto-destruction
     setTimeout(() => {
         featuresData.ephemeralMessages.messages = featuresData.ephemeralMessages.messages.filter(m => m.id !== message.id);
         saveFeaturesData();
@@ -195,7 +137,6 @@ function saveVideoProject(userId, projectData) {
         createdAt: new Date().toISOString(),
         lastEdited: new Date().toISOString()
     };
-    
     featuresData.videoEditor.savedProjects.push(project);
     saveFeaturesData();
     return project;
@@ -212,7 +153,6 @@ function createDuet(userId, originalVideoId, duetVideoUrl) {
         likes: 0,
         views: 0
     };
-    
     featuresData.duets.duetVideos.push(duet);
     saveFeaturesData();
     return duet;
@@ -234,10 +174,7 @@ function sendVirtualGift(fromUserId, toUserId, giftId) {
     };
     
     featuresData.virtualGifts.giftHistory.push(transaction);
-    
-    // Mettre à jour le classement des gifters
     updateTopGifters(fromUserId);
-    
     saveFeaturesData();
     return transaction;
 }
@@ -268,24 +205,12 @@ function schedulePost(userId, videoId, scheduledTime) {
         status: 'scheduled',
         createdAt: new Date().toISOString()
     };
-    
     featuresData.scheduledPosts.scheduledVideos.push(scheduledPost);
     saveFeaturesData();
-    
-    // Simuler la publication automatique
-    const delay = new Date(scheduledTime) - new Date();
-    if (delay > 0) {
-        setTimeout(() => {
-            scheduledPost.status = 'published';
-            saveFeaturesData();
-            showToast('📹 Vidéo publiée automatiquement !');
-        }, delay);
-    }
-    
     return scheduledPost;
 }
 
-// ============ BOUTIQUE DE CRÉATEURS ============
+// ============ BOUTIQUE CRÉATEURS ============
 function addProduct(creatorId, productData) {
     const product = {
         id: Date.now(),
@@ -297,7 +222,6 @@ function addProduct(creatorId, productData) {
         sold: 0,
         createdAt: new Date().toISOString()
     };
-    
     featuresData.creatorShop.products.push(product);
     saveFeaturesData();
     return product;
@@ -334,20 +258,10 @@ function setLanguage(userId, language) {
 }
 
 function translateText(text, targetLanguage) {
-    // Simulation de traduction
     const translations = {
-        'fr': 'Bonjour',
-        'en': 'Hello',
-        'es': 'Hola',
-        'ar': 'مرحبا',
-        'zh': '你好',
-        'de': 'Hallo',
-        'it': 'Ciao',
-        'pt': 'Olá',
-        'ru': 'Привет',
-        'ja': 'こんにちは'
+        'fr': 'Bonjour', 'en': 'Hello', 'es': 'Hola', 'ar': 'مرحبا', 'zh': '你好',
+        'de': 'Hallo', 'it': 'Ciao', 'pt': 'Olá', 'ru': 'Привет', 'ja': 'こんにちは'
     };
-    
     return translations[targetLanguage] || text;
 }
 
@@ -363,7 +277,6 @@ function createSound(userId, soundData) {
         createdAt: new Date().toISOString(),
         uses: 0
     };
-    
     featuresData.musicStudio.createdSounds.push(sound);
     saveFeaturesData();
     return sound;
@@ -371,7 +284,7 @@ function createSound(userId, soundData) {
 
 // ============ ANALYSES PRÉDICTIVES ============
 function predictViralityScore(video) {
-    const score = bDiamondAI ? bDiamondAI.predictVirality(video) : 0;
+    const score = (typeof bDiamondAI !== 'undefined') ? bDiamondAI.predictVirality(video) : 0;
     
     const prediction = {
         videoId: video.id,
@@ -392,7 +305,7 @@ function predictViralityScore(video) {
 }
 
 function getOptimalPostingTime(userId) {
-    if (bDiamondAI && bDiamondAI.model.userPreferences[userId]) {
+    if (typeof bDiamondAI !== 'undefined' && bDiamondAI.model.userPreferences[userId]) {
         const activeHours = bDiamondAI.model.userPreferences[userId].activeHours;
         let bestHour = '20';
         let maxActivity = 0;
@@ -403,13 +316,12 @@ function getOptimalPostingTime(userId) {
                 bestHour = hour;
             }
         });
-        
         return bestHour + ':00';
     }
     return '20:00';
 }
 
-// ============ QUÊTES ET MISSIONS ============
+// ============ QUÊTES ============
 function createDailyQuests() {
     featuresData.quests.dailyQuests = [
         { id: 'watch_10', title: 'Regarder 10 vidéos', reward: 10, target: 10, progress: 0 },
@@ -427,7 +339,6 @@ function completeQuest(userId, questId) {
     quest.progress++;
     
     if (quest.progress >= quest.target) {
-        // Récompenser l'utilisateur
         const user = registeredUsers.find(u => u.id === userId);
         if (user) {
             user.diamonds = (user.diamonds || 0) + quest.reward;
@@ -435,7 +346,6 @@ function completeQuest(userId, questId) {
         }
         showToast('🎉 Quête complétée ! +' + quest.reward + ' 💎');
     }
-    
     saveFeaturesData();
 }
 
@@ -445,15 +355,12 @@ function chatWithAI(userId, message) {
         featuresData.aiConversational.conversations[userId] = [];
     }
     
-    const userMessage = {
+    featuresData.aiConversational.conversations[userId].push({
         role: 'user',
         content: message,
         timestamp: new Date().toISOString()
-    };
+    });
     
-    featuresData.aiConversational.conversations[userId].push(userMessage);
-    
-    // Générer une réponse intelligente
     const aiResponse = {
         role: 'ai',
         content: generateAIConversationalResponse(message),
@@ -462,26 +369,15 @@ function chatWithAI(userId, message) {
     
     featuresData.aiConversational.conversations[userId].push(aiResponse);
     saveFeaturesData();
-    
     return aiResponse;
 }
 
 function generateAIConversationalResponse(message) {
     const msg = message.toLowerCase();
-    
-    if (msg.includes('bonjour') || msg.includes('salut')) {
-        return '👋 Bonjour ! Comment puis-je t\'aider aujourd\'hui ?';
-    }
-    if (msg.includes('vidéo') || msg.includes('video')) {
-        return '📹 Pour tes vidéos, je te conseille de les rendre courtes (15-30s) et dynamiques !';
-    }
-    if (msg.includes('abonné') || msg.includes('followers')) {
-        return '👥 Pour gagner des abonnés, publie régulièrement et interagis avec ta communauté !';
-    }
-    if (msg.includes('merci')) {
-        return '🙏 Avec plaisir ! Je suis là pour t\'aider !';
-    }
-    
+    if (msg.includes('bonjour') || msg.includes('salut')) return '👋 Bonjour ! Comment puis-je t\'aider aujourd\'hui ?';
+    if (msg.includes('vidéo') || msg.includes('video')) return '📹 Pour tes vidéos, je te conseille de les rendre courtes (15-30s) et dynamiques !';
+    if (msg.includes('abonné') || msg.includes('followers')) return '👥 Pour gagner des abonnés, publie régulièrement et interagis avec ta communauté !';
+    if (msg.includes('merci')) return '🙏 Avec plaisir ! Je suis là pour t\'aider !';
     return '🤖 Je peux t\'aider avec tes vidéos, ton audience, les hashtags, et bien plus !';
 }
 
@@ -498,7 +394,6 @@ function createStory(userId, storyData) {
         views: 0,
         reactions: []
     };
-    
     featuresData.stories2.stories.push(story);
     saveFeaturesData();
     return story;
@@ -513,7 +408,6 @@ function createPoll(userId, question, options) {
         votes: {},
         createdAt: new Date().toISOString()
     };
-    
     featuresData.stories2.polls.push(poll);
     saveFeaturesData();
     return poll;
@@ -531,7 +425,6 @@ function createGroup(creatorId, groupData) {
         moderators: [creatorId],
         createdAt: new Date().toISOString()
     };
-    
     featuresData.communities.groups.push(group);
     saveFeaturesData();
     return group;
@@ -566,24 +459,19 @@ function getNearbyCreators(userId, radius = 10) {
     if (!userLocation) return [];
     
     const nearby = [];
-    
     Object.keys(featuresData.geolocation.userLocations).forEach(otherUserId => {
         if (parseInt(otherUserId) === userId) return;
-        
         const otherLocation = featuresData.geolocation.userLocations[otherUserId];
         const distance = calculateDistance(userLocation, otherLocation);
-        
         if (distance <= radius) {
             const user = registeredUsers.find(u => u.id === parseInt(otherUserId));
             nearby.push({ ...user, distance: distance });
         }
     });
-    
     return nearby.sort((a, b) => a.distance - b.distance);
 }
 
 function calculateDistance(loc1, loc2) {
-    // Formule simplifiée
     const dx = (loc1.latitude - loc2.latitude) * 111;
     const dy = (loc1.longitude - loc2.longitude) * 111;
     return Math.sqrt(dx * dx + dy * dy);
@@ -592,14 +480,9 @@ function calculateDistance(loc1, loc2) {
 // ============ GAMIFICATION ============
 function addXP(userId, amount) {
     featuresData.gamification.xp[userId] = (featuresData.gamification.xp[userId] || 0) + amount;
-    
-    // Calculer le niveau
     const level = Math.floor(Math.sqrt(featuresData.gamification.xp[userId] / 100)) + 1;
     featuresData.gamification.levels[userId] = level;
-    
-    // Vérifier les trophées
     checkTrophies(userId);
-    
     saveFeaturesData();
     return level;
 }
@@ -633,7 +516,6 @@ function getWalletBalance(userId) {
 
 function addFunds(userId, amount) {
     featuresData.wallet.balances[userId] = (featuresData.wallet.balances[userId] || 0) + amount;
-    
     featuresData.wallet.transactions.push({
         id: Date.now(),
         userId: userId,
@@ -641,7 +523,6 @@ function addFunds(userId, amount) {
         amount: amount,
         date: new Date().toISOString()
     });
-    
     saveFeaturesData();
 }
 
@@ -650,7 +531,6 @@ function withdrawFunds(userId, amount) {
     if (balance < amount) return false;
     
     featuresData.wallet.balances[userId] = balance - amount;
-    
     featuresData.wallet.withdrawals.push({
         id: Date.now(),
         userId: userId,
@@ -658,7 +538,6 @@ function withdrawFunds(userId, amount) {
         status: 'processing',
         date: new Date().toISOString()
     });
-    
     saveFeaturesData();
     return true;
 }
@@ -675,20 +554,11 @@ function sendContextualNotification(userId, type, message) {
     };
     
     switch(type) {
-        case 'location':
-            featuresData.contextualNotifications.locationBased.push(notification);
-            break;
-        case 'trend':
-            featuresData.contextualNotifications.trendAlerts.push(notification);
-            break;
-        case 'reminder':
-            featuresData.contextualNotifications.reminders.push(notification);
-            break;
-        case 'summary':
-            featuresData.contextualNotifications.dailySummaries.push(notification);
-            break;
+        case 'location': featuresData.contextualNotifications.locationBased.push(notification); break;
+        case 'trend': featuresData.contextualNotifications.trendAlerts.push(notification); break;
+        case 'reminder': featuresData.contextualNotifications.reminders.push(notification); break;
+        case 'summary': featuresData.contextualNotifications.dailySummaries.push(notification); break;
     }
-    
     saveFeaturesData();
 }
 
@@ -704,7 +574,6 @@ function startLiveStream(userId, title) {
         chat: [],
         status: 'live'
     };
-    
     featuresData.liveStreaming.liveStreams.push(stream);
     saveFeaturesData();
     return stream;
@@ -738,12 +607,10 @@ function saveFeaturesData() {
 
 // ============ INITIALISATION ============
 document.addEventListener('DOMContentLoaded', () => {
-    // Créer les quêtes quotidiennes
     if (featuresData.quests.dailyQuests.length === 0) {
         createDailyQuests();
     }
     
-    // Vérifier les stories expirées
     featuresData.stories2.stories = featuresData.stories2.stories.filter(s => 
         new Date(s.expiresAt) > new Date()
     );
