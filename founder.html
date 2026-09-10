@@ -14,7 +14,7 @@
                 <p style="color:#FFD700;">Contrôle Total - B Diamond</p>
             </div>
             
-            <!-- Revenus -->
+            <!-- Revenus RÉELS -->
             <div class="founder-section">
                 <h3>💰 Revenus Totaux</h3>
                 <div class="revenue-display">
@@ -23,7 +23,7 @@
                 </div>
             </div>
             
-            <!-- Statistiques -->
+            <!-- Statistiques RÉELLES -->
             <div class="founder-stats">
                 <div class="stat-card gold">
                     <span class="stat-icon">👥</span>
@@ -38,18 +38,18 @@
                 <div class="stat-card gold">
                     <span class="stat-icon">💎</span>
                     <span class="stat-value" id="totalDiamonds">0</span>
-                    <span class="stat-label">Diamants</span>
+                    <span class="stat-label">Diamants vendus</span>
                 </div>
                 <div class="stat-card gold">
-                    <span class="stat-icon">💸</span>
-                    <span class="stat-value" id="totalWithdrawals">0€</span>
-                    <span class="stat-label">Retraits</span>
+                    <span class="stat-icon">⭐</span>
+                    <span class="stat-value" id="premiumUsers">0</span>
+                    <span class="stat-label">Premium</span>
                 </div>
             </div>
             
-            <!-- ============ PERMISSIONS FONCTIONNALITÉS DE BASE ============ -->
+            <!-- ============ PERMISSIONS FONCTIONNALITÉS ============ -->
             <div class="founder-section">
-                <h3>🔧 Permissions Fonctionnalités de Base</h3>
+                <h3>🔧 Permissions Fonctionnalités</h3>
                 <ul class="settings-list">
                     <li><span>📹 Flux vidéo</span><div class="toggle active" onclick="toggleFeature('videoFeed', this)"></div></li>
                     <li><span>➕ Création de contenu</span><div class="toggle active" onclick="toggleFeature('contentCreation', this)"></div></li>
@@ -66,98 +66,42 @@
                     <li><span>📊 Tableau de bord utilisateur</span><div class="toggle active" onclick="toggleFeature('userDashboard', this)"></div></li>
                     <li><span>🌍 Carte géographique</span><div class="toggle active" onclick="toggleFeature('worldMap', this)"></div></li>
                     <li><span>📝 Hashtags</span><div class="toggle active" onclick="toggleFeature('hashtags', this)"></div></li>
-                </ul>
-            </div>
-            
-            <!-- ============ PERMISSIONS FONCTIONNALITÉS AVANCÉES ============ -->
-            <div class="founder-section">
-                <h3>🚀 Permissions Fonctionnalités Avancées</h3>
-                <ul class="settings-list">
-                    <li><span>🤖 Assistant IA</span><div class="toggle active" onclick="toggleFeature('aiAssistant', this)"></div></li>
-                    <li><span>💬 IA Conversationnelle</span><div class="toggle active" onclick="toggleFeature('aiConversational', this)"></div></li>
-                    <li><span>📊 Analyses Prédictives</span><div class="toggle active" onclick="toggleFeature('predictiveAnalytics', this)"></div></li>
-                    <li><span>💙 Vérification payante</span><div class="toggle active" onclick="toggleFeature('verification', this)"></div></li>
-                    <li><span>🎁 Système d'invitation</span><div class="toggle active" onclick="toggleFeature('invitations', this)"></div></li>
-                    <li><span>🎯 Défis hebdomadaires</span><div class="toggle active" onclick="toggleFeature('challenges', this)"></div></li>
+                    <li><span>🚀 Boost</span><div class="toggle active" onclick="toggleFeature('boost', this)"></div></li>
+                    <li><span>📖 Stories</span><div class="toggle active" onclick="toggleFeature('stories', this)"></div></li>
+                    <li><span>👻 Mode Fantôme</span><div class="toggle active" onclick="toggleFeature('ghostMode', this)"></div></li>
+                    <li><span>🎁 Invitations</span><div class="toggle active" onclick="toggleFeature('invitations', this)"></div></li>
+                    <li><span>🎯 Défis</span><div class="toggle active" onclick="toggleFeature('challenges', this)"></div></li>
                     <li><span>🏆 Classement</span><div class="toggle active" onclick="toggleFeature('rankings', this)"></div></li>
                     <li><span>🎁 Récompenses</span><div class="toggle active" onclick="toggleFeature('rewards', this)"></div></li>
-                    <li><span>🚀 Système de Boost</span><div class="toggle active" onclick="toggleFeature('boost', this)"></div></li>
-                    <li><span>👻 Mode Fantôme</span><div class="toggle active" onclick="toggleFeature('ghostMode', this)"></div></li>
-                    <li><span>💬 Messages éphémères</span><div class="toggle active" onclick="toggleFeature('ephemeralMessages', this)"></div></li>
-                    <li><span>🎨 Éditeur vidéo</span><div class="toggle active" onclick="toggleFeature('videoEditor', this)"></div></li>
-                    <li><span>🤝 Duos et réactions</span><div class="toggle active" onclick="toggleFeature('duets', this)"></div></li>
-                    <li><span>🎁 Cadeaux virtuels</span><div class="toggle active" onclick="toggleFeature('virtualGifts', this)"></div></li>
-                    <li><span>📅 Publication programmée</span><div class="toggle active" onclick="toggleFeature('scheduledPosts', this)"></div></li>
-                    <li><span>🏪 Boutique créateurs</span><div class="toggle active" onclick="toggleFeature('creatorShop', this)"></div></li>
-                    <li><span>🌐 Multilingue</span><div class="toggle active" onclick="toggleFeature('multilingual', this)"></div></li>
-                    <li><span>🎵 Studio musical</span><div class="toggle active" onclick="toggleFeature('musicStudio', this)"></div></li>
-                    <li><span>🎯 Quêtes et missions</span><div class="toggle active" onclick="toggleFeature('quests', this)"></div></li>
-                    <li><span>🎬 Stories avancées</span><div class="toggle active" onclick="toggleFeature('stories2', this)"></div></li>
-                    <li><span>👥 Communautés</span><div class="toggle active" onclick="toggleFeature('communities', this)"></div></li>
-                    <li><span>📍 Géolocalisation</span><div class="toggle active" onclick="toggleFeature('geolocation', this)"></div></li>
-                    <li><span>🎮 Gamification</span><div class="toggle active" onclick="toggleFeature('gamification', this)"></div></li>
-                    <li><span>💰 Portefeuille</span><div class="toggle active" onclick="toggleFeature('wallet', this)"></div></li>
-                    <li><span>🔔 Notifications contextuelles</span><div class="toggle active" onclick="toggleFeature('contextualNotifications', this)"></div></li>
-                    <li><span>📹 Live streaming</span><div class="toggle active" onclick="toggleFeature('liveStreaming', this)"></div></li>
-                    <li><span>🎨 Personnalisation</span><div class="toggle active" onclick="toggleFeature('customization', this)"></div></li>
                 </ul>
             </div>
             
             <!-- ============ PERMISSIONS MONÉTISATION ============ -->
             <div class="founder-section">
-                <h3>💰 Permissions de Monétisation</h3>
+                <h3>💰 Permissions Monétisation</h3>
                 <ul class="settings-list">
                     <li><span>💎 Vente de diamants</span><div class="toggle active" onclick="toggleMonetization('diamondSales', this)"></div></li>
                     <li><span>📱 Abonnements Premium</span><div class="toggle active" onclick="toggleMonetization('premium', this)"></div></li>
                     <li><span>💙 Vérification payante</span><div class="toggle active" onclick="toggleMonetization('verification', this)"></div></li>
                     <li><span>🎁 Cadeaux virtuels</span><div class="toggle active" onclick="toggleMonetization('gifts', this)"></div></li>
                     <li><span>📢 Publicités</span><div class="toggle active" onclick="toggleMonetization('ads', this)"></div></li>
-                    <li><span>💸 Pourboires aux créateurs</span><div class="toggle active" onclick="toggleMonetization('tips', this)"></div></li>
-                    <li><span>🏪 Boutique intégrée</span><div class="toggle active" onclick="toggleMonetization('shop', this)"></div></li>
+                    <li><span>💸 Pourboires</span><div class="toggle active" onclick="toggleMonetization('tips', this)"></div></li>
+                    <li><span>🏪 Boutique</span><div class="toggle active" onclick="toggleMonetization('shop', this)"></div></li>
                     <li><span>🚀 Boost payant</span><div class="toggle active" onclick="toggleMonetization('boost', this)"></div></li>
                     <li><span>💸 Retrait d'argent</span><div class="toggle active" onclick="toggleMonetization('withdrawal', this)"></div></li>
                     <li><span>⭐ Mode Pro obligatoire</span><div class="toggle active" onclick="toggleMonetization('proModeRequired', this)"></div></li>
                     <li><span>📍 Pays éligibles</span><div class="toggle active" onclick="toggleMonetization('eligibleCountries', this)"></div></li>
                     <li><span>🎂 Âge minimum 18 ans</span><div class="toggle active" onclick="toggleMonetization('ageRequirement', this)"></div></li>
-                    <li><span>👁️ 60000 minutes de visionnage</span><div class="toggle active" onclick="toggleMonetization('watchTimeRequirement', this)"></div></li>
+                    <li><span>👁️ 60000 minutes visionnage</span><div class="toggle active" onclick="toggleMonetization('watchTimeRequirement', this)"></div></li>
                 </ul>
             </div>
             
-            <!-- ============ PERMISSIONS PAR PAYS ============ -->
+            <!-- ============ PERMISSIONS PAYS FONCTIONNELLES ============ -->
             <div class="founder-section">
                 <h3>🌍 Permissions par Pays</h3>
-                <ul class="settings-list">
-                    <li onclick="showCountrySettings('France')"><span>🇫🇷 France (€)</span><span style="color:#00ff00;">Actif ></span></li>
-                    <li onclick="showCountrySettings('Belgique')"><span>🇧🇪 Belgique (€)</span><span style="color:#00ff00;">Actif ></span></li>
-                    <li onclick="showCountrySettings('Suisse')"><span>🇨🇭 Suisse (CHF)</span><span style="color:#00ff00;">Actif ></span></li>
-                    <li onclick="showCountrySettings('Canada')"><span>🇨🇦 Canada ($)</span><span style="color:#00ff00;">Actif ></span></li>
-                    <li onclick="showCountrySettings('USA')"><span>🇺🇸 USA ($)</span><span style="color:#00ff00;">Actif ></span></li>
-                    <li onclick="showCountrySettings('Maroc')"><span>🇲🇦 Maroc (DH)</span><span style="color:#00ff00;">Actif ></span></li>
-                    <li onclick="showCountrySettings('Algérie')"><span>🇩🇿 Algérie (DA)</span><span style="color:#00ff00;">Actif ></span></li>
-                    <li onclick="showCountrySettings('Tunisie')"><span>🇹🇳 Tunisie (DT)</span><span style="color:#00ff00;">Actif ></span></li>
-                    <li onclick="showCountrySettings('Sénégal')"><span>🇸🇳 Sénégal (CFA)</span><span style="color:#00ff00;">Actif ></span></li>
-                    <li onclick="showCountrySettings('Côte d\'Ivoire')"><span>🇨🇮 Côte d'Ivoire (CFA)</span><span style="color:#00ff00;">Actif ></span></li>
-                    <li onclick="showCountrySettings('Cameroun')"><span>🇨🇲 Cameroun (CFA)</span><span style="color:#00ff00;">Actif ></span></li>
-                    <li onclick="showCountrySettings('RDC')"><span>🇨🇩 RD Congo (CFA)</span><span style="color:#00ff00;">Actif ></span></li>
-                    <li onclick="showCountrySettings('Brésil')"><span>🇧🇷 Brésil (R$)</span><span style="color:#ff9900;">Limité ></span></li>
-                    <li onclick="showCountrySettings('Inde')"><span>🇮🇳 Inde (₹)</span><span style="color:#ff9900;">Limité ></span></li>
-                    <li onclick="showCountrySettings('Chine')"><span>🇨🇳 Chine (¥)</span><span style="color:#ff0000;">Bloqué ></span></li>
-                    <li onclick="showCountrySettings('Russie')"><span>🇷🇺 Russie (₽)</span><span style="color:#ff0000;">Bloqué ></span></li>
-                </ul>
-            </div>
-            
-            <!-- ============ CONTRÔLE IA ============ -->
-            <div class="founder-section">
-                <h3>🤖 Contrôle de l'IA</h3>
-                <ul class="settings-list">
-                    <li><span>🧠 Apprentissage automatique</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
-                    <li><span>📹 Recommandations personnalisées</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
-                    <li><span>🔥 Détection de tendances</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
-                    <li><span>🚫 Modération automatique</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
-                    <li><span>📊 Prédiction de viralité</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
-                    <li><span>🏷️ Optimisation hashtags</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
-                    <li><span>🔔 Notifications intelligentes</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
-                    <li><span>👁️ Pousser vidéos pour visionnage</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
+                <p style="color:#a8a8a8; font-size:0.8rem; margin-bottom:10px;">Clique sur un pays pour changer son statut</p>
+                <ul class="settings-list" id="countryList">
+                    <!-- Rempli dynamiquement -->
                 </ul>
             </div>
             
@@ -168,20 +112,8 @@
                     <li onclick="window.location.href='securite.html'"><span>🚫 Anti-VPN</span><span style="color:#FFD700;">Configurer ></span></li>
                     <li onclick="window.location.href='securite.html'"><span>🚫 Anti-Nudité</span><span style="color:#FFD700;">Configurer ></span></li>
                     <li onclick="window.location.href='securite.html'"><span>🚫 Anti-Faux Comptes</span><span style="color:#FFD700;">Configurer ></span></li>
-                    <li><span>🔞 Filtre contenu adulte</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
-                    <li><span>⚡ Détection spam</span><div class="toggle active" onclick="this.classList.toggle('active')"></div></li>
-                </ul>
-            </div>
-            
-            <!-- ============ PROFIL FONDATEUR ============ -->
-            <div class="founder-section">
-                <h3>👤 Profil du Fondateur</h3>
-                <ul class="settings-list">
-                    <li onclick="changeFounderPhoto()"><span>📸 Changer la photo</span><span style="color:#FFD700;">></span></li>
-                    <li onclick="changeFounderBio()"><span>✏️ Modifier la bio</span><span style="color:#FFD700;">></span></li>
-                    <li onclick="changeFounderUsername()"><span>👤 Modifier le nom</span><span style="color:#FFD700;">></span></li>
-                    <li onclick="changeFounderEmail()"><span>📧 Modifier l'email</span><span style="color:#FFD700;">></span></li>
-                    <li onclick="changeFounderPin()"><span>🔐 Changer le PIN</span><span style="color:#FFD700;">></span></li>
+                    <li><span>🔞 Filtre contenu adulte</span><div class="toggle active" onclick="toggleFeature('adultFilter', this)"></div></li>
+                    <li><span>⚡ Détection spam</span><div class="toggle active" onclick="toggleFeature('spamDetection', this)"></div></li>
                 </ul>
             </div>
             
@@ -198,7 +130,7 @@
             <div class="founder-section">
                 <h3>🔧 Mode Maintenance</h3>
                 <ul class="settings-list">
-                    <li><span>🔧 Activer le mode maintenance</span><div class="toggle" onclick="toggleMaintenance(this)"></div></li>
+                    <li><span>🔧 Activer le mode maintenance</span><div class="toggle" id="maintenanceToggle" onclick="toggleMaintenance(this)"></div></li>
                 </ul>
             </div>
             
@@ -236,23 +168,80 @@
     <script src="retrait.js"></script>
     <script src="paiement.js"></script>
     <script>
+        const allCountries = {
+            'France': '🇫🇷', 'Belgique': '🇧🇪', 'Suisse': '🇨🇭', 'Canada': '🇨🇦',
+            'USA': '🇺🇸', 'Maroc': '🇲🇦', 'Algérie': '🇩🇿', 'Tunisie': '🇹🇳',
+            'Sénégal': '🇸🇳', 'Côte d\'Ivoire': '🇨🇮', 'Cameroun': '🇨🇲', 'RDC': '🇨🇩',
+            'Brésil': '🇧🇷', 'Inde': '🇮🇳', 'Chine': '🇨🇳', 'Russie': '🇷🇺'
+        };
+        
         window.addEventListener('DOMContentLoaded', () => {
             if (!checkFounderSession()) {
                 showToast('❌ Accès non autorisé');
                 setTimeout(() => window.location.href = 'profil.html', 2000);
                 return;
             }
+            
+            recalculateFounderStats();
             loadFounderData();
+            loadCountryPermissions();
             loadAccessLog();
         });
         
         function loadFounderData() {
-            document.getElementById('totalRevenue').textContent = formatNumber(founderData.totalRevenue || 0) + '€';
-            document.getElementById('monthlyRevenue').textContent = '+' + formatNumber(founderData.monthlyRevenue || 0) + '€ ce mois';
-            document.getElementById('totalUsers').textContent = formatNumber(founderData.totalUsers || 0);
-            document.getElementById('totalVideos').textContent = formatNumber(founderData.totalVideos || 0);
-            document.getElementById('totalDiamonds').textContent = formatNumber(founderData.totalDiamondsSold || 0);
-            document.getElementById('totalWithdrawals').textContent = formatNumber(founderData.totalWithdrawals || 0) + '€';
+            // TOUTES LES VALEURS SONT RÉELLES
+            document.getElementById('totalRevenue').textContent = (founderData.totalRevenue || 0).toFixed(2) + '€';
+            document.getElementById('monthlyRevenue').textContent = '+' + (founderData.monthlyRevenue || 0).toFixed(2) + '€ ce mois';
+            document.getElementById('totalUsers').textContent = founderData.totalUsers || 0;
+            document.getElementById('totalVideos').textContent = founderData.totalVideos || 0;
+            document.getElementById('totalDiamonds').textContent = founderData.totalDiamondsSold || 0;
+            document.getElementById('premiumUsers').textContent = founderData.premiumUsers || 0;
+        }
+        
+        function loadCountryPermissions() {
+            const list = document.getElementById('countryList');
+            if (!list) return;
+            list.innerHTML = '';
+            
+            if (!founderData.countryPermissions) {
+                founderData.countryPermissions = {};
+                Object.keys(allCountries).forEach(c => {
+                    founderData.countryPermissions[c] = 'active';
+                });
+            }
+            
+            Object.keys(allCountries).forEach(country => {
+                const status = founderData.countryPermissions[country] || 'active';
+                const flag = allCountries[country];
+                
+                let statusText = '';
+                let statusColor = '';
+                
+                if (status === 'active') { statusText = 'Actif'; statusColor = '#00ff00'; }
+                else if (status === 'limited') { statusText = 'Limité'; statusColor = '#ff9900'; }
+                else if (status === 'blocked') { statusText = 'Bloqué'; statusColor = '#ff0000'; }
+                
+                const li = document.createElement('li');
+                li.onclick = () => showCountrySettings(country);
+                li.innerHTML = `<span>${flag} ${country}</span><span style="color:${statusColor};">${statusText} ></span>`;
+                list.appendChild(li);
+            });
+        }
+        
+        function showCountrySettings(country) {
+            const current = founderData.countryPermissions[country] || 'active';
+            const choice = prompt(
+                `🌍 ${country}\n\nStatut actuel : ${current}\n\nChoisis :\n1 = Actif\n2 = Limité\n3 = Bloqué`,
+                current === 'active' ? '1' : current === 'limited' ? '2' : '3'
+            );
+            
+            if (choice === '1') { founderData.countryPermissions[country] = 'active'; showToast('✅ ' + country + ' : Actif'); }
+            else if (choice === '2') { founderData.countryPermissions[country] = 'limited'; showToast('⚠️ ' + country + ' : Limité'); }
+            else if (choice === '3') { founderData.countryPermissions[country] = 'blocked'; showToast('🚫 ' + country + ' : Bloqué'); }
+            else return;
+            
+            localStorage.setItem('bdiamond_founder_data', JSON.stringify(founderData));
+            loadCountryPermissions();
         }
         
         function loadAccessLog() {
@@ -262,12 +251,7 @@
                 founderData.accessLog.slice(-5).reverse().forEach(entry => {
                     const div = document.createElement('div');
                     div.className = 'notification-item';
-                    div.innerHTML = `
-                        <div style="flex:1;">
-                            <strong>🔓 Accès tableau de bord</strong>
-                            <p style="color:#a8a8a8; font-size:0.8rem;">${new Date(entry.timestamp).toLocaleString('fr-FR')}</p>
-                        </div>
-                    `;
+                    div.innerHTML = `<div style="flex:1;"><strong>🔓 Accès tableau de bord</strong><p style="color:#a8a8a8; font-size:0.8rem;">${new Date(entry.timestamp).toLocaleString('fr-FR')}</p></div>`;
                     logContainer.appendChild(div);
                 });
             }
@@ -291,59 +275,19 @@
             showToast(isActive ? '💰 ' + feature + ' activé' : '❌ ' + feature + ' désactivé');
         }
         
-        function showCountrySettings(country) {
-            const current = prompt('🌍 ' + country + '\n\nOptions : Actif, Limité, Bloqué');
-            if (current) showToast('✅ ' + country + ' : ' + current);
-        }
-        
-        function changeFounderPhoto() {
-            const newPhoto = prompt('📸 URL de la nouvelle photo de profil :');
-            if (newPhoto && newPhoto.trim() !== '') showToast('✅ Photo mise à jour !');
-        }
-        
-        function changeFounderBio() {
-            const newBio = prompt('✏️ Nouvelle bio :');
-            if (newBio && newBio.trim() !== '') showToast('✅ Bio mise à jour !');
-        }
-        
-        function changeFounderUsername() {
-            const newUsername = prompt('👤 Nouveau nom d\'utilisateur :');
-            if (newUsername && newUsername.trim() !== '') showToast('✅ Nom mis à jour !');
-        }
-        
-        function changeFounderEmail() {
-            const newEmail = prompt('📧 Nouvel email :');
-            if (newEmail && newEmail.trim() !== '') showToast('✅ Email mis à jour !');
-        }
-        
-        function changeFounderPin() {
-            const currentPin = prompt('🔐 Code PIN actuel :');
-            if (currentPin === founderData.founderPin) {
-                const newPin = prompt('🔐 Nouveau code PIN (4 chiffres) :');
-                if (newPin && newPin.length === 4) {
-                    founderData.founderPin = newPin;
-                    localStorage.setItem('bdiamond_founder_data', JSON.stringify(founderData));
-                    showToast('✅ Code PIN changé !');
-                } else {
-                    showToast('❌ PIN invalide (4 chiffres requis)');
-                }
-            } else {
-                showToast('❌ PIN incorrect');
-            }
-        }
-        
         function sendGlobalNotification() {
             const input = document.getElementById('globalNotification');
             const message = input.value.trim();
-            if (message) {
-                showToast('📤 Notification envoyée à tous !');
-                input.value = '';
-            }
+            if (message) { showToast('📤 Notification envoyée à tous !'); input.value = ''; }
         }
         
         function toggleMaintenance(button) {
             button.classList.toggle('active');
-            showToast(button.classList.contains('active') ? '🔧 Mode maintenance activé' : '✅ Mode maintenance désactivé');
+            const isActive = button.classList.contains('active');
+            if (!founderData.featurePermissions) founderData.featurePermissions = {};
+            founderData.featurePermissions.maintenance = isActive;
+            localStorage.setItem('bdiamond_founder_data', JSON.stringify(founderData));
+            showToast(isActive ? '🔧 Mode maintenance activé' : '✅ Mode maintenance désactivé');
         }
         
         function closeFounderSession() {
@@ -352,4 +296,4 @@
         }
     </script>
 </body>
-    </html>
+                                                              </html>
